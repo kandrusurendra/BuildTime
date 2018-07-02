@@ -126,6 +126,9 @@
   <data name="111" xml:space="preserve">
     <value>Dynamic window events</value>
   </data>
+  <data name="120" xml:space="preserve">
+    <value>Build Timer Window</value>
+  </data>
   <data name="InfoBarButtonActionContext1" xml:space="preserve">
     <value>"Button1 Action"</value>
   </data>

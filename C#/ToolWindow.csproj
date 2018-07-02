@@ -162,6 +162,10 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BuildTimerCtrl.xaml.cs">
+      <DependentUpon>BuildTimerCtrl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="BuildTimerWindowPane.cs" />
     <Compile Include="CustomTypeDescriptor.cs" />
     <Compile Include="DynamicWindowPane.cs" />
     <Compile Include="DynamicWindowWPFControl.xaml.cs">
@@ -204,6 +208,10 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
     </VSCTCompile>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="BuildTimerCtrl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="DynamicWindowWPFControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

@@ -55,6 +55,14 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
           <ButtonText>&amp;Dynamic Visibility Window</ButtonText>
         </Strings>
       </Button>
+      <Button guid="guidClientCmdSet" id="cmdidBuildTimerWindow" priority="0x102" type="Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1" />
+        <Icon guid="ImageCatalogGuid" id="TwoX" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <Strings>
+          <ButtonText>&amp;Build Timer Window</ButtonText>
+        </Strings>
+      </Button>
       <!-- The following command will appear on the tool window toolbar -->
       <Button guid="guidClientCmdSet" id="cmdidRefreshWindowsList" priority="0x100" type="Button">
         <Parent guid="guidClientCmdSet" id="MyToolbarGroup" />
@@ -95,6 +103,7 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
       <IDSymbol name="cmdidPersistedWindow" value="0x2001" />
       <IDSymbol name="cmdidUiEventsWindow" value="0x2002" />
       <IDSymbol name="cmdidRefreshWindowsList" value="0x2003" />
+      <IDSymbol name="cmdidBuildTimerWindow" value="0x2004" />
     </GuidSymbol>
   </Symbols>
 </CommandTable>

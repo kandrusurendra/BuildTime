@@ -65,7 +65,8 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 	/// </summary>
 	[MsVsShell.ProvideToolWindow(typeof(PersistedWindowPane), Style = MsVsShell.VsDockStyle.Tabbed, Window = "3ae79031-e1bc-11d0-8f78-00a0c9110057")]
 	[MsVsShell.ProvideToolWindow(typeof(DynamicWindowPane), PositionX=250, PositionY=250, Width=160, Height=180, Transient=true)]
-	[MsVsShell.ProvideToolWindowVisibility(typeof(DynamicWindowPane), /*UICONTEXT_SolutionExists*/"f1536ef8-92ec-443c-9ed7-fdadf150da82")]
+    [MsVsShell.ProvideToolWindow(typeof(BuildTimerWindowPane), PositionX = 250, PositionY = 250, Width = 160, Height = 180, Transient = true)]
+    [MsVsShell.ProvideToolWindowVisibility(typeof(DynamicWindowPane), /*UICONTEXT_SolutionExists*/"f1536ef8-92ec-443c-9ed7-fdadf150da82")]
 
 	[MsVsShell.ProvideMenuResource(1000, 1)]
 	[MsVsShell.PackageRegistration(UseManagedResourcesOnly = true)]
@@ -95,7 +96,10 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 			id = new CommandID(GuidsList.guidClientCmdSet, PkgCmdId.cmdidUiEventsWindow);
 			DefineCommandHandler(new EventHandler(ShowDynamicWindow), id);
 
-		}
+            // Add the handler for the tool window with dynamic visibility and events
+            id = new CommandID(GuidsList.guidClientCmdSet, PkgCmdId.cmdidBuildTimerWindow);
+            DefineCommandHandler(new EventHandler(ShowBuildTimerWindow), id);
+        }
 
 		/// <summary>
 		/// Define a command handler.
@@ -192,5 +196,23 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 			// Bring the tool window to the front and give it focus
 			ErrorHandler.ThrowOnFailure(frame.Show());
 		}
+
+
+        private void ShowBuildTimerWindow(object sender, EventArgs arguments)
+        {
+            // Get the one (index 0) and only instance of our tool window (if it does not already exist it will get created)
+            MsVsShell.ToolWindowPane pane = FindToolWindow(typeof(BuildTimerWindowPane), 0, true);
+            if (pane == null)
+            {
+                throw new COMException(GetResourceString("@101"));
+            }
+            IVsWindowFrame frame = pane.Frame as IVsWindowFrame;
+            if (frame == null)
+            {
+                throw new COMException(GetResourceString("@102"));
+            }
+            // Bring the tool window to the front and give it focus
+            ErrorHandler.ThrowOnFailure(frame.Show());
+        }
 	}
 }

@@ -1,0 +1,13 @@
+1) Go to dir C:\Users\odysseas\AppData\Local\Microsoft\VisualStudio\
+I discovered this by trying to follow the instructions for resetting experimental instance. It didn't work but at least it told me where the data for the experimental instance are stored.
+
+> cd C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VSSDK\VisualStudioIntegration\Tools\Bin
+> CreateExpInstance /Reset /VSInstance=17.0 /RootSuffix=Exp
+Visual Studio (R) CreateExpInstance Utility.
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+The Visual Studio Experimental instance directory C:\Users\odysseas\AppData\Local\Microsoft\VisualStudio\17.0Exp does not exist.
+CreateExpInstance: warning : The Visual Studio directory C:\Users\odysseas\AppData\Local\Microsoft\VisualStudio\17.0 does not exist.
+Created directory C:\Users\odysseas\AppData\Local\Microsoft\VisualStudio\17.0Exp\Extensions.
+
+2) Delete the folder for the experimental instance; It was an educated guess that in my case it is C:\Users\odysseas\AppData\Local\Microsoft\VisualStudio\15.0_b6517109Exp
