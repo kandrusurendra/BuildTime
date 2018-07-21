@@ -9,7 +9,7 @@ using ErrorHandler = Microsoft.VisualStudio.ErrorHandler;
 namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 {
     [Guid("0520C451-DB04-4622-90EC-B7113574346F")]
-    class BuildTimerWindowPane : ToolWindowPane
+    public class BuildTimerWindowPane : ToolWindowPane
     {
         // Control that will be hosted in the tool window
         private BuildTimerCtrl control = null;
@@ -30,7 +30,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             BitmapImageMoniker = Microsoft.VisualStudio.Imaging.KnownMonikers.Search;
 
             // Creating the user control that will be displayed in the window
-            control = new BuildTimerCtrl();
+            control = new BuildTimerCtrl(this);
             Content = control;
         }
 
