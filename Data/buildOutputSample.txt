@@ -1,0 +1,149 @@
+1>------ Rebuild All started: Project: Core, Configuration: Debug Win32 ------
+1>Build started 22/07/2018 16:28:43.
+1>Target _PrepareForClean:
+1>  Deleting file "C:\CODE_PERSONAL\functionplot\\bin\Win32\Debug\intermediate\Core\Core.tlog\Core.lastbuildstate".
+1>Target InitializeBuildStatus:
+1>  Creating "C:\CODE_PERSONAL\functionplot\\bin\Win32\Debug\intermediate\Core\Core.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+1>Target ClCompile:
+1>  Utils.cpp
+1>  NotImplementedException.cpp
+1>  Logger.cpp
+1>  Generating Code...
+1>Target Lib:
+1>  Core.vcxproj -> C:\CODE_PERSONAL\functionplot\\bin\Win32\Debug\Core.lib
+1>Target FinalizeBuildStatus:
+1>  Deleting file "C:\CODE_PERSONAL\functionplot\\bin\Win32\Debug\intermediate\Core\Core.tlog\unsuccessfulbuild".
+1>  Touching "C:\CODE_PERSONAL\functionplot\\bin\Win32\Debug\intermediate\Core\Core.tlog\Core.lastbuildstate".
+1>
+1>Build succeeded.
+1>    0 Warning(s)
+1>    0 Error(s)
+1>
+1>Time Elapsed 00:00:01.83
+2>------ Rebuild All started: Project: Lib3D, Configuration: Debug Win32 ------
+2>Build started 22/07/2018 16:28:45.
+2>Target _PrepareForClean:
+2>  Deleting file "C:\CODE_PERSONAL\functionplot\\bin\Win32\Debug\intermediate\Lib3D\Lib3D.tlog\Lib3D.lastbuildstate".
+2>Target InitializeBuildStatus:
+2>  Creating "C:\CODE_PERSONAL\functionplot\\bin\Win32\Debug\intermediate\Lib3D\Lib3D.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+2>Target ClCompile:
+2>  Transform3D.cpp
+2>  StockMaterials.cpp
+2>  stdafx.cpp
+2>  ShaderManagerGL.cpp
+2>  SceneNode.cpp
+2>  SceneManager.cpp
+2>  RendererGL.cpp
+2>  c:\code_personal\functionplot\lib3d\source\renderergl.cpp(446): warning C4244: 'initializing' : conversion from 'std::streamoff' to 'unsigned int', possible loss of data
+2>  PolylineModel3D.cpp
+2>  ObjImporter.cpp
+2>  Mouse.cpp
+2>  MeshModel3D.cpp
+2>  Mesh3D.cpp
+2>  MathUtils.cpp
+2>  Material.cpp
+2>  lodepng.cpp
+2>  Keyboard.cpp
+2>  HardwareBufferGL.cpp
+2>  GeometryUtils.cpp
+2>  c:\code_personal\functionplot\lib3d\source\geometryutils.cpp(142): warning C4018: '<' : signed/unsigned mismatch
+2>  Engine3D.cpp
+2>  DeviceIOManager.cpp
+2>  Generating Code...
+2>  Compiling...
+2>  CameraMan.cpp
+2>  Camera.cpp
+2>  Generating Code...
+2>Done building target "ClCompile" in project "Lib3D.vcxproj".
+2>Target Lib:
+2>  stdafx.obj : warning LNK4221: This object file does not define any previously undefined public symbols, so it will not be used by any link operation that consumes this library
+2>  Lib3D.vcxproj -> C:\CODE_PERSONAL\functionplot\\bin\Win32\Debug\Lib3D.lib
+2>Done building target "Lib" in project "Lib3D.vcxproj".
+2>Target FinalizeBuildStatus:
+2>  Deleting file "C:\CODE_PERSONAL\functionplot\\bin\Win32\Debug\intermediate\Lib3D\Lib3D.tlog\unsuccessfulbuild".
+2>  Touching "C:\CODE_PERSONAL\functionplot\\bin\Win32\Debug\intermediate\Lib3D\Lib3D.tlog\Lib3D.lastbuildstate".
+2>
+2>Done building project "Lib3D.vcxproj".
+2>
+2>Build succeeded.
+2>
+2>c:\code_personal\functionplot\lib3d\source\renderergl.cpp(446): warning C4244: 'initializing' : conversion from 'std::streamoff' to 'unsigned int', possible loss of data
+2>c:\code_personal\functionplot\lib3d\source\geometryutils.cpp(142): warning C4018: '<' : signed/unsigned mismatch
+2>stdafx.obj : warning LNK4221: This object file does not define any previously undefined public symbols, so it will not be used by any link operation that consumes this library
+2>    3 Warning(s)
+2>    0 Error(s)
+2>
+2>Time Elapsed 00:00:29.03
+3>------ Rebuild All started: Project: Lib3D_Tests, Configuration: Debug Win32 ------
+3>Build started 22/07/2018 16:29:14.
+3>Target _PrepareForClean:
+3>  Deleting file "Debug\Lib3D_Tests.tlog\Lib3D_Tests.lastbuildstate".
+3>Target InitializeBuildStatus:
+3>  Touching "Debug\Lib3D_Tests.tlog\unsuccessfulbuild".
+3>Target ClCompile:
+3>  SceneNodeTests.cpp
+3>  c:\code_personal\functionplot\lib3d\tests\scenenodetests.cpp(4): fatal error C1083: Cannot open include file: 'gtest/gtest.h': No such file or directory
+3>  Lib3DTests.cpp
+3>  c:\code_personal\functionplot\lib3d\tests\lib3dtests.cpp(1): fatal error C1083: Cannot open include file: 'gtest/gtest.h': No such file or directory
+3>  GeometryUtilsTests.cpp
+3>  c:\code_personal\functionplot\lib3d\tests\geometryutilstests.cpp(3): fatal error C1083: Cannot open include file: 'gtest/gtest.h': No such file or directory
+3>  Generating Code...
+3>Done building target "ClCompile" in project "Lib3D_Tests.vcxproj" -- FAILED.
+3>
+3>Done building project "Lib3D_Tests.vcxproj" -- FAILED.
+3>
+3>Build FAILED.
+3>
+3>c:\code_personal\functionplot\lib3d\tests\scenenodetests.cpp(4): fatal error C1083: Cannot open include file: 'gtest/gtest.h': No such file or directory
+3>c:\code_personal\functionplot\lib3d\tests\lib3dtests.cpp(1): fatal error C1083: Cannot open include file: 'gtest/gtest.h': No such file or directory
+3>c:\code_personal\functionplot\lib3d\tests\geometryutilstests.cpp(3): fatal error C1083: Cannot open include file: 'gtest/gtest.h': No such file or directory
+3>    0 Warning(s)
+3>    3 Error(s)
+3>
+3>Time Elapsed 00:00:00.57
+4>------ Rebuild All started: Project: FunctionPlot, Configuration: Debug Win32 ------
+4>Build started 22/07/2018 16:29:15.
+4>Target _PrepareForClean:
+4>  Deleting file "C:\CODE_PERSONAL\functionplot\\bin\Win32\Debug\intermediate\FunctionPlot\FunctionPlot.tlog\FunctionPlot.lastbuildstate".
+4>Target InitializeBuildStatus:
+4>  Touching "C:\CODE_PERSONAL\functionplot\\bin\Win32\Debug\intermediate\FunctionPlot\FunctionPlot.tlog\unsuccessfulbuild".
+4>Target ClCompile:
+4>  stdafx.cpp
+4>  c:\code_personal\functionplot\functionplot\source\stdafx.h(4): fatal error C1083: Cannot open include file: 'wx/wxprec.h': No such file or directory
+4>Done building target "ClCompile" in project "FunctionPlot.vcxproj" -- FAILED.
+4>
+4>Done building project "FunctionPlot.vcxproj" -- FAILED.
+4>
+4>Build FAILED.
+4>
+4>c:\code_personal\functionplot\functionplot\source\stdafx.h(4): fatal error C1083: Cannot open include file: 'wx/wxprec.h': No such file or directory
+4>    0 Warning(s)
+4>    1 Error(s)
+4>
+4>Time Elapsed 00:00:00.16
+5>------ Rebuild All started: Project: FunctionPlot_Tests, Configuration: Debug Win32 ------
+5>Build started 22/07/2018 16:29:15.
+5>Target _PrepareForClean:
+5>  Deleting file "Win32\Debug\Function.A1F83289.tlog\FunctionPlot_Tests.lastbuildstate".
+5>Target InitializeBuildStatus:
+5>  Touching "Win32\Debug\Function.A1F83289.tlog\unsuccessfulbuild".
+5>Target ClCompile:
+5>  PythonFunctionEvaluator_Tests.cpp
+5>  c:\code_personal\functionplot\functionplot\source\pythonfunctionevaluator.h(7): fatal error C1083: Cannot open include file: 'Python.h': No such file or directory
+5>  Main.cpp
+5>  PythonFunctionEvaluator.cpp
+5>  c:\code_personal\functionplot\functionplot\source\stdafx.h(4): fatal error C1083: Cannot open include file: 'wx/wxprec.h': No such file or directory
+5>  Generating Code...
+5>Done building target "ClCompile" in project "FunctionPlot_Tests.vcxproj" -- FAILED.
+5>
+5>Done building project "FunctionPlot_Tests.vcxproj" -- FAILED.
+5>
+5>Build FAILED.
+5>
+5>c:\code_personal\functionplot\functionplot\source\pythonfunctionevaluator.h(7): fatal error C1083: Cannot open include file: 'Python.h': No such file or directory
+5>c:\code_personal\functionplot\functionplot\source\stdafx.h(4): fatal error C1083: Cannot open include file: 'wx/wxprec.h': No such file or directory
+5>    0 Warning(s)
+5>    2 Error(s)
+5>
+5>Time Elapsed 00:00:01.03
+========== Rebuild All: 2 succeeded, 3 failed, 0 skipped ==========
