@@ -99,7 +99,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             }
             else
             {
-                textBox_ouput.Text = "No build info sucker";
+                textBox_ouput.Text = "Build output window not found";
             }
         }
 

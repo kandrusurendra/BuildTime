@@ -172,6 +172,7 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
       <DependentUpon>BuildTimerCtrl.xaml</DependentUpon>
     </Compile>
     <Compile Include="BuildTimerWindowPane.cs" />
+    <Compile Include="ProjectBuildInfo.cs" />
     <Compile Include="CustomTypeDescriptor.cs" />
     <Compile Include="DynamicWindowPane.cs" />
     <Compile Include="DynamicWindowWPFControl.xaml.cs">
