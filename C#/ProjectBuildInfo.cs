@@ -8,12 +8,26 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 {
-    public struct ProjectBuildInfo
+    public class ProjectBuildInfo
     {
-        string projectName;
-        int projectId;
-        DateTime? buildStartTime;
-        DateTime? buildEndTime;
+        public string ProjectName { get; set; }
+
+        public int ProjectId { get; set; }
+
+        public DateTime? BuildStartTime { get; set; }
+
+        public TimeSpan? BuildDuration { get; set; }
+
+        public DateTime? BuildEndTime
+        {
+            get {
+                if (BuildStartTime.HasValue && BuildDuration.HasValue)
+                {
+                    return (BuildStartTime + BuildDuration);
+                }
+                return null;
+            }
+        }
     }
 
     public static class BuildInfoUtils
@@ -33,6 +47,19 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             }
         }
 
+        public static TimeSpan? StringToTime(string s)
+        {
+            try
+            {
+                return TimeSpan.ParseExact(s, "c", null);
+            }
+            catch (System.Exception e)
+            {
+                System.Console.WriteLine(e.Message);
+                return null;
+            }
+        }
+
         public static Tuple<int,string> ExtractProjectNameAndID(string s)
         {
             //Example pattern to match: "2>------ Rebuild All started: Project: Lib3D, Configuration: Debug Win32 ------";
@@ -41,18 +68,6 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             Match m = r.Match(s);
             if (m.Success)
             {
-                //for (int i = 1; i <= 2; i++)
-                //{
-                //    Group g = m.Groups[i];
-                //    Console.WriteLine("Group" + i + "='" + g + "'");
-                //    CaptureCollection cc = g.Captures;
-                //    for (int j = 0; j < cc.Count; j++)
-                //    {
-                //        Capture c = cc[j];
-                //        string temp = c.ToString();
-                //        System.Console.WriteLine("Capture" + j + "='" + temp + "', Position=" + c.Index);
-                //    }
-                //}
                 int projID = int.Parse(m.Groups[1].Captures[0].ToString());
                 string projName = m.Groups[2].Captures[0].ToString();
                 return new Tuple<int, string>(projID, projName);
@@ -78,10 +93,57 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             return null;
         }
 
+        public static Tuple<int, TimeSpan> ExtractDurationAndID(string s)
+        {
+            // Example string to match "3>Time Elapsed 01:02:03.57"
+            string pattern = @"^(\d+)>\s*Time Elapsed\s+(.+)$";
+            Regex r = new Regex(pattern, RegexOptions.IgnoreCase);
+            Match m = r.Match(s);
+            if (m.Success)
+            {
+                int projID = int.Parse(m.Groups[1].Captures[0].ToString());
+                string timeStr = m.Groups[2].Captures[0].ToString();
+                TimeSpan? time = StringToTime(timeStr);
+                if (!time.HasValue)
+                    throw new FormatException("Cannot convert '" + timeStr + "' to a valid time.");
+                return new Tuple<int, TimeSpan>(projID, time.Value);
+            }
+            return null;
+        }
 
         public static List<ProjectBuildInfo> ExtractBuildInfo(string text)
         {
-            return new List<ProjectBuildInfo>();
+            string[] lines = text.Split('\n');
+            List<ProjectBuildInfo> projectList = new List<ProjectBuildInfo>(); 
+            foreach (string line in lines)
+            {
+                var nameAndID = ExtractProjectNameAndID(line);
+                if (nameAndID != null)
+                {
+                    var buildInfo = new ProjectBuildInfo();
+                    buildInfo.ProjectId = nameAndID.Item1;
+                    buildInfo.ProjectName = nameAndID.Item2;
+                    projectList.Add(buildInfo);
+                    continue;
+                }
+
+                var startTimeAndID = ExtractStartTimeAndID(line);
+                if (startTimeAndID != null)
+                {
+                    var buildInfo = projectList.First(x => x.ProjectId == startTimeAndID.Item1);
+                    buildInfo.BuildStartTime = startTimeAndID.Item2;
+                    continue;
+                }
+
+                var durationAndID = ExtractDurationAndID(line);
+                if (durationAndID != null)
+                {
+                    var buildInfo = projectList.First(x => x.ProjectId == durationAndID.Item1);
+                    buildInfo.BuildDuration = durationAndID.Item2;
+                    continue;
+                }
+            }
+            return projectList;
         }
     }
 }

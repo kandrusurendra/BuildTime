@@ -27,6 +27,28 @@ namespace ToolWindowTests
         }
 
         [TestMethod]
+        public void StringToTime_ValidTimeString()
+        {
+            {
+                string s = "13:26:35.450";
+                TimeSpan? dt = BuildInfoUtils.StringToTime(s);
+                TimeSpan expected = new TimeSpan(0, 13, 26, 35, 450);
+
+                Assert.IsTrue(dt.HasValue);
+                Assert.AreEqual(expected, dt.Value);
+            }
+
+            {
+                string s = "13:26:35.45";
+                TimeSpan? dt = BuildInfoUtils.StringToTime(s);
+                TimeSpan expected = new TimeSpan(0, 13, 26, 35, 450);
+
+                Assert.IsTrue(dt.HasValue);
+                Assert.AreEqual(expected, dt.Value);
+            }
+        }
+
+        [TestMethod]
         public void ExtractProjectNameAndID_ValidString()
         {
             string s = "2>------ Rebuild All started: Project: Lib3D, Configuration: Debug Win32 ------";
@@ -44,6 +66,16 @@ namespace ToolWindowTests
             Assert.IsTrue(val != null);
             Assert.AreEqual(1, val.Item1);
             Assert.AreEqual(new DateTime(2018,7,22,16,28,43), val.Item2);
+        }
+
+        [TestMethod]
+        public void ExtractDurationAndID_ValidString()
+        {
+            string s = "3>Time Elapsed 01:02:03.57";
+            Tuple<int, TimeSpan> val = BuildInfoUtils.ExtractDurationAndID(s);
+            Assert.IsTrue(val != null);
+            Assert.AreEqual(3, val.Item1);
+            Assert.AreEqual(new TimeSpan(0,1,2,3,570), val.Item2);
         }
 
     }
