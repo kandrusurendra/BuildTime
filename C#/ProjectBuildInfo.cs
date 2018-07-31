@@ -96,7 +96,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
         public static Tuple<int, TimeSpan> ExtractDurationAndID(string s)
         {
             // Example string to match "3>Time Elapsed 01:02:03.57"
-            string pattern = @"^(\d+)>\s*Time Elapsed\s+(.+)$";
+            string pattern = @"^(\d+)>\s*Time Elapsed\s+([^\s]+)\s*$";
             Regex r = new Regex(pattern, RegexOptions.IgnoreCase);
             Match m = r.Match(s);
             if (m.Success)

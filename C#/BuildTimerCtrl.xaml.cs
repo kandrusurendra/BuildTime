@@ -95,11 +95,13 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             {
                 pane.Activate();
                 pane.TextDocument.Selection.SelectAll();
-                textBox_ouput.Text = pane.TextDocument.Selection.Text;
+                var buildOutputStr = pane.TextDocument.Selection.Text;
+
+                BuildInfoGrid.ItemsSource = BuildInfoUtils.ExtractBuildInfo(buildOutputStr);
             }
             else
             {
-                textBox_ouput.Text = "Build output window not found";
+                MessageBox.Show("Build output window not found");
             }
         }
 
