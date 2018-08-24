@@ -30,7 +30,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             BitmapImageMoniker = Microsoft.VisualStudio.Imaging.KnownMonikers.Search;
 
             // Creating the user control that will be displayed in the window
-            control = new BuildTimerCtrl(this);
+            control = new BuildTimerCtrl(this, new FakeBuildInfoExtractor());
             Content = control;
         }
 

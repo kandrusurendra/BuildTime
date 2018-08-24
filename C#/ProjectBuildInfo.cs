@@ -10,6 +10,16 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 {
     public class ProjectBuildInfo
     {
+        public ProjectBuildInfo() { }
+
+        public ProjectBuildInfo(string name, int id, DateTime startTime, TimeSpan duration)
+        {
+            ProjectName = name;
+            ProjectId = id;
+            BuildStartTime = startTime;
+            BuildDuration = duration;
+        }
+
         public string ProjectName { get; set; }
 
         public int ProjectId { get; set; }

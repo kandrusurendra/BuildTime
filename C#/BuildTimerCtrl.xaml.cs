@@ -22,14 +22,71 @@ using EnvDTE;
 
 namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 {
+    public interface IBuildInfoExtractionStrategy
+    {
+        List<ProjectBuildInfo> ExtractBuildInfo();
+    }
+
+    public class OutputWindowBuildInfoExtractor : IBuildInfoExtractionStrategy
+    {
+        public List<ProjectBuildInfo> ExtractBuildInfo()
+        {
+            EnvDTE80.DTE2 dte = (EnvDTE80.DTE2)Package.GetGlobalService(typeof(DTE));
+            Debug.Assert(dte != null);
+            OutputWindowPanes panes = dte.ToolWindows.OutputWindow.OutputWindowPanes;
+
+            OutputWindowPane pane = panes.Cast<OutputWindowPane>().First(wnd => wnd.Name == "Build");
+            if (pane != null)
+            {
+                pane.Activate();
+                pane.TextDocument.Selection.SelectAll();
+                var buildOutputStr = pane.TextDocument.Selection.Text;
+
+                return BuildInfoUtils.ExtractBuildInfo(buildOutputStr);
+            }
+            else
+            {
+                MessageBox.Show("Build output window not found");
+                return null;
+            }
+        }
+    }
+
+    public class FakeBuildInfoExtractor : IBuildInfoExtractionStrategy
+    {
+        public List<ProjectBuildInfo> ExtractBuildInfo()
+        {
+            count = (count + 1) % 5;
+
+            ProjectBuildInfo[] dummyInfo = new ProjectBuildInfo[7] {
+                  new ProjectBuildInfo("proj1", 1, new DateTime(2018,5,5, 1, 1, 1), new TimeSpan(0,0,10))
+                , new ProjectBuildInfo("proj2", 2, new DateTime(2018,5,5, 1, 1, 1), new TimeSpan(0,0,20))
+                , new ProjectBuildInfo("proj3", 3, new DateTime(2018,5,5, 1, 1, 11), new TimeSpan(0, 0, 30))
+                , new ProjectBuildInfo("proj4", 4, new DateTime(2018,5,5, 1, 1, 41), new TimeSpan(0, 0, 10))
+                , new ProjectBuildInfo("proj5", 5, new DateTime(2018,5,5, 1, 1, 52), new TimeSpan(0, 0, 6))
+                , new ProjectBuildInfo("proj6", 6, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 6))
+                , new ProjectBuildInfo("proj7", 7, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 26))
+            };
+
+            List<ProjectBuildInfo> buildInfo = new List<ProjectBuildInfo>();
+            buildInfo.Add(dummyInfo[count]);
+            buildInfo.Add(dummyInfo[count+1]);
+            buildInfo.Add(dummyInfo[count+2]);
+            return buildInfo;
+        }
+
+        private int count = 0;
+    }
+
     /// <summary>
     /// Interaction logic for BuildTimerCtrl.xaml
     /// </summary>
     public partial class BuildTimerCtrl : UserControl
     {
-        public BuildTimerCtrl(BuildTimerWindowPane windowPane)
+        public BuildTimerCtrl(BuildTimerWindowPane windowPane, IBuildInfoExtractionStrategy infoExtractor)
         {
             m_windowPane = windowPane;
+            m_buildInfoExtractor = infoExtractor;
             InitializeComponent();
         }
 
@@ -86,6 +143,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             }
 #endif
 
+#if false
             EnvDTE80.DTE2 dte = (EnvDTE80.DTE2)Package.GetGlobalService(typeof(DTE));
             Debug.Assert(dte != null);
             OutputWindowPanes panes = dte.ToolWindows.OutputWindow.OutputWindowPanes;
@@ -103,12 +161,17 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             {
                 MessageBox.Show("Build output window not found");
             }
+#endif
+
+            BuildInfoGrid.ItemsSource = m_buildInfoExtractor.ExtractBuildInfo();
         }
+
 
 
         //
         // Variables
         //
         private BuildTimerWindowPane m_windowPane;
+        private IBuildInfoExtractionStrategy m_buildInfoExtractor;
     }
 }
