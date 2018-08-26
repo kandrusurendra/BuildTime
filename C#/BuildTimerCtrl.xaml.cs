@@ -19,6 +19,8 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using EnvDTE;
 
+using System.Windows.Forms.DataVisualization.Charting;
+using wf_chart = System.Windows.Forms.DataVisualization.Charting;
 
 namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 {
@@ -163,7 +165,30 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             }
 #endif
 
-            BuildInfoGrid.ItemsSource = m_buildInfoExtractor.ExtractBuildInfo();
+            var buildInfo = m_buildInfoExtractor.ExtractBuildInfo();
+
+            // Update build-info grid.
+            BuildInfoGrid.ItemsSource = buildInfo;
+
+            // Update build graph.
+
+            wf_chart.Chart BuildGraphChart = this.wfHost.Child as wf_chart.Chart;
+            BuildGraphChart.Series.Add(new wf_chart.Series());
+            BuildGraphChart.Series[0].ChartType = wf_chart.SeriesChartType.BoxPlot;
+            BuildGraphChart.Series[0].YValuesPerPoint = 4;
+            foreach (var projInfo in buildInfo)
+            {
+                if (projInfo.BuildDuration.HasValue == false)
+                    continue;
+                BuildGraphChart.Series[0].Points.AddXY(
+                    projInfo.ProjectName, 
+                    new object[] 
+                    {
+                        0, projInfo.BuildDuration.Value.TotalMilliseconds,
+                        0, projInfo.BuildDuration.Value.TotalMilliseconds
+                    }
+                );
+            }
         }
 
 

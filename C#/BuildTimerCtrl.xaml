@@ -3,20 +3,25 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
+             xmlns:wf_chart="clr-namespace:System.Windows.Forms.DataVisualization.Charting;assembly=System.Windows.Forms.DataVisualization"
              xmlns:local="clr-namespace:Microsoft.Samples.VisualStudio.IDE.ToolWindow"
              mc:Ignorable="d" 
              d:DesignHeight="480" d:DesignWidth="640">
     <StackPanel HorizontalAlignment="Stretch" Margin="5,5,5,5" VerticalAlignment="Stretch">
-        <TabControl VerticalAlignment="Top" Height="400" Margin="5">
+        <TabControl Name="m_tab" VerticalAlignment="Top" Height="400" Margin="5">
             <TabItem Header="Build output">
-                <DataGrid Name="BuildInfoGrid" Margin="1" Grid.ColumnSpan="2"/>
+                <DataGrid Name="BuildInfoGrid" Margin="2" Grid.ColumnSpan="2"/>
             </TabItem>
-            <TabItem Header="Build graph"></TabItem>
+            <TabItem Header="Build graph">
+                <WindowsFormsHost Name="wfHost" Padding="2" Width="200" Height="200">
+                    <wf_chart:Chart Name="BuildGraphChart" Width="200" Height="200"/>
+                </WindowsFormsHost>
+            </TabItem>
         </TabControl>
         <Button Content="Update build times" Click="OnUpdateBuildTimesBtnClick" Margin="5" Width="200"></Button>
     </StackPanel>
     <!--
         <Button Content="Update build times" Click="OnUpdateBuildTimesBtnClick" HorizontalAlignment="Left" Height="25" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="279"/>
-        <DataGrid Name="BuildInfoGrid" Margin="10,10,10,10" Grid.ColumnSpan="2"/>
     -->
 </UserControl>
