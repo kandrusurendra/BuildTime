@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
-             xmlns:wf_chart="clr-namespace:System.Windows.Forms.DataVisualization.Charting;assembly=System.Windows.Forms.DataVisualization"
+             xmlns:winformchart="clr-namespace:System.Windows.Forms.DataVisualization.Charting;assembly=System.Windows.Forms.DataVisualization"
              xmlns:local="clr-namespace:Microsoft.Samples.VisualStudio.IDE.ToolWindow"
              mc:Ignorable="d" 
              d:DesignHeight="480" d:DesignWidth="640">
@@ -14,8 +14,15 @@
                 <DataGrid Name="BuildInfoGrid" Margin="2" Grid.ColumnSpan="2"/>
             </TabItem>
             <TabItem Header="Build graph">
-                <WindowsFormsHost Name="wfHost" Padding="2" Width="200" Height="200">
-                    <wf_chart:Chart Name="BuildGraphChart" Width="200" Height="200"/>
+                <WindowsFormsHost Name="wfHost" Padding="2" Width="400" Height="300">
+                    <winformchart:Chart x:Name="BuildGraphChart" Dock="Fill">
+                        <winformchart:Chart.Series>
+                            <winformchart:Series Name="series" ChartType="BoxPlot"/>
+                        </winformchart:Chart.Series>
+                        <winformchart:Chart.ChartAreas>
+                            <winformchart:ChartArea/>
+                        </winformchart:Chart.ChartAreas>
+                    </winformchart:Chart>
                 </WindowsFormsHost>
             </TabItem>
         </TabControl>

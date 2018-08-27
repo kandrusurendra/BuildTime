@@ -20,7 +20,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using EnvDTE;
 
 using System.Windows.Forms.DataVisualization.Charting;
-using wf_chart = System.Windows.Forms.DataVisualization.Charting;
+using winformchart = System.Windows.Forms.DataVisualization.Charting;
 
 namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 {
@@ -171,23 +171,29 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             BuildInfoGrid.ItemsSource = buildInfo;
 
             // Update build graph.
-
-            wf_chart.Chart BuildGraphChart = this.wfHost.Child as wf_chart.Chart;
-            BuildGraphChart.Series.Add(new wf_chart.Series());
-            BuildGraphChart.Series[0].ChartType = wf_chart.SeriesChartType.BoxPlot;
+            BuildGraphChart.Series.Clear();
+            BuildGraphChart.Series.Add(new winformchart.Series());
+            BuildGraphChart.Series[0].ChartType = winformchart.SeriesChartType.BoxPlot;
             BuildGraphChart.Series[0].YValuesPerPoint = 4;
-            foreach (var projInfo in buildInfo)
+
+            List<ProjectBuildInfo> buildInfoSorted = buildInfo.ToList();
+            buildInfoSorted.Sort((i1, i2) => {
+                if (!i1.BuildStartTime.HasValue) return 1;
+                else if (!i2.BuildStartTime.HasValue) return -1;
+                else return (i1.BuildStartTime.Value.CompareTo(i2.BuildStartTime.Value));
+            });
+
+            foreach (var projInfo in buildInfoSorted)
             {
-                if (projInfo.BuildDuration.HasValue == false)
-                    continue;
-                BuildGraphChart.Series[0].Points.AddXY(
-                    projInfo.ProjectName, 
-                    new object[] 
-                    {
-                        0, projInfo.BuildDuration.Value.TotalMilliseconds,
-                        0, projInfo.BuildDuration.Value.TotalMilliseconds
-                    }
-                );
+                DateTime origin = buildInfoSorted[0].BuildStartTime.HasValue ? buildInfoSorted[0].BuildStartTime.Value 
+                                                                             : new DateTime(2000, 1, 1);
+                double startTimeSecs = 0, endTimeSecs = 0;
+                if (projInfo.BuildDuration.HasValue && projInfo.BuildStartTime.HasValue)
+                {
+                    startTimeSecs = (projInfo.BuildStartTime.Value - origin).TotalSeconds;
+                    endTimeSecs = startTimeSecs + projInfo.BuildDuration.Value.TotalSeconds;
+                }
+                BuildGraphChart.Series[0].Points.AddXY(projInfo.ProjectName, new object[] { startTimeSecs, endTimeSecs, startTimeSecs, endTimeSecs });
             }
         }
 
