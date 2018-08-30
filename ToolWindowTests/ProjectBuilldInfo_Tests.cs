@@ -61,11 +61,21 @@ namespace ToolWindowTests
         [TestMethod]
         public void ExtractStartTimeAndID_ValidString()
         {
-            string s = "1>Build started 22/07/2018 16:28:43.";
-            Tuple<int, DateTime> val = BuildInfoUtils.ExtractStartTimeAndID(s);
-            Assert.IsTrue(val != null);
-            Assert.AreEqual(1, val.Item1);
-            Assert.AreEqual(new DateTime(2018,7,22,16,28,43), val.Item2);
+            {
+                string s = "1>Build started 22/07/2018 16:28:43.";
+                Tuple<int, DateTime> val = BuildInfoUtils.ExtractStartTimeAndID(s);
+                Assert.IsTrue(val != null);
+                Assert.AreEqual(1, val.Item1);
+                Assert.AreEqual(new DateTime(2018, 7, 22, 16, 28, 43), val.Item2);
+            }
+
+            {
+                string s = "3>Build started 30/08/2018 19:56:50.\r";
+                Tuple<int, DateTime> val = BuildInfoUtils.ExtractStartTimeAndID(s);
+                Assert.IsTrue(val != null);
+                Assert.AreEqual(3, val.Item1);
+                Assert.AreEqual(new DateTime(2018, 8, 30, 19, 56, 50), val.Item2);
+            }
         }
 
         [TestMethod]

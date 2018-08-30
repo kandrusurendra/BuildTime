@@ -88,7 +88,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
         public static Tuple<int,DateTime> ExtractStartTimeAndID(string s)
         {
             // Example string to match "1>Build started 22/07/2018 16:28:43."
-            string pattern = @"^(\d+)>\s*Build started\s+(.+)\.$";
+            string pattern = @"^(\d+)>\s*Build started\s+(.+)\..*";
             Regex r = new Regex(pattern, RegexOptions.IgnoreCase);
             Match m = r.Match(s);
             if (m.Success)
