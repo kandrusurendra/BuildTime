@@ -175,8 +175,9 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             // Update build graph.
             BuildGraphChart.Series.Clear();
             BuildGraphChart.Series.Add(new winformchart.Series());
-            BuildGraphChart.Series[0].ChartType = winformchart.SeriesChartType.BoxPlot;
-            BuildGraphChart.Series[0].YValuesPerPoint = 4;
+            BuildGraphChart.Series[0].ChartType = winformchart.SeriesChartType.RangeBar;
+            BuildGraphChart.Series[0].XValueType = winformchart.ChartValueType.Auto;
+            BuildGraphChart.Series[0].YValueType = winformchart.ChartValueType.Auto;
 
             List<ProjectBuildInfo> buildInfoSorted = buildInfo.ToList();
             buildInfoSorted.Sort((i1, i2) => {
@@ -195,7 +196,9 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
                     startTimeSecs = (projInfo.BuildStartTime.Value - origin).TotalSeconds;
                     endTimeSecs = startTimeSecs + projInfo.BuildDuration.Value.TotalSeconds;
                 }
-                BuildGraphChart.Series[0].Points.AddXY(projInfo.ProjectName, new object[] { startTimeSecs, endTimeSecs, startTimeSecs, endTimeSecs });
+
+                var idx = BuildGraphChart.Series[0].Points.AddXY(projInfo.ProjectId, startTimeSecs, endTimeSecs);
+                BuildGraphChart.Series[0].Points[idx].AxisLabel = projInfo.ProjectName;
             }
         }
 

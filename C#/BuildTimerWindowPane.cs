@@ -31,6 +31,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 
             // Creating the user control that will be displayed in the window
             control = new BuildTimerCtrl(this, new OutputWindowBuildInfoExtractor());
+            //control = new BuildTimerCtrl(this, new FakeBuildInfoExtractor());
             Content = control;
         }
 
