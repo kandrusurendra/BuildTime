@@ -165,10 +165,12 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             }
 #endif
 
+
             var buildInfo = m_buildInfoExtractor.ExtractBuildInfo();
 
             // Update build-info grid.
             BuildInfoGrid.ItemsSource = buildInfo;
+
 
             // Update build graph.
             BuildGraphChart.Series.Clear();

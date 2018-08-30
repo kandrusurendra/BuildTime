@@ -5,29 +5,37 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
              xmlns:winformchart="clr-namespace:System.Windows.Forms.DataVisualization.Charting;assembly=System.Windows.Forms.DataVisualization"
+             xmlns:avalonDock="http://schemas.xceed.com/wpf/xaml/avalondock"
              xmlns:local="clr-namespace:Microsoft.Samples.VisualStudio.IDE.ToolWindow"
              mc:Ignorable="d" 
              d:DesignHeight="480" d:DesignWidth="640">
-    <StackPanel HorizontalAlignment="Stretch" Margin="5,5,5,5" VerticalAlignment="Stretch">
-        <TabControl Name="m_tab" VerticalAlignment="Top" Height="400" Margin="5">
-            <TabItem Header="Build output">
-                <DataGrid Name="BuildInfoGrid" Margin="2" Grid.ColumnSpan="2"/>
-            </TabItem>
-            <TabItem Header="Build graph">
-                <WindowsFormsHost Name="wfHost" Padding="2" Width="400" Height="300">
-                    <winformchart:Chart x:Name="BuildGraphChart" Dock="Fill">
-                        <winformchart:Chart.Series>
-                            <winformchart:Series Name="series" ChartType="BoxPlot"/>
-                        </winformchart:Chart.Series>
-                        <winformchart:Chart.ChartAreas>
-                            <winformchart:ChartArea/>
-                        </winformchart:Chart.ChartAreas>
-                    </winformchart:Chart>
-                </WindowsFormsHost>
-            </TabItem>
-        </TabControl>
-        <Button Content="Update build times" Click="OnUpdateBuildTimesBtnClick" Margin="5" Width="200"></Button>
-    </StackPanel>
+
+    <avalonDock:DockingManager Grid.Column="1" x:Name="DManager">
+        <avalonDock:LayoutRoot>
+            <avalonDock:LayoutPanel>
+                <avalonDock:LayoutDocumentPane>
+                    <avalonDock:LayoutDocument Title="Grid ctrl - build times" CanClose="False">
+                        <StackPanel Orientation="Vertical">
+                            <DataGrid Name="BuildInfoGrid" Height="250" Margin="2" Grid.ColumnSpan="2"/>
+                            <Button Content="Update build times" Click="OnUpdateBuildTimesBtnClick"  HorizontalAlignment="Center"></Button>
+                        </StackPanel>
+                    </avalonDock:LayoutDocument>
+                    <avalonDock:LayoutAnchorable Title="Build graph" CanClose="False" CanHide="False">
+                        <WindowsFormsHost Name="wfHost" Padding="2" Width="400" Height="200">
+                            <winformchart:Chart x:Name="BuildGraphChart" Dock="Fill">
+                                <winformchart:Chart.Series>
+                                    <winformchart:Series Name="series" ChartType="BoxPlot"/>
+                                </winformchart:Chart.Series>
+                                <winformchart:Chart.ChartAreas>
+                                    <winformchart:ChartArea/>
+                                </winformchart:Chart.ChartAreas>
+                            </winformchart:Chart>
+                        </WindowsFormsHost>
+                    </avalonDock:LayoutAnchorable>
+                </avalonDock:LayoutDocumentPane>
+            </avalonDock:LayoutPanel>
+        </avalonDock:LayoutRoot>
+    </avalonDock:DockingManager>
     <!--
         <Button Content="Update build times" Click="OnUpdateBuildTimesBtnClick" HorizontalAlignment="Left" Height="25" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="279"/>
     -->

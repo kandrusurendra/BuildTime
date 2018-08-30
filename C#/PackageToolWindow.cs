@@ -71,7 +71,8 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 	[MsVsShell.ProvideMenuResource(1000, 1)]
 	[MsVsShell.PackageRegistration(UseManagedResourcesOnly = true)]
 	[Guid("01069CDD-95CE-4620-AC21-DDFF6C57F012")]
-	public class PackageToolWindow : MsVsShell.Package
+    [MsVsShell.ProvideBindingPath]
+    public class PackageToolWindow : MsVsShell.Package
 	{
 		// Cache the Menu Command Service since we will use it multiple times
 		private MsVsShell.OleMenuCommandService menuService;
