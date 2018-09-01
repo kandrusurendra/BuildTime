@@ -156,4 +156,9 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             return projectList;
         }
     }
+
+    public interface IBuildInfoExtractionStrategy
+    {
+        List<ProjectBuildInfo> ExtractBuildInfo();
+    }
 }

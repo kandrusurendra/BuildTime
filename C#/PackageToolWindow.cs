@@ -100,6 +100,11 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             // Add the handler for the tool window with dynamic visibility and events
             id = new CommandID(GuidsList.guidClientCmdSet, PkgCmdId.cmdidBuildTimerWindow);
             DefineCommandHandler(new EventHandler(ShowBuildTimerWindow), id);
+
+            //IServiceContainer serviceContainer = this as IServiceContainer;
+            //var dte = serviceContainer.GetService(typeof(SDTE)) as EnvDTE.DTE;
+            //var buildEvts = dte.Events.BuildEvents;
+            //buildEvts.OnBuildBegin += ;
         }
 
 		/// <summary>

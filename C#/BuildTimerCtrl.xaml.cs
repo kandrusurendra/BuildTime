@@ -24,62 +24,6 @@ using winformchart = System.Windows.Forms.DataVisualization.Charting;
 
 namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 {
-    public interface IBuildInfoExtractionStrategy
-    {
-        List<ProjectBuildInfo> ExtractBuildInfo();
-    }
-
-    public class OutputWindowBuildInfoExtractor : IBuildInfoExtractionStrategy
-    {
-        public List<ProjectBuildInfo> ExtractBuildInfo()
-        {
-            EnvDTE80.DTE2 dte = (EnvDTE80.DTE2)Package.GetGlobalService(typeof(DTE));
-            Debug.Assert(dte != null);
-            OutputWindowPanes panes = dte.ToolWindows.OutputWindow.OutputWindowPanes;
-
-            OutputWindowPane pane = panes.Cast<OutputWindowPane>().First(wnd => wnd.Name == "Build");
-            if (pane != null)
-            {
-                pane.Activate();
-                pane.TextDocument.Selection.SelectAll();
-                var buildOutputStr = pane.TextDocument.Selection.Text;
-
-                return BuildInfoUtils.ExtractBuildInfo(buildOutputStr);
-            }
-            else
-            {
-                MessageBox.Show("Build output window not found");
-                return null;
-            }
-        }
-    }
-
-    public class FakeBuildInfoExtractor : IBuildInfoExtractionStrategy
-    {
-        public List<ProjectBuildInfo> ExtractBuildInfo()
-        {
-            count = (count + 1) % 5;
-
-            ProjectBuildInfo[] dummyInfo = new ProjectBuildInfo[7] {
-                  new ProjectBuildInfo("proj1", 1, new DateTime(2018,5,5, 1, 1, 1), new TimeSpan(0,0,10))
-                , new ProjectBuildInfo("proj2", 2, new DateTime(2018,5,5, 1, 1, 1), new TimeSpan(0,0,20))
-                , new ProjectBuildInfo("proj3", 3, new DateTime(2018,5,5, 1, 1, 11), new TimeSpan(0, 0, 30))
-                , new ProjectBuildInfo("proj4", 4, new DateTime(2018,5,5, 1, 1, 41), new TimeSpan(0, 0, 10))
-                , new ProjectBuildInfo("proj5", 5, new DateTime(2018,5,5, 1, 1, 52), new TimeSpan(0, 0, 6))
-                , new ProjectBuildInfo("proj6", 6, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 6))
-                , new ProjectBuildInfo("proj7", 7, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 26))
-            };
-
-            List<ProjectBuildInfo> buildInfo = new List<ProjectBuildInfo>();
-            buildInfo.Add(dummyInfo[count]);
-            buildInfo.Add(dummyInfo[count+1]);
-            buildInfo.Add(dummyInfo[count+2]);
-            return buildInfo;
-        }
-
-        private int count = 0;
-    }
-
     /// <summary>
     /// Interaction logic for BuildTimerCtrl.xaml
     /// </summary>
@@ -130,47 +74,10 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 
         private void OnUpdateBuildTimesBtnClick(object sender, EventArgs args)
         {
-#if false
-            IVsOutputWindow outWindow = Package.GetGlobalService(typeof(SVsOutputWindow)) as IVsOutputWindow;
-            if (outWindow != null)
-            {
-                MessageBox.Show("output window found");
-                Guid ID = Guid.NewGuid();
-                outWindow.CreatePane(ID, "MY OUTPUT", 1, 1);
-                IVsOutputWindowPane generalPane = null;
-                outWindow.GetPane(ref ID, out generalPane);
-
-                generalPane.OutputString("Hello World!");
-                generalPane.Activate(); // Brings this pane into view
-            }
-#endif
-
-#if false
-            EnvDTE80.DTE2 dte = (EnvDTE80.DTE2)Package.GetGlobalService(typeof(DTE));
-            Debug.Assert(dte != null);
-            OutputWindowPanes panes = dte.ToolWindows.OutputWindow.OutputWindowPanes;
-
-            OutputWindowPane pane = panes.Cast<OutputWindowPane>().First(wnd => wnd.Name == "Build");
-            if(pane!=null)
-            {
-                pane.Activate();
-                pane.TextDocument.Selection.SelectAll();
-                var buildOutputStr = pane.TextDocument.Selection.Text;
-
-                BuildInfoGrid.ItemsSource = BuildInfoUtils.ExtractBuildInfo(buildOutputStr);
-            }
-            else
-            {
-                MessageBox.Show("Build output window not found");
-            }
-#endif
-
-
             var buildInfo = m_buildInfoExtractor.ExtractBuildInfo();
 
             // Update build-info grid.
             BuildInfoGrid.ItemsSource = buildInfo;
-
 
             // Update build graph.
             BuildGraphChart.Series.Clear();
@@ -197,7 +104,8 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
                     endTimeSecs = startTimeSecs + projInfo.BuildDuration.Value.TotalSeconds;
                 }
 
-                var idx = BuildGraphChart.Series[0].Points.AddXY(projInfo.ProjectId, startTimeSecs, endTimeSecs);
+                int projCount = BuildGraphChart.Series[0].Points.Count;
+                int idx = BuildGraphChart.Series[0].Points.AddXY(projCount+1, startTimeSecs, endTimeSecs);
                 BuildGraphChart.Series[0].Points[idx].AxisLabel = projInfo.ProjectName;
             }
         }
@@ -210,4 +118,78 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
         private BuildTimerWindowPane m_windowPane;
         private IBuildInfoExtractionStrategy m_buildInfoExtractor;
     }
+
+    public class OutputWindowBuildInfoExtractor : IBuildInfoExtractionStrategy
+    {
+        public List<ProjectBuildInfo> ExtractBuildInfo()
+        {
+            EnvDTE80.DTE2 dte = (EnvDTE80.DTE2)Package.GetGlobalService(typeof(DTE));
+            Debug.Assert(dte != null);
+            OutputWindowPanes panes = dte.ToolWindows.OutputWindow.OutputWindowPanes;
+
+            OutputWindowPane pane = panes.Cast<OutputWindowPane>().First(wnd => wnd.Name == "Build");
+            if (pane != null)
+            {
+                pane.Activate();
+                pane.TextDocument.Selection.SelectAll();
+                var buildOutputStr = pane.TextDocument.Selection.Text;
+
+                return BuildInfoUtils.ExtractBuildInfo(buildOutputStr);
+            }
+            else
+            {
+                MessageBox.Show("Build output window not found");
+                return null;
+            }
+        }
+    }
+
+    public class FakeBuildInfoExtractor : IBuildInfoExtractionStrategy
+    {
+        static readonly List<ProjectBuildInfo> dummyProjectList = new List<ProjectBuildInfo>{
+              new ProjectBuildInfo("projA", 1, new DateTime(2018,5,5, 1, 1, 1), new TimeSpan(0,0,10))
+            , new ProjectBuildInfo("projB", 2, new DateTime(2018,5,5, 1, 1, 1), new TimeSpan(0,0,20))
+            , new ProjectBuildInfo("projC", 3, new DateTime(2018,5,5, 1, 1, 11), new TimeSpan(0, 0, 30))
+            , new ProjectBuildInfo("projD", 4, new DateTime(2018,5,5, 1, 1, 37), new TimeSpan(0, 0, 52))
+            , new ProjectBuildInfo("projE", 5, new DateTime(2018,5,5, 1, 1, 52), new TimeSpan(0, 0, 6))
+            , new ProjectBuildInfo("projF", 6, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 6))
+            , new ProjectBuildInfo("projG", 7, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 26))
+            , new ProjectBuildInfo("projH", 8, new DateTime(2018,5,5, 1, 1, 41), new TimeSpan(0, 0, 10))
+            , new ProjectBuildInfo("projI", 9, new DateTime(2018,5,5, 1, 1, 11), new TimeSpan(0, 0, 30))
+            , new ProjectBuildInfo("projJ",10, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 6))
+            , new ProjectBuildInfo("projK",11, new DateTime(2018,5,5, 1, 1, 52), new TimeSpan(0, 0, 6))
+            , new ProjectBuildInfo("projL",12, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 26))
+            , new ProjectBuildInfo("projM",13, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 26))
+            , new ProjectBuildInfo("projN",14, new DateTime(2018,5,5, 1, 1, 41), new TimeSpan(0, 0, 10))
+            , new ProjectBuildInfo("projO",15, new DateTime(2018,5,5, 1, 1, 11), new TimeSpan(0, 0, 30))
+            , new ProjectBuildInfo("projP",16, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 6))
+            , new ProjectBuildInfo("projQ",17, new DateTime(2018,5,5, 1, 1, 52), new TimeSpan(0, 0, 6))
+            , new ProjectBuildInfo("projR",18, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 26))
+            , new ProjectBuildInfo("projS",19, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 17))
+            , new ProjectBuildInfo("projT",20, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 6))
+            , new ProjectBuildInfo("projU",21, new DateTime(2018,5,5, 1, 1, 52), new TimeSpan(0, 0, 6))
+            , new ProjectBuildInfo("projV",22, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 26))
+            , new ProjectBuildInfo("projW",23, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 26))
+            , new ProjectBuildInfo("projX",24, new DateTime(2018,5,5, 1, 1, 41), new TimeSpan(0, 0, 10))
+            , new ProjectBuildInfo("projY",25, new DateTime(2018,5,5, 1, 1, 11), new TimeSpan(0, 0, 30))
+            , new ProjectBuildInfo("projZ",26, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 6))
+            , new ProjectBuildInfo("proj1",27, new DateTime(2018,5,5, 1, 1, 52), new TimeSpan(0, 0, 6))
+            , new ProjectBuildInfo("proj2",28, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 26))
+        };
+
+        public List<ProjectBuildInfo> ExtractBuildInfo()
+        {
+            count = (count + 1) % dummyProjectList.Count;
+            List<ProjectBuildInfo> buildInfo = new List<ProjectBuildInfo>();
+            for (int i = 0; i < 15; ++i)
+            {
+                buildInfo.Add(dummyProjectList[(count + i) % dummyProjectList.Count]);
+            }
+
+            return buildInfo;
+        }
+
+        private int count = 0;
+    }
+
 }

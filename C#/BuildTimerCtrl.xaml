@@ -12,9 +12,9 @@
 
     <avalonDock:DockingManager Grid.Column="1" x:Name="DManager">
         <avalonDock:LayoutRoot>
-            <avalonDock:LayoutPanel>
-                <avalonDock:LayoutDocumentPane>
-                    <avalonDock:LayoutDocument Title="Grid ctrl - build times" CanClose="False">
+            <avalonDock:LayoutPanel Orientation="Horizontal">
+                <avalonDock:LayoutDocumentPane DockWidth="*">
+                    <avalonDock:LayoutDocument Title="Project build times" CanClose="False">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*"></RowDefinition>
@@ -23,18 +23,16 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
-                            <DataGrid Grid.Row="0" Grid.Column="0" Name="BuildInfoGrid" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="2"/>
+                            <DataGrid Grid.Row="0" Grid.Column="0" Name="BuildInfoGrid" 
+                                      HorizontalAlignment="Stretch" VerticalAlignment="Top" 
+                                      Margin="2"/>
                             <Button Grid.Row="1" Grid.Column="0" Content="Update build times" Click="OnUpdateBuildTimesBtnClick"  HorizontalAlignment="Center" VerticalAlignment="Center"></Button>
                         </Grid>
-                        <!--
-                        <StackPanel Orientation="Vertical">
-                            <DataGrid Name="BuildInfoGrid" VerticalAlignment="Stretch" Margin="2" Grid.ColumnSpan="2"/>
-                            <Button Content="Update build times" Click="OnUpdateBuildTimesBtnClick"  HorizontalAlignment="Center"></Button>
-                        </StackPanel>
-                        -->
                     </avalonDock:LayoutDocument>
+                </avalonDock:LayoutDocumentPane>
+                <avalonDock:LayoutAnchorablePane DockWidth="300">
                     <avalonDock:LayoutAnchorable Title="Build graph" CanClose="False" CanHide="False">
-                        <WindowsFormsHost Name="wfHost" Padding="2" Width="400" Height="200">
+                        <WindowsFormsHost Name="wfHost" Padding="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="2">
                             <winformchart:Chart x:Name="BuildGraphChart" Dock="Fill">
                                 <winformchart:Chart.Series>
                                     <winformchart:Series Name="series" ChartType="BoxPlot"/>
@@ -45,7 +43,7 @@
                             </winformchart:Chart>
                         </WindowsFormsHost>
                     </avalonDock:LayoutAnchorable>
-                </avalonDock:LayoutDocumentPane>
+                </avalonDock:LayoutAnchorablePane>
             </avalonDock:LayoutPanel>
         </avalonDock:LayoutRoot>
     </avalonDock:DockingManager>
