@@ -30,8 +30,8 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             BitmapImageMoniker = Microsoft.VisualStudio.Imaging.KnownMonikers.Search;
 
             // Creating the user control that will be displayed in the window
-            control = new BuildTimerCtrl(this, new OutputWindowBuildInfoExtractor());
-            //control = new BuildTimerCtrl(this, new FakeBuildInfoExtractor());
+            //control = new BuildTimerCtrl(this, new OutputWindowBuildInfoExtractor());
+            control = new BuildTimerCtrl(this, new FakeBuildInfoExtractor());
             Content = control;
         }
 
@@ -57,8 +57,6 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             ErrorHandler.ThrowOnFailure(((IVsWindowFrame)Frame).SetProperty((int)__VSFPROPID.VSFPROPID_ViewHelper, windowFrameEventsHandler));
             // Let our control have access to the window state
             control.CurrentState = windowFrameEventsHandler;
-
-            DisplayInfoBar();
         }
 
         /// <summary>
@@ -97,56 +95,6 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 
                 return outputWindowPane;
             }
-        }
-
-        public void DisplayInfoBar()
-        {
-            InfoBarTextSpan textSpan1 = new InfoBarTextSpan("This is a sample info bar ");
-            InfoBarHyperlink link1 = new InfoBarHyperlink("sample link1 ", Resources.InfoBarLinkActionContext1);
-            InfoBarHyperlink link2 = new InfoBarHyperlink("sample link2 ", Resources.InfoBarLinkActionContext2);
-            InfoBarButton button1 = new InfoBarButton("sample button1", Resources.InfoBarButtonActionContext1);
-            InfoBarButton button2 = new InfoBarButton("sample button2", Resources.InfoBarButtonActionContext2);
-            InfoBarTextSpan[] textSpanCollection = new InfoBarTextSpan[] { textSpan1, link1, link2 };
-            InfoBarActionItem[] actionItemCollection = new InfoBarActionItem[] { button1, button2 };
-            InfoBarModel infoBarModel = new InfoBarModel(textSpanCollection, actionItemCollection,
-                KnownMonikers.StatusInformation, isCloseButtonVisible: true);
-
-            this.AddInfoBar(infoBarModel);
-            SubscribeToInfoBarEvents();
-        }
-
-        private void OnInfoBarClosed(object sender, InfoBarEventArgs args)
-        {
-            MessageBox.Show(string.Format("Closed"));
-            UnsubscribeFromInfoBarEvents();
-        }
-
-        private void OnInfoBarActionItemClicked(object sender, InfoBarActionItemEventArgs args)
-        {
-            if (args.ActionItem.ActionContext == Resources.InfoBarButtonActionContext1 || args.ActionItem.ActionContext == Resources.InfoBarButtonActionContext2)
-            {
-                MessageBox.Show(string.Format("Button '{0}' is clicked", args.ActionItem.Text));
-            }
-            else if (args.ActionItem.ActionContext == Resources.InfoBarLinkActionContext1 || args.ActionItem.ActionContext == Resources.InfoBarLinkActionContext2)
-            {
-                MessageBox.Show(string.Format("Link '{0}' is clicked", args.ActionItem.Text));
-            }
-            else
-            {
-                MessageBox.Show("Unknow action");
-            }
-        }
-
-        private void SubscribeToInfoBarEvents()
-        {
-            this.InfoBarActionItemClicked += OnInfoBarActionItemClicked;
-            this.InfoBarClosed += OnInfoBarClosed;
-        }
-
-        private void UnsubscribeFromInfoBarEvents()
-        {
-            this.InfoBarActionItemClicked -= OnInfoBarActionItemClicked;
-            this.InfoBarClosed -= OnInfoBarClosed;
         }
     }
 }

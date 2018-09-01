@@ -180,16 +180,8 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
     <Compile Include="BuildTimerWindowPane.cs" />
     <Compile Include="ProjectBuildInfo.cs" />
     <Compile Include="CustomTypeDescriptor.cs" />
-    <Compile Include="DynamicWindowPane.cs" />
-    <Compile Include="DynamicWindowWPFControl.xaml.cs">
-      <DependentUpon>DynamicWindowWPFControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Misc\Guids.cs" />
     <Compile Include="PackageToolWindow.cs" />
-    <Compile Include="PersistedWindowPane.cs" />
-    <Compile Include="PersistedWindowWPFControl.xaml.cs">
-      <DependentUpon>PersistedWindowWPFControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="PkgCmdId.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -225,17 +217,9 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="DynamicWindowWPFControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="ListViewStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="PersistedWindowWPFControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
