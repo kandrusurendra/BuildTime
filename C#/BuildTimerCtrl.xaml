@@ -24,8 +24,16 @@
                                 <ColumnDefinition Width="*"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
                             <DataGrid Grid.Row="0" Grid.Column="0" Name="BuildInfoGrid" 
-                                      HorizontalAlignment="Stretch" VerticalAlignment="Top" 
-                                      Margin="2"/>
+                                      HorizontalAlignment="Stretch" VerticalAlignment="Top"
+                                      Margin="2" AutoGenerateColumns="False">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Project" Binding="{Binding Path=ProjectName}"/>
+                                    <DataGridTextColumn Header="ID" Binding="{Binding Path=ProjectId}"/>
+                                    <DataGridTextColumn Header="Start time" Binding="{Binding Path=BuildStartTime, TargetNullValue=' ? '}"/>
+                                    <DataGridTextColumn Header="Duration" Binding="{Binding Path=BuildDuration, StringFormat={}{0:hh':'mm':'ss}, TargetNullValue=' ? '}"/>
+                                    <DataGridTextColumn Header="End time" Binding="{Binding Path=BuildEndTime, TargetNullValue=' ? '}"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
                             <Button Grid.Row="1" Grid.Column="0" Content="Update build times" Click="OnUpdateBuildTimesBtnClick"  HorizontalAlignment="Center" VerticalAlignment="Center"></Button>
                         </Grid>
                     </avalonDock:LayoutDocument>

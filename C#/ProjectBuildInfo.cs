@@ -12,7 +12,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
     {
         public ProjectBuildInfo() { }
 
-        public ProjectBuildInfo(string name, int id, DateTime startTime, TimeSpan duration)
+        public ProjectBuildInfo(string name, int id, DateTime? startTime, TimeSpan? duration)
         {
             ProjectName = name;
             ProjectId = id;

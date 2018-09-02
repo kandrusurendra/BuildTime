@@ -117,6 +117,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
         //
         private BuildTimerWindowPane m_windowPane;
         private IBuildInfoExtractionStrategy m_buildInfoExtractor;
+        private List<ProjectBuildInfo> m_projectInfo;
     }
 
     public class OutputWindowBuildInfoExtractor : IBuildInfoExtractionStrategy
@@ -147,18 +148,18 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
     public class FakeBuildInfoExtractor : IBuildInfoExtractionStrategy
     {
         static readonly List<ProjectBuildInfo> dummyProjectList = new List<ProjectBuildInfo>{
-              new ProjectBuildInfo("projA", 1, new DateTime(2018,5,5, 1, 1, 1), new TimeSpan(0,0,10))
-            , new ProjectBuildInfo("projB", 2, new DateTime(2018,5,5, 1, 1, 1), new TimeSpan(0,0,20))
+              new ProjectBuildInfo("projA", 1, new DateTime(2018,5,5, 1, 1, 1), new TimeSpan(0,0,0,10,137))
+            , new ProjectBuildInfo("projB", 2, new DateTime(2018,5,5, 1, 1, 1), new TimeSpan(0,0,0,20,876))
             , new ProjectBuildInfo("projC", 3, new DateTime(2018,5,5, 1, 1, 11), new TimeSpan(0, 0, 30))
             , new ProjectBuildInfo("projD", 4, new DateTime(2018,5,5, 1, 1, 37), new TimeSpan(0, 0, 52))
             , new ProjectBuildInfo("projE", 5, new DateTime(2018,5,5, 1, 1, 52), new TimeSpan(0, 0, 6))
             , new ProjectBuildInfo("projF", 6, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 6))
-            , new ProjectBuildInfo("projG", 7, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 26))
-            , new ProjectBuildInfo("projH", 8, new DateTime(2018,5,5, 1, 1, 41), new TimeSpan(0, 0, 10))
+            , new ProjectBuildInfo("projG", 7, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 0, 26, 981))
+            , new ProjectBuildInfo("projH", 8, new DateTime(2018,5,5, 1, 1, 41), null)
             , new ProjectBuildInfo("projI", 9, new DateTime(2018,5,5, 1, 1, 11), new TimeSpan(0, 0, 30))
             , new ProjectBuildInfo("projJ",10, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 6))
             , new ProjectBuildInfo("projK",11, new DateTime(2018,5,5, 1, 1, 52), new TimeSpan(0, 0, 6))
-            , new ProjectBuildInfo("projL",12, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 26))
+            , new ProjectBuildInfo("projL",12, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 0, 26, 543))
             , new ProjectBuildInfo("projM",13, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 26))
             , new ProjectBuildInfo("projN",14, new DateTime(2018,5,5, 1, 1, 41), new TimeSpan(0, 0, 10))
             , new ProjectBuildInfo("projO",15, new DateTime(2018,5,5, 1, 1, 11), new TimeSpan(0, 0, 30))
@@ -166,7 +167,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             , new ProjectBuildInfo("projQ",17, new DateTime(2018,5,5, 1, 1, 52), new TimeSpan(0, 0, 6))
             , new ProjectBuildInfo("projR",18, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 26))
             , new ProjectBuildInfo("projS",19, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 17))
-            , new ProjectBuildInfo("projT",20, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 6))
+            , new ProjectBuildInfo("projT",20, new DateTime(2018,5,5, 1, 2, 0 ), null)
             , new ProjectBuildInfo("projU",21, new DateTime(2018,5,5, 1, 1, 52), new TimeSpan(0, 0, 6))
             , new ProjectBuildInfo("projV",22, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 26))
             , new ProjectBuildInfo("projW",23, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 26))
