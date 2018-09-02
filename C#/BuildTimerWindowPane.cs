@@ -29,6 +29,8 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             // used in any project without needing to include the source image.
             BitmapImageMoniker = Microsoft.VisualStudio.Imaging.KnownMonikers.Search;
 
+            var package = Package as PackageToolWindow;
+
             // Creating the user control that will be displayed in the window
             //control = new BuildTimerCtrl(this, new OutputWindowBuildInfoExtractor());
             control = new BuildTimerCtrl(this, new FakeBuildInfoExtractor());
@@ -55,7 +57,8 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             // Register to the window events
             WindowStatus windowFrameEventsHandler = new WindowStatus(OutputWindowPane, Frame as IVsWindowFrame);
             ErrorHandler.ThrowOnFailure(((IVsWindowFrame)Frame).SetProperty((int)__VSFPROPID.VSFPROPID_ViewHelper, windowFrameEventsHandler));
-            // Let our control have access to the window state
+
+            control.EvtRouter = package.EvtRouter;
             control.CurrentState = windowFrameEventsHandler;
         }
 

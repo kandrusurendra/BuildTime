@@ -33,10 +33,32 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
         {
             m_windowPane = windowPane;
             m_buildInfoExtractor = infoExtractor;
+
             InitializeComponent();
+
+            EvtLoggerTxtBox.AppendText("hello world!!\n");
         }
 
-        private WindowStatus currentState = null;
+        public IEventRouter EvtRouter
+        {
+            set
+            {
+                if (m_evtRouter != null)
+                {
+                    m_evtRouter.BuildStarted -= this.OnBuildStarted;
+                    m_evtRouter.BuildCompleted -= this.OnBuildCompleted;
+                }
+
+                m_evtRouter = value;
+
+                if (m_evtRouter != null)
+                {
+                    m_evtRouter.BuildStarted += this.OnBuildStarted;
+                    m_evtRouter.BuildCompleted += this.OnBuildCompleted;
+                }
+            }
+        }
+
         /// <summary>
         /// This is the object that will keep track of the state of the IVsWindowFrame
         /// that is hosting this control. The pane should set this property once
@@ -111,13 +133,25 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
         }
 
 
+        private void OnBuildStarted(object sender, EventArgs args)
+        {
+            //this.EvtLoggerTxtBox.Text += "<build started - time:" + System.DateTime.Now + "\n"; 
+            this.EvtLoggerTxtBox.AppendText("<build started - time:" + System.DateTime.Now + "\n");
+        }
+
+        private void OnBuildCompleted(object sender, EventArgs args)
+        {
+            //this.EvtLoggerTxtBox.Text += ">build completed - time:" + System.DateTime.Now + "\n";
+            this.EvtLoggerTxtBox.AppendText("<build completed - time:" + System.DateTime.Now + "\n");
+        }
 
         //
         // Variables
         //
         private BuildTimerWindowPane m_windowPane;
         private IBuildInfoExtractionStrategy m_buildInfoExtractor;
-        private List<ProjectBuildInfo> m_projectInfo;
+        private IEventRouter m_evtRouter;
+        private WindowStatus currentState = null;
     }
 
     public class OutputWindowBuildInfoExtractor : IBuildInfoExtractionStrategy

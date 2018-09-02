@@ -178,6 +178,7 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
       <DependentUpon>BuildTimerCtrl.xaml</DependentUpon>
     </Compile>
     <Compile Include="BuildTimerWindowPane.cs" />
+    <Compile Include="EventRouter.cs" />
     <Compile Include="ProjectBuildInfo.cs" />
     <Compile Include="CustomTypeDescriptor.cs" />
     <Compile Include="Misc\Guids.cs" />
