@@ -32,6 +32,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             var dte = serviceContainer.GetService(typeof(SDTE)) as EnvDTE.DTE;
             var buildEvts = dte.Events.BuildEvents;
             buildEvts.OnBuildBegin += this.OnBuildBegin;
+            buildEvts.OnBuildDone += this.OnBuildCompleted;
         }
 
         private void OnBuildBegin(EnvDTE.vsBuildScope sc, EnvDTE.vsBuildAction ac)

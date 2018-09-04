@@ -15,6 +15,8 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell.Interop;
 using MsVsShell = Microsoft.VisualStudio.Shell;
+using EnvDTE;
+using EnvDTE80;
 using ErrorHandler = Microsoft.VisualStudio.ErrorHandler;
 
 namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
@@ -88,6 +90,25 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             // Add the handler for the tool window with dynamic visibility and events
             CommandID id = new CommandID(GuidsList.guidClientCmdSet, PkgCmdId.cmdidBuildTimerWindow);
             DefineCommandHandler(new EventHandler(ShowBuildTimerWindow), id);
+
+            var service = (DTE2)this.GetService(typeof(DTE));
+            this.events = (Events2)service.Events;  // It is recommended to keep a ref to events to protect them from GC.
+            this.buildEvents = this.events.BuildEvents;
+            this.publishEvents = this.events.PublishEvents;
+            this.buildEvents.OnBuildBegin += this.OnBuildBegin;
+            this.publishEvents.OnPublishBegin += this.OnPublishBegin;
+        }
+
+        
+
+        private void OnBuildBegin(EnvDTE.vsBuildScope scope, EnvDTE.vsBuildAction action)
+        {
+            //System.Windows.Forms.MessageBox.Show("OnBuildBegin");
+        }
+
+        private void OnPublishBegin(ref bool pubContinue)
+        {
+            //System.Windows.Forms.MessageBox.Show("OnPublishBegin");
         }
 
 
@@ -165,5 +186,8 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
         // Cache the Menu Command Service since we will use it multiple times
         private MsVsShell.OleMenuCommandService menuService;
         private EventRouter evtRouter;
+        private Events2 events;
+        private BuildEvents buildEvents;
+        private PublishEvents publishEvents;
     }
 }
