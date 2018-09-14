@@ -75,31 +75,57 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             {
                 // Check if this line contains a project name and id. If the id has not been
                 // encountered before, this is a new project and should be added to the list.
-                Tuple<int, string> nameAndId = BuildInfoUtils.ExtractProjectNameAndID(line);
-                if (nameAndId != null)
                 {
-                    if (!prevBuildInfo.Any(buildInfo => buildInfo.ProjectId == nameAndId.Item1))   // check if any existing item has this id
+                    Tuple<int, string> nameAndId = BuildInfoUtils.ExtractProjectNameAndID(line);
+                    if (nameAndId != null)
                     {
-                        // this project is encountered for the first time.
-                        var projInfo = new ProjectBuildInfo();
-                        projInfo.ProjectId = nameAndId.Item1;
-                        projInfo.ProjectName = nameAndId.Item2;
-                        projInfo.BuildStartTime = currentTime;
-                        newBuildInfo.Add(projInfo);
+                        if (!prevBuildInfo.Any(buildInfo => buildInfo.ProjectId == nameAndId.Item1))   // check if any existing item has this id
+                        {
+                            // this project is encountered for the first time.
+                            var projInfo = new ProjectBuildInfo
+                            {
+                                ProjectId = nameAndId.Item1,
+                                ProjectName = nameAndId.Item2,
+                                BuildStartTime = currentTime
+                            };
+                            newBuildInfo.Add(projInfo);
+                            continue;
+                        }
                     }
                 }
 
                 // Check if this line contains info about a project build being completed.
                 // If yes, calculate the build duration and update the info.
-                Tuple<bool, int> resultAndID = BuildInfoUtils.ExtractBuildResultAndProjectID(line);
-                if (resultAndID != null)
                 {
-                    var projInfo = newBuildInfo.FirstOrDefault(buildInfo => buildInfo.ProjectId == resultAndID.Item2);
-                    if (projInfo != null)
+                    Tuple<bool, int> resultAndID = BuildInfoUtils.ExtractBuildResultAndProjectID(line);
+                    if (resultAndID != null)
                     {
-                        System.Diagnostics.Debug.Assert(projInfo.BuildStartTime.HasValue);
-                        projInfo.BuildDuration = currentTime - projInfo.BuildStartTime.Value;
-                        projInfo.BuildSucceeded = resultAndID.Item1;
+                        var projInfo = newBuildInfo.FirstOrDefault(buildInfo => buildInfo.ProjectId == resultAndID.Item2);
+                        if (projInfo != null)
+                        {
+                            System.Diagnostics.Debug.Assert(projInfo.BuildStartTime.HasValue);
+                            projInfo.BuildDuration = currentTime - projInfo.BuildStartTime.Value;
+                            projInfo.BuildSucceeded = resultAndID.Item1;
+                            continue;
+                        }
+                    }
+                }
+
+                // If it reaches this point, no project start/end info could be extracted.
+                // However we can still get the id of the project and update its end time
+                // with the current one (i.e. continuously updating the end time until 
+                // build is completed).
+                {
+                    int? projID = BuildInfoUtils.ExtractProjectID(line);
+                    if (projID.HasValue)
+                    {
+                        var projInfo = newBuildInfo.FirstOrDefault(buildInfo => buildInfo.ProjectId == projID.Value);
+                        if (projInfo != null)
+                        {
+                            System.Diagnostics.Debug.Assert(projInfo.BuildStartTime.HasValue);
+                            projInfo.BuildDuration = currentTime - projInfo.BuildStartTime.Value;
+                            continue;
+                        }
                     }
                 }
             }

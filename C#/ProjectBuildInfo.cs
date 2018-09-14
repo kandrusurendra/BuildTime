@@ -78,6 +78,19 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             }
         }
 
+        public static int? ExtractProjectID(string s)
+        {
+            string pattern = @"(\d+)>.*";
+            Regex r = new Regex(pattern, RegexOptions.IgnoreCase);
+            Match m = r.Match(s);
+            if (m.Success)
+            {
+                int projID = int.Parse(m.Groups[1].Captures[0].ToString());
+                return projID;
+            }
+            return null;
+        }
+
         public static Tuple<int,string> ExtractProjectNameAndID(string s)
         {
             //Example pattern to match: "2>------ Rebuild All started: Project: Lib3D, Configuration: Debug Win32 ------";
