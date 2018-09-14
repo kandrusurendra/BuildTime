@@ -40,6 +40,11 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
         }
     }
 
+    public interface IBuildInfoExtractionStrategy
+    {
+        List<ProjectBuildInfo> ExtractBuildInfo();
+    }
+
     public static class BuildInfoUtils
     {
         public static DateTime? StringToDateTime(string s)
@@ -179,10 +184,5 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             }
             return projectList;
         }
-    }
-
-    public interface IBuildInfoExtractionStrategy
-    {
-        List<ProjectBuildInfo> ExtractBuildInfo();
     }
 }
