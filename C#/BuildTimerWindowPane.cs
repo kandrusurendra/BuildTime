@@ -32,8 +32,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             var package = Package as PackageToolWindow;
 
             // Creating the user control that will be displayed in the window
-            //control = new BuildTimerCtrl(this, new OutputWindowBuildInfoExtractor());
-            control = new BuildTimerCtrl(this, new FakeBuildInfoExtractor());
+            control = new BuildTimerCtrl(this);
             Content = control;
         }
 
@@ -59,6 +58,9 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             ErrorHandler.ThrowOnFailure(((IVsWindowFrame)Frame).SetProperty((int)__VSFPROPID.VSFPROPID_ViewHelper, windowFrameEventsHandler));
 
             control.EvtRouter = package.EvtRouter;
+            //control.BuildInfoExtractor = new OutputWindowInfoExtractor();
+            //control.BuildInfoExtractor = new FakeInfoExtractor();
+            control.BuildInfoExtractor = new OutputWindowInterativeInfoExtractor(package.EvtRouter);
             control.CurrentState = windowFrameEventsHandler;
         }
 

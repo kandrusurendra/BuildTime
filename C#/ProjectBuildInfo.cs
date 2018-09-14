@@ -121,6 +121,30 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             return null;
         }
 
+        public static Tuple<bool,int> ExtractBuildResultAndProjectID(string s)
+        {
+            string[] patterns = new string[]{
+                @"(\d+)>\s*Build succeeded.*",
+                @"(\d+)>\s*Build FAILED.*"
+            };
+
+            for (int i=0;i<patterns.Length;++i)
+            {
+                string pattern = patterns[i];
+                bool success = (i == 0);    // success is True if 1st pattern is matched, otherwise is False.
+                Regex r = new Regex(pattern, RegexOptions.IgnoreCase);
+                Match m = r.Match(s);
+                if (m.Success)
+                {
+                    int projID = int.Parse(m.Groups[1].Captures[0].ToString());
+                    return new Tuple<bool,int>(success,projID);
+                }
+            }
+
+            // None of the patterns was matched => this line doesn't contain relevant information.
+            return null;
+        }
+
         public static List<ProjectBuildInfo> ExtractBuildInfo(string text)
         {
             string[] lines = text.Split('\n');

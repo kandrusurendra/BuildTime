@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
+
 using System.Threading.Tasks;
 using System.Diagnostics;
 
@@ -29,15 +31,16 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
     /// </summary>
     public partial class BuildTimerCtrl : UserControl
     {
-        public BuildTimerCtrl(BuildTimerWindowPane windowPane, IBuildInfoExtractionStrategy infoExtractor)
+        public BuildTimerCtrl(BuildTimerWindowPane windowPane)
         {
             m_windowPane = windowPane;
-            m_buildInfoExtractor = infoExtractor;
 
             InitializeComponent();
 
             EvtLoggerTxtBox.AppendText("hello world!!\n");
         }
+
+        public IBuildInfoExtractionStrategy BuildInfoExtractor { get; set; }
 
         public IEventRouter EvtRouter
         {
@@ -47,6 +50,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
                 {
                     m_evtRouter.BuildStarted -= this.OnBuildStarted;
                     m_evtRouter.BuildCompleted -= this.OnBuildCompleted;
+                    m_evtRouter.OutputPaneUpdated -= this.OnOutputPaneUpdated;
                 }
 
                 m_evtRouter = value;
@@ -55,6 +59,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
                 {
                     m_evtRouter.BuildStarted += this.OnBuildStarted;
                     m_evtRouter.BuildCompleted += this.OnBuildCompleted;
+                    m_evtRouter.OutputPaneUpdated += this.OnOutputPaneUpdated;
                 }
             }
         }
@@ -96,7 +101,38 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 
         private void OnUpdateBuildTimesBtnClick(object sender, EventArgs args)
         {
-            var buildInfo = m_buildInfoExtractor.ExtractBuildInfo();
+            var extractor = BuildInfoExtractor;
+            if (extractor!=null)
+                this.UpdateUI(extractor.ExtractBuildInfo());
+        }
+
+        private void OnBuildStarted(object sender, EventArgs args)
+        {
+            //this.EvtLoggerTxtBox.Text += "<build started - time:" + System.DateTime.Now + "\n"; 
+            this.EvtLoggerTxtBox.AppendText("<build started - time:" + System.DateTime.Now + "\n");
+        }
+
+        private void OnBuildCompleted(object sender, EventArgs args)
+        {
+            //this.EvtLoggerTxtBox.Text += ">build completed - time:" + System.DateTime.Now + "\n";
+            this.EvtLoggerTxtBox.AppendText("<build completed - time:" + System.DateTime.Now + "\n");
+        }
+
+        private void OnOutputPaneUpdated(object sender, OutputWndEventArgs args)
+        {
+            if (args.WindowPane.Name == "Build")
+            {
+                this.EvtLoggerTxtBox.AppendText("<Output wnd '" + args.WindowPane.Name + "' updated at" + System.DateTime.Now + "\n");
+                var extractor = BuildInfoExtractor;
+                if (extractor != null)
+                    this.UpdateUI(extractor.ExtractBuildInfo());
+            }
+        }
+
+        private void UpdateUI(List<ProjectBuildInfo> buildInfo)
+        {
+            if (buildInfo == null)
+                return;
 
             // Update build-info grid.
             BuildInfoGrid.ItemsSource = buildInfo;
@@ -117,7 +153,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 
             foreach (var projInfo in buildInfoSorted)
             {
-                DateTime origin = buildInfoSorted[0].BuildStartTime.HasValue ? buildInfoSorted[0].BuildStartTime.Value 
+                DateTime origin = buildInfoSorted[0].BuildStartTime.HasValue ? buildInfoSorted[0].BuildStartTime.Value
                                                                              : new DateTime(2000, 1, 1);
                 double startTimeSecs = 0, endTimeSecs = 0;
                 if (projInfo.BuildDuration.HasValue && projInfo.BuildStartTime.HasValue)
@@ -127,34 +163,20 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
                 }
 
                 int projCount = BuildGraphChart.Series[0].Points.Count;
-                int idx = BuildGraphChart.Series[0].Points.AddXY(projCount+1, startTimeSecs, endTimeSecs);
+                int idx = BuildGraphChart.Series[0].Points.AddXY(projCount + 1, startTimeSecs, endTimeSecs);
                 BuildGraphChart.Series[0].Points[idx].AxisLabel = projInfo.ProjectName;
             }
-        }
-
-
-        private void OnBuildStarted(object sender, EventArgs args)
-        {
-            //this.EvtLoggerTxtBox.Text += "<build started - time:" + System.DateTime.Now + "\n"; 
-            this.EvtLoggerTxtBox.AppendText("<build started - time:" + System.DateTime.Now + "\n");
-        }
-
-        private void OnBuildCompleted(object sender, EventArgs args)
-        {
-            //this.EvtLoggerTxtBox.Text += ">build completed - time:" + System.DateTime.Now + "\n";
-            this.EvtLoggerTxtBox.AppendText("<build completed - time:" + System.DateTime.Now + "\n");
         }
 
         //
         // Variables
         //
         private BuildTimerWindowPane m_windowPane;
-        private IBuildInfoExtractionStrategy m_buildInfoExtractor;
         private IEventRouter m_evtRouter;
         private WindowStatus currentState = null;
     }
 
-    public class OutputWindowBuildInfoExtractor : IBuildInfoExtractionStrategy
+    public class OutputWindowInfoExtractor : IBuildInfoExtractionStrategy
     {
         public List<ProjectBuildInfo> ExtractBuildInfo()
         {
@@ -179,7 +201,114 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
         }
     }
 
-    public class FakeBuildInfoExtractor : IBuildInfoExtractionStrategy
+    public class OutputWindowInterativeInfoExtractor : IBuildInfoExtractionStrategy
+    {
+        public OutputWindowInterativeInfoExtractor(IEventRouter evtRouter)
+        {
+            if (evtRouter == null)
+                throw new System.ArgumentNullException("evtRouter");
+
+            this.evtRouter = evtRouter;
+            this.evtRouter.OutputPaneUpdated += this.OnOutputPaneUpdated;
+        }
+
+        public IEventRouter EventRouter { get { return this.evtRouter; } }
+
+        public List<ProjectBuildInfo> ExtractBuildInfo()
+        {
+            return this.projectBuildInfo;
+        }
+
+        private void OnOutputPaneUpdated(object sender, OutputWndEventArgs args)
+        {
+            if (args.WindowPane.Name == "Build")
+            {
+                args.WindowPane.TextDocument.Selection.SelectAll();
+                this.UpdateBuildInfo(args.WindowPane.TextDocument.Selection.Text);
+            }
+        }
+
+        private void UpdateBuildInfo(string newBuildOutputStr)
+        {
+            string diff;
+            List<ProjectBuildInfo> currentBuildInfo;
+            if (newBuildOutputStr.StartsWith(this.buildOutputStr))
+            {
+                // Text has been appended to the already existing text of the window.
+                // Extract the newly added text (also known as diff).
+                diff = newBuildOutputStr.Substring(this.buildOutputStr.Length);
+                currentBuildInfo = this.projectBuildInfo;
+            }
+            else
+            {
+                // Window has been cleared and new text has been added.
+                // Set the diff equal to the entire content of the window and
+                // reset the project build info.
+                diff = newBuildOutputStr;
+                currentBuildInfo = new List<ProjectBuildInfo>();
+            }
+
+
+            // Given the newly added text and the previous build info, calculate the new build info.
+            this.projectBuildInfo = CalculateProjectBuildInfo(currentBuildInfo, diff, DateTime.Now);
+
+            // Update the build-output string, so that the diff can be calculated correctly next time.
+            this.buildOutputStr = newBuildOutputStr;
+        }
+
+        public static List<ProjectBuildInfo> CalculateProjectBuildInfo(
+            List<ProjectBuildInfo> prevBuildInfo, 
+            string newBuildOutput, 
+            System.DateTime currentTime)
+        {
+            // All projects should already have a start time. If not it is impossible to calculate the end time.
+            bool startTimesValid = prevBuildInfo.All(buildInfo => buildInfo.BuildStartTime.HasValue);
+            if (!startTimesValid) throw new System.ArgumentException("Projects with an invalid start time found.");
+
+            List<ProjectBuildInfo> newBuildInfo = new List<ProjectBuildInfo>(prevBuildInfo);
+
+            string[] lines = newBuildOutput.Split('\n');
+            foreach (string line in lines)
+            {
+                // Check if this line contains a project name and id. If the id has not been
+                // encountered before, this is a new project and should be added to the list.
+                Tuple<int, string> nameAndId = BuildInfoUtils.ExtractProjectNameAndID(line);
+                if (nameAndId != null)
+                {
+                    if ( !prevBuildInfo.Any(buildInfo => buildInfo.ProjectId == nameAndId.Item1))   // check if any existing item has this id
+                    {
+                        // this project is encountered for the first time.
+                        var projInfo = new ProjectBuildInfo();
+                        projInfo.ProjectId = nameAndId.Item1;
+                        projInfo.ProjectName = nameAndId.Item2;
+                        projInfo.BuildStartTime = currentTime;
+                        newBuildInfo.Add(projInfo);
+                    }
+                }
+
+                // Check if this line contains info about a project build being completed.
+                // If yes, calculate the build duration and update the info.
+                Tuple<bool,int> resultAndID = BuildInfoUtils.ExtractBuildResultAndProjectID(line);
+                if (resultAndID != null)
+                { 
+                    var projInfo = newBuildInfo.FirstOrDefault(buildInfo => buildInfo.ProjectId == resultAndID.Item2);
+                    if (projInfo != null)
+                    {
+                        System.Diagnostics.Debug.Assert(projInfo.BuildStartTime.HasValue);
+                        projInfo.BuildDuration = currentTime - projInfo.BuildStartTime.Value;
+                    }
+                }
+            }
+            return newBuildInfo;
+        }
+
+
+        private IEventRouter evtRouter;
+        private string buildOutputStr = "";
+        private List<ProjectBuildInfo> projectBuildInfo = new List<ProjectBuildInfo>();
+    }
+
+    public class FakeInfoExtractor : IBuildInfoExtractionStrategy
     {
         static readonly List<ProjectBuildInfo> dummyProjectList = new List<ProjectBuildInfo>{
               new ProjectBuildInfo("projA", 1, new DateTime(2018,5,5, 1, 1, 1), new TimeSpan(0,0,0,10,137))
