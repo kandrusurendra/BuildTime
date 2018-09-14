@@ -99,6 +99,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
                     {
                         System.Diagnostics.Debug.Assert(projInfo.BuildStartTime.HasValue);
                         projInfo.BuildDuration = currentTime - projInfo.BuildStartTime.Value;
+                        projInfo.BuildSucceeded = resultAndID.Item1;
                     }
                 }
             }
@@ -106,7 +107,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
         }
 
 
-        private IEventRouter evtRouter;
+        private readonly IEventRouter evtRouter;
         private string buildOutputStr = "";
         private List<ProjectBuildInfo> projectBuildInfo = new List<ProjectBuildInfo>();
     }

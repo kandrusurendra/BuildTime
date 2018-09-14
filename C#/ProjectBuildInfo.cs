@@ -12,12 +12,13 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
     {
         public ProjectBuildInfo() { }
 
-        public ProjectBuildInfo(string name, int id, DateTime? startTime, TimeSpan? duration)
+        public ProjectBuildInfo(string name, int id, DateTime? startTime, TimeSpan? duration, bool? buildSucceeded=true)
         {
             ProjectName = name;
             ProjectId = id;
             BuildStartTime = startTime;
             BuildDuration = duration;
+            BuildSucceeded = buildSucceeded;
         }
 
         public string ProjectName { get; set; }
@@ -38,6 +39,8 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
                 return null;
             }
         }
+
+        public bool? BuildSucceeded { get; set; }
     }
 
     public interface IBuildInfoExtractionStrategy

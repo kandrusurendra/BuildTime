@@ -37,7 +37,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 
             InitializeComponent();
 
-            EvtLoggerTxtBox.AppendText("hello world!!\n");
+            this.LogMessage("Build timer launched.");
         }
 
         public IBuildInfoExtractionStrategy BuildInfoExtractor { get; set; }
@@ -48,8 +48,6 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             {
                 if (m_evtRouter != null)
                 {
-                    m_evtRouter.BuildStarted -= this.OnBuildStarted;
-                    m_evtRouter.BuildCompleted -= this.OnBuildCompleted;
                     m_evtRouter.OutputPaneUpdated -= this.OnOutputPaneUpdated;
                 }
 
@@ -57,8 +55,6 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 
                 if (m_evtRouter != null)
                 {
-                    m_evtRouter.BuildStarted += this.OnBuildStarted;
-                    m_evtRouter.BuildCompleted += this.OnBuildCompleted;
                     m_evtRouter.OutputPaneUpdated += this.OnOutputPaneUpdated;
                 }
             }
@@ -106,23 +102,11 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
                 this.UpdateUI(extractor.ExtractBuildInfo());
         }
 
-        private void OnBuildStarted(object sender, EventArgs args)
-        {
-            //this.EvtLoggerTxtBox.Text += "<build started - time:" + System.DateTime.Now + "\n"; 
-            this.EvtLoggerTxtBox.AppendText("<build started - time:" + System.DateTime.Now + "\n");
-        }
-
-        private void OnBuildCompleted(object sender, EventArgs args)
-        {
-            //this.EvtLoggerTxtBox.Text += ">build completed - time:" + System.DateTime.Now + "\n";
-            this.EvtLoggerTxtBox.AppendText("<build completed - time:" + System.DateTime.Now + "\n");
-        }
-
         private void OnOutputPaneUpdated(object sender, OutputWndEventArgs args)
         {
-            if (args.WindowPane.Name == "Build")
+            if (args.WindowPane != null && args.WindowPane.Name == "Build")
             {
-                this.EvtLoggerTxtBox.AppendText("<Output wnd '" + args.WindowPane.Name + "' updated at" + System.DateTime.Now + "\n");
+                this.LogMessage("Build output updated");
                 var extractor = BuildInfoExtractor;
                 if (extractor != null)
                     this.UpdateUI(extractor.ExtractBuildInfo());
@@ -166,6 +150,11 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
                 int idx = BuildGraphChart.Series[0].Points.AddXY(projCount + 1, startTimeSecs, endTimeSecs);
                 BuildGraphChart.Series[0].Points[idx].AxisLabel = projInfo.ProjectName;
             }
+        }
+
+        private void LogMessage(string message)
+        {
+            OutputWindow.AppendText(DateTime.Now + " - " + message + "\n");
         }
 
         //

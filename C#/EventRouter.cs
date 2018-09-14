@@ -58,17 +58,15 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 
         private void OnOutputPaneUpdated(OutputWindowPane wndPane)
         {
-            var args = new OutputWndEventArgs();
-            args.WindowPane = wndPane;
+            var args = new OutputWndEventArgs
+            {
+                WindowPane = wndPane
+            };
             OutputPaneUpdated(this, args);
         }
 
         
-        private BuildEvents buildEvents;
-        private OutputWindowEvents outputWndEvents;
-
-        //private Events2 events;
-        //private PublishEvents publishEvents;
-
+        private readonly BuildEvents buildEvents;
+        private readonly OutputWindowEvents outputWndEvents;
     }
 }

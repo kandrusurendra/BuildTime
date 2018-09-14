@@ -91,12 +91,8 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             CommandID id = new CommandID(GuidsList.guidClientCmdSet, PkgCmdId.cmdidBuildTimerWindow);
             DefineCommandHandler(new EventHandler(ShowBuildTimerWindow), id);
 
-            var service = (DTE2)this.GetService(typeof(DTE));
-            this.events = (Events2)service.Events;  // It is recommended to keep a ref to events to protect them from GC.
-            this.buildEvents = this.events.BuildEvents;
-            this.publishEvents = this.events.PublishEvents;
-            this.buildEvents.OnBuildBegin += this.OnBuildBegin;
-            this.publishEvents.OnPublishBegin += this.OnPublishBegin;
+            //var service = (DTE2)this.GetService(typeof(DTE));
+            //var events = (Events2)service.Events;  // It is recommended to keep a ref to events to protect them from GC.
         }
 
         
@@ -186,8 +182,5 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
         // Cache the Menu Command Service since we will use it multiple times
         private MsVsShell.OleMenuCommandService menuService;
         private EventRouter evtRouter;
-        private Events2 events;
-        private BuildEvents buildEvents;
-        private PublishEvents publishEvents;
     }
 }
