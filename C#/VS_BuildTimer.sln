@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2035
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToolWindow", "ToolWindow.csproj", "{E7729C46-9822-4D2C-BE5B-5C4AAC2FEA82}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VS_BuildTimer", "VS_BuildTimer.csproj", "{E7729C46-9822-4D2C-BE5B-5C4AAC2FEA82}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToolWindowTests", "..\ToolWindowTests\ToolWindowTests.csproj", "{DCE821B7-712A-486C-B930-C2F4E4DA22B7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VS_BuildTimer_Tests", "..\ToolWindowTests\VS_BuildTimer_Tests.csproj", "{DCE821B7-712A-486C-B930-C2F4E4DA22B7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8FF372C3-B65D-4E43-9DE4-D916CF4177FC}"
 EndProject
