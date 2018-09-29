@@ -43,6 +43,69 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
         public bool? BuildSucceeded { get; set; }
     }
 
+    public class ProjectPresentationInfo
+    {
+        // Input parameters
+        public ProjectPresentationInfo(DateTime referenceTime, ProjectBuildInfo buildInfo)
+        {
+            if (buildInfo == null) throw new ArgumentNullException("build info");
+            if (referenceTime == null) throw new ArgumentNullException("reference time");
+            _buildInfo = buildInfo;
+            _referenceTime = referenceTime;
+        }
+
+        // Transformed data
+        public string ProjectName
+        {
+            get { return _buildInfo.ProjectName; }
+        }
+
+        public int ProjectId
+        {
+            get { return _buildInfo.ProjectId; }
+        }
+
+        public DateTime? BuildStartTime_Absolute
+        {
+            get { return _buildInfo.BuildStartTime; }
+        }
+
+        public TimeSpan? BuildDuration
+        {
+            get { return _buildInfo.BuildDuration; }
+        }
+
+        public TimeSpan? BuildStartTime_Relative
+        {
+            get
+            {
+                if (_buildInfo.BuildStartTime.HasValue)
+                    return _buildInfo.BuildStartTime - _referenceTime;
+                return null;
+            }
+        }
+        
+        public TimeSpan? BuildEndTime_Relative
+        {
+            get
+            {
+                if (_buildInfo.BuildEndTime.HasValue)
+                {
+                    return _buildInfo.BuildEndTime - _referenceTime;
+                }
+                return null;
+            }
+        }
+
+        public bool? BuildSucceeded
+        {
+            get { return _buildInfo.BuildSucceeded; }
+        }
+
+        private readonly DateTime _referenceTime;
+        private readonly ProjectBuildInfo _buildInfo;
+    }
+
     public interface IBuildInfoExtractionStrategy
     {
         List<ProjectBuildInfo> ExtractBuildInfo();
@@ -200,5 +263,10 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             }
             return projectList;
         }
+
+        //public static List<ProjectPresentationInfo> ExtractPresentationInfo(IEnumerable<ProjectBuildInfo> buildInfo)
+        //{
+        //    throw new System.NotImplementedException("not implemented");
+        //}
     }
 }
