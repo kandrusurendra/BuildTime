@@ -147,7 +147,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
                     else return (i1.BuildStartTime_Absolute.Value.CompareTo(i2.BuildStartTime_Absolute.Value));
                 });
 
-                foreach (var projInfo in infoSorted)
+                foreach (ProjectPresentationInfo projInfo in infoSorted)
                 {
                     DateTime origin = infoSorted[0].BuildStartTime_Absolute.HasValue ? 
                         infoSorted[0].BuildStartTime_Absolute.Value : new DateTime(2000, 1, 1);
@@ -161,6 +161,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
                     int projCount = BuildGraphChart.Series[0].Points.Count;
                     int idx = BuildGraphChart.Series[0].Points.AddXY(projCount + 1, startTimeSecs, endTimeSecs);
                     BuildGraphChart.Series[0].Points[idx].AxisLabel = projInfo.ProjectName;
+                    BuildGraphChart.Series[0].Points[idx].ToolTip = CreateToolTip(projInfo); 
                 }
             }
         }
@@ -168,6 +169,22 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
         private void LogMessage(string message)
         {
             OutputWindow.AppendText(DateTime.Now + " - " + message + "\n");
+        }
+
+        private static string CreateToolTip(ProjectPresentationInfo info)
+        {
+            if (info != null)
+            {
+                int n = 20;
+                return
+                    "Project:".PadRight(n,' ')  + info.ProjectName + "\n" +
+                    "ID:".PadRight(n,' ')       + info.ProjectId + "\n" +
+                    "start time (abs):".PadRight(n, ' ') + info.BuildStartTime_Absolute + "\n" +
+                    "start time:".PadRight(n, ' ') + info.BuildStartTime_Relative + "\n" +
+                    "duration:".PadRight(n, ' ') + info.BuildDuration + "\n" +
+                    "end time:".PadRight(n, ' ') + info.BuildEndTime_Relative + "\n";
+            }
+            return "";
         }
 
         //
