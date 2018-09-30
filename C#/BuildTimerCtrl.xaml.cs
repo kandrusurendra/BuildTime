@@ -37,7 +37,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 
             InitializeComponent();
 
-            this.LogMessage("Build timer launched.");
+            this.LogMessage("Build timer started.");
         }
 
         public IBuildInfoExtractionStrategy BuildInfoExtractor { get; set; }
@@ -95,7 +95,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             InvalidateVisual();
         }
 
-        private void OnUpdateBuildTimesBtnClick(object sender, EventArgs args)
+        private void OnGridDoubleClick(object sender, EventArgs args)
         {
             var extractor = BuildInfoExtractor;
             if (extractor!=null)
@@ -161,7 +161,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
                     int projCount = BuildGraphChart.Series[0].Points.Count;
                     int idx = BuildGraphChart.Series[0].Points.AddXY(projCount + 1, startTimeSecs, endTimeSecs);
                     BuildGraphChart.Series[0].Points[idx].AxisLabel = projInfo.ProjectName;
-                    BuildGraphChart.Series[0].Points[idx].ToolTip = CreateToolTip(projInfo); 
+                    BuildGraphChart.Series[0].Points[idx].ToolTip = BuildInfoUtils.CreateToolTipText(projInfo); 
                 }
             }
         }
@@ -171,21 +171,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             OutputWindow.AppendText(DateTime.Now + " - " + message + "\n");
         }
 
-        private static string CreateToolTip(ProjectPresentationInfo info)
-        {
-            if (info != null)
-            {
-                int n = 20;
-                return
-                    "Project:".PadRight(n,' ')  + info.ProjectName + "\n" +
-                    "ID:".PadRight(n,' ')       + info.ProjectId + "\n" +
-                    "start time (abs):".PadRight(n, ' ') + info.BuildStartTime_Absolute + "\n" +
-                    "start time:".PadRight(n, ' ') + info.BuildStartTime_Relative + "\n" +
-                    "duration:".PadRight(n, ' ') + info.BuildDuration + "\n" +
-                    "end time:".PadRight(n, ' ') + info.BuildEndTime_Relative + "\n";
-            }
-            return "";
-        }
+
 
         //
         // Variables

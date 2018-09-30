@@ -26,14 +26,14 @@
                             </Grid.ColumnDefinitions>
                             <DataGrid Grid.Row="0" Grid.Column="0" Name="BuildInfoGrid" 
                                       HorizontalAlignment="Stretch" VerticalAlignment="Top"
-                                      Margin="2" AutoGenerateColumns="False">
+                                      Margin="2" AutoGenerateColumns="False" MouseDoubleClick="OnGridDoubleClick">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="Project" Binding="{Binding Path=ProjectName}"/>
                                     <DataGridTextColumn Header="ID" Binding="{Binding Path=ProjectId}"/>
                                     <DataGridTextColumn Header="Start time (absolute)" Binding="{Binding Path=BuildStartTime_Absolute, TargetNullValue=' ? '}"/>
-                                    <DataGridTextColumn Header="Start time" Binding="{Binding Path=BuildStartTime_Relative, StringFormat={}{0:hh':'mm':'ss}, TargetNullValue=' ? '}"/>
-                                    <DataGridTextColumn Header="Duration" Binding="{Binding Path=BuildDuration, StringFormat={}{0:hh':'mm':'ss}, TargetNullValue=' ? '}"/>
-                                    <DataGridTextColumn Header="End time" Binding="{Binding Path=BuildEndTime_Relative, StringFormat={}{0:hh':'mm':'ss}, TargetNullValue=' ? '}"/>
+                                    <DataGridTextColumn Header="Start time" Binding="{Binding Path=BuildStartTime_Relative, StringFormat={}{0:hh':'mm':'ss'.'f}, TargetNullValue=' ? '}"/>
+                                    <DataGridTextColumn Header="Duration" Binding="{Binding Path=BuildDuration, StringFormat={}{0:hh':'mm':'ss'.'f}, TargetNullValue=' ? '}"/>
+                                    <DataGridTextColumn Header="End time" Binding="{Binding Path=BuildEndTime_Relative, StringFormat={}{0:hh':'mm':'ss'.'f}, TargetNullValue=' ? '}"/>
                                     <DataGridTextColumn Header="Build success" Binding="{Binding Path=BuildSucceeded, TargetNullValue=' ? '}"/>
                                 </DataGrid.Columns>
                             </DataGrid>

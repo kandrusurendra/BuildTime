@@ -275,5 +275,24 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             var presentationInfo = buildInfo.Select(projectInfo => new ProjectPresentationInfo(minStartTime.Value, projectInfo));
             return presentationInfo.ToList();
         }
+
+        public static string CreateToolTipText(ProjectPresentationInfo info)
+        {
+            string TimeSpanToStr(TimeSpan? t)
+            {
+                return (t.HasValue) ? t.Value.ToString(@"dd\.hh\:mm\:ss\.f") : "?";
+            };
+
+            if (info != null)
+            {
+                return
+                    "Project: " + info.ProjectName + "\n" +
+                    "ID: " + info.ProjectId + "\n" + 
+                    "start time: " + TimeSpanToStr(info.BuildStartTime_Relative)  + " (absolute: " + info.BuildStartTime_Absolute + ")\n" +
+                    "duration:   " + TimeSpanToStr(info.BuildDuration) + "\n" +
+                    "end time:   " + TimeSpanToStr(info.BuildEndTime_Relative) + "\n";
+            }
+            return "";
+        }
     }
 }

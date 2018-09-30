@@ -117,5 +117,16 @@ namespace ToolWindowTests
             Assert.IsFalse(presentationInfo[2].BuildEndTime_Relative.HasValue);
             Assert.IsFalse(presentationInfo[4].BuildEndTime_Relative.HasValue);
         }
+
+        [TestMethod]
+        public void CreateToolTipText()
+        {
+            var buildInfo = new ProjectBuildInfo("projA", 0, new DateTime(2018, 5, 5, 2, 3, 4), new TimeSpan(0, 0, 0, 10));
+            var presentationInfo = new ProjectPresentationInfo(new DateTime(2018, 5, 5, 0, 0, 0), buildInfo);
+            string text = BuildInfoUtils.CreateToolTipText(presentationInfo);
+            Assert.IsTrue(text.Length > 0);
+            Assert.IsTrue(text.Contains("2:03:04"));
+            Assert.IsTrue(text.Contains("2:03:14"));
+        }
     }
 }
