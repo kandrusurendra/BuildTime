@@ -60,6 +60,16 @@ namespace ToolWindowTests
         }
 
         [TestMethod]
+        public void ExtractProjectNameAndID_ValidString_ContainsFullStop()
+        {
+            string s = "2>------ Rebuild All started: Project: FASTER.core, Configuration: Debug Win32 ------";
+            Tuple<int, string> val = BuildInfoUtils.ExtractProjectNameAndID(s);
+            Assert.IsTrue(val != null);
+            Assert.AreEqual(2, val.Item1);
+            Assert.AreEqual("FASTER.core", val.Item2);
+        }
+
+        [TestMethod]
         public void ExtractStartTimeAndID_ValidString()
         {
             {
