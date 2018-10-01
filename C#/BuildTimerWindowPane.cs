@@ -59,8 +59,8 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 
             control.EvtRouter = package.EvtRouter;
             //control.BuildInfoExtractor = new OutputWindowInfoExtractor();
-            //control.BuildInfoExtractor = new FakeInfoExtractor();
-            control.BuildInfoExtractor = new OutputWindowInterativeInfoExtractor(package.EvtRouter);
+            control.BuildInfoExtractor = new FakeInfoExtractor();
+            //control.BuildInfoExtractor = new OutputWindowInterativeInfoExtractor(package.EvtRouter);
             control.CurrentState = windowFrameEventsHandler;
         }
 

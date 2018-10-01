@@ -169,18 +169,39 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             , new ProjectBuildInfo("projZ",26, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 6))
             , new ProjectBuildInfo("proj1",27, new DateTime(2018,5,5, 1, 1, 52), new TimeSpan(0, 0, 6))
             , new ProjectBuildInfo("proj2",28, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 26))
+            , new ProjectBuildInfo("projA",28+ 1, new DateTime(2018,5,5, 1, 1, 1), new TimeSpan(0,0,0,10,137))
+            , new ProjectBuildInfo("projB",28+ 2, new DateTime(2018,5,5, 1, 1, 1), new TimeSpan(0,0,0,20,876))
+            , new ProjectBuildInfo("projC",28+ 3, new DateTime(2018,5,5, 1, 1, 11), new TimeSpan(0, 0, 30))
+            , new ProjectBuildInfo("projD",28+ 4, new DateTime(2018,5,5, 1, 1, 37), new TimeSpan(0, 0, 52))
+            , new ProjectBuildInfo("projE",28+ 5, new DateTime(2018,5,5, 1, 1, 52), new TimeSpan(0, 0, 6))
+            , new ProjectBuildInfo("projF",28+ 6, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 6))
+            , new ProjectBuildInfo("projG",28+ 7, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 0, 26, 981))
+            , new ProjectBuildInfo("projH",28+ 8, new DateTime(2018,5,5, 1, 1, 41), null)
+            , new ProjectBuildInfo("projI",28+ 9, new DateTime(2018,5,5, 1, 1, 11), new TimeSpan(0, 0, 30))
+            , new ProjectBuildInfo("projJ",28+10, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 6))
+            , new ProjectBuildInfo("projK",28+11, new DateTime(2018,5,5, 1, 1, 52), new TimeSpan(0, 0, 6))
+            , new ProjectBuildInfo("projL",28+12, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 0, 26, 543))
+            , new ProjectBuildInfo("projM",28+13, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 26))
+            , new ProjectBuildInfo("projN",28+14, new DateTime(2018,5,5, 1, 1, 41), new TimeSpan(0, 0, 10))
+            , new ProjectBuildInfo("projO",28+15, new DateTime(2018,5,5, 1, 1, 11), new TimeSpan(0, 0, 30))
+            , new ProjectBuildInfo("projP",28+16, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 6))
+            , new ProjectBuildInfo("projQ",28+17, new DateTime(2018,5,5, 1, 1, 52), new TimeSpan(0, 0, 6))
+            , new ProjectBuildInfo("projR",28+18, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 26))
+            , new ProjectBuildInfo("projS",28+19, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 17))
+            , new ProjectBuildInfo("projT",28+20, new DateTime(2018,5,5, 1, 2, 0 ), null)
+            , new ProjectBuildInfo("projU",28+21, new DateTime(2018,5,5, 1, 1, 52), new TimeSpan(0, 0, 6))
+            , new ProjectBuildInfo("projV",28+22, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 26))
+            , new ProjectBuildInfo("projW",28+23, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 26))
+            , new ProjectBuildInfo("projX",28+24, new DateTime(2018,5,5, 1, 1, 41), new TimeSpan(0, 0, 10))
+            , new ProjectBuildInfo("projY",28+25, new DateTime(2018,5,5, 1, 1, 11), new TimeSpan(0, 0, 30))
+            , new ProjectBuildInfo("projZ",28+26, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 6))
+            , new ProjectBuildInfo("proj1",28+27, new DateTime(2018,5,5, 1, 1, 52), new TimeSpan(0, 0, 6))
+            , new ProjectBuildInfo("proj2",28+28, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 26))
         };
 
         public List<ProjectBuildInfo> ExtractBuildInfo()
         {
-            count = (count + 1) % dummyProjectList.Count;
-            List<ProjectBuildInfo> buildInfo = new List<ProjectBuildInfo>();
-            for (int i = 0; i < 15; ++i)
-            {
-                buildInfo.Add(dummyProjectList[(count + i) % dummyProjectList.Count]);
-            }
-
-            return buildInfo;
+            return new List<ProjectBuildInfo>(dummyProjectList);
         }
 
         private int count = 0;

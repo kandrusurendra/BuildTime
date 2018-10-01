@@ -44,16 +44,18 @@
                 </avalonDock:LayoutDocumentPane>
                 <avalonDock:LayoutAnchorablePane DockWidth="300">
                     <avalonDock:LayoutAnchorable Title="Build graph" CanClose="False" CanHide="False">
-                        <WindowsFormsHost Name="wfHost" Padding="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="2">
-                            <winformchart:Chart x:Name="BuildGraphChart" Dock="Fill">
-                                <winformchart:Chart.Series>
-                                    <winformchart:Series Name="series" ChartType="BoxPlot"/>
-                                </winformchart:Chart.Series>
-                                <winformchart:Chart.ChartAreas>
-                                    <winformchart:ChartArea/>
-                                </winformchart:Chart.ChartAreas>
-                            </winformchart:Chart>
-                        </WindowsFormsHost>
+                        <ScrollViewer>
+                            <WindowsFormsHost Name="wfHost" Padding="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="2">
+                                <winformchart:Chart x:Name="BuildGraphChart" Dock="Fill">
+                                    <winformchart:Chart.Series>
+                                        <winformchart:Series Name="series" ChartType="BoxPlot"/>
+                                    </winformchart:Chart.Series>
+                                    <winformchart:Chart.ChartAreas>
+                                        <winformchart:ChartArea/>
+                                    </winformchart:Chart.ChartAreas>
+                                </winformchart:Chart>
+                            </WindowsFormsHost>
+                        </ScrollViewer>
                     </avalonDock:LayoutAnchorable>
                 </avalonDock:LayoutAnchorablePane>
             </avalonDock:LayoutPanel>

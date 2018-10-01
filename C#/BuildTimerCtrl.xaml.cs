@@ -133,11 +133,19 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
                 BuildInfoGrid.ItemsSource = presentationInfo;
 
                 // Update build graph.
+                BuildGraphChart.Height = System.Math.Max(50, presentationInfo.Count() * 30);
                 BuildGraphChart.Series.Clear();
                 BuildGraphChart.Series.Add(new winformchart.Series());
                 BuildGraphChart.Series[0].ChartType = winformchart.SeriesChartType.RangeBar;
                 BuildGraphChart.Series[0].XValueType = winformchart.ChartValueType.Auto;
                 BuildGraphChart.Series[0].YValueType = winformchart.ChartValueType.Auto;
+
+                var xAxis = BuildGraphChart.ChartAreas[0].AxisX;
+                xAxis.Interval = 1;
+                xAxis.MajorGrid.Enabled = true;
+                xAxis.MajorGrid.Interval = 1;
+                xAxis.MajorGrid.LineDashStyle = winformchart.ChartDashStyle.Dot;
+
 
                 var infoSorted = presentationInfo.ToList();
                 infoSorted.Sort((i1, i2) =>
