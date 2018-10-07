@@ -206,15 +206,8 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <Content Include="ProjectTemplates\VS_BuildTimer_Test1.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
-    </None>
-    <None Include="VS_BuildTimer_Test1.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -233,6 +226,7 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="ProjectTemplates\" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
