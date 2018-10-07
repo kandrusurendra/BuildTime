@@ -241,6 +241,12 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\WinFormsControls\WinFormsControls.csproj">
+      <Project>{f540a15f-5140-47e1-93a1-62ae66dafb32}</Project>
+      <Name>WinFormsControls</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup>
     <UseCodebase>true</UseCodebase>
   </PropertyGroup>

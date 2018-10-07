@@ -37,6 +37,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 
             InitializeComponent();
 
+
             this.LogMessage("Build timer started.");
         }
 
@@ -115,6 +116,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 
         private void UpdateUI(List<ProjectBuildInfo> buildInfo)
         {
+            var BuildGraphChart = this.chartCtrlHost.Chart;
             if (buildInfo == null || buildInfo.Count == 0)
             {
                 BuildGraphChart.Series.Clear();
@@ -140,11 +142,11 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
                 BuildGraphChart.Series[0].XValueType = winformchart.ChartValueType.Auto;
                 BuildGraphChart.Series[0].YValueType = winformchart.ChartValueType.Auto;
 
-                var xAxis = BuildGraphChart.ChartAreas[0].AxisX;
-                xAxis.Interval = 1;
-                xAxis.MajorGrid.Enabled = true;
-                xAxis.MajorGrid.Interval = 1;
-                xAxis.MajorGrid.LineDashStyle = winformchart.ChartDashStyle.Dot;
+                //var xAxis = BuildGraphChart.ChartAreas[0].AxisX;
+                //xAxis.Interval = 1;
+                //xAxis.MajorGrid.Enabled = true;
+                //xAxis.MajorGrid.Interval = 1;
+                //xAxis.MajorGrid.LineDashStyle = winformchart.ChartDashStyle.Dot;
 
 
                 var infoSorted = presentationInfo.ToList();

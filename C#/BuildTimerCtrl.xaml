@@ -5,7 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
              xmlns:winformchart="clr-namespace:System.Windows.Forms.DataVisualization.Charting;assembly=System.Windows.Forms.DataVisualization"
+             xmlns:winform="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
              xmlns:avalonDock="http://schemas.xceed.com/wpf/xaml/avalondock"
+             xmlns:WinFormsControls="clr-namespace:WinFormsControls;assembly=WinFormsControls"
              xmlns:local="clr-namespace:Microsoft.Samples.VisualStudio.IDE.ToolWindow"
              mc:Ignorable="d" 
              d:DesignHeight="480" d:DesignWidth="640">
@@ -44,18 +46,11 @@
                 </avalonDock:LayoutDocumentPane>
                 <avalonDock:LayoutAnchorablePane DockWidth="300">
                     <avalonDock:LayoutAnchorable Title="Build graph" CanClose="False" CanHide="False">
-                        <ScrollViewer>
-                            <WindowsFormsHost Name="wfHost" Padding="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="2">
-                                <winformchart:Chart x:Name="BuildGraphChart" Dock="Fill">
-                                    <winformchart:Chart.Series>
-                                        <winformchart:Series Name="series" ChartType="BoxPlot"/>
-                                    </winformchart:Chart.Series>
-                                    <winformchart:Chart.ChartAreas>
-                                        <winformchart:ChartArea/>
-                                    </winformchart:Chart.ChartAreas>
-                                </winformchart:Chart>
-                            </WindowsFormsHost>
-                        </ScrollViewer>
+                        <WindowsFormsHost Name="wfHost" Padding="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="2">
+                            <WinFormsControls:ChartCtrlHost x:Name="chartCtrlHost"/>
+                            <!-- <WinFormsControls.ChartCtrlHost x:Name="chartCtrlHost"></WinFormsControls.ChartCtrlHost>
+                            -->
+                        </WindowsFormsHost>
                     </avalonDock:LayoutAnchorable>
                 </avalonDock:LayoutAnchorablePane>
             </avalonDock:LayoutPanel>
