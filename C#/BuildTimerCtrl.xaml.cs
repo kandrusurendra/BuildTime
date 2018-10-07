@@ -116,10 +116,10 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 
         private void UpdateUI(List<ProjectBuildInfo> buildInfo)
         {
-            var BuildGraphChart = this.chartCtrlHost.Chart;
+            var BuildGraphChart = this.chartCtrlHost;
             if (buildInfo == null || buildInfo.Count == 0)
             {
-                BuildGraphChart.Series.Clear();
+                BuildGraphChart.ChartData = new List<WinFormsControls.ProjectInfo>();
                 BuildInfoGrid.ItemsSource = new List<ProjectPresentationInfo>();
                 return;
             }
@@ -134,21 +134,6 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
                 var presentationInfo = buildInfo.Select(projectInfo => new ProjectPresentationInfo(minStartTime.Value, projectInfo));
                 BuildInfoGrid.ItemsSource = presentationInfo;
 
-                // Update build graph.
-                BuildGraphChart.Height = System.Math.Max(50, presentationInfo.Count() * 30);
-                BuildGraphChart.Series.Clear();
-                BuildGraphChart.Series.Add(new winformchart.Series());
-                BuildGraphChart.Series[0].ChartType = winformchart.SeriesChartType.RangeBar;
-                BuildGraphChart.Series[0].XValueType = winformchart.ChartValueType.Auto;
-                BuildGraphChart.Series[0].YValueType = winformchart.ChartValueType.Auto;
-
-                //var xAxis = BuildGraphChart.ChartAreas[0].AxisX;
-                //xAxis.Interval = 1;
-                //xAxis.MajorGrid.Enabled = true;
-                //xAxis.MajorGrid.Interval = 1;
-                //xAxis.MajorGrid.LineDashStyle = winformchart.ChartDashStyle.Dot;
-
-
                 var infoSorted = presentationInfo.ToList();
                 infoSorted.Sort((i1, i2) =>
                 {
@@ -157,6 +142,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
                     else return (i1.BuildStartTime_Absolute.Value.CompareTo(i2.BuildStartTime_Absolute.Value));
                 });
 
+                var ctrlProjInfo = new List<WinFormsControls.ProjectInfo>();
                 foreach (ProjectPresentationInfo projInfo in infoSorted)
                 {
                     DateTime origin = infoSorted[0].BuildStartTime_Absolute.HasValue ? 
@@ -168,11 +154,15 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
                         endTimeSecs = startTimeSecs + projInfo.BuildDuration.Value.TotalSeconds;
                     }
 
-                    int projCount = BuildGraphChart.Series[0].Points.Count;
-                    int idx = BuildGraphChart.Series[0].Points.AddXY(projCount + 1, startTimeSecs, endTimeSecs);
-                    BuildGraphChart.Series[0].Points[idx].AxisLabel = projInfo.ProjectName;
-                    BuildGraphChart.Series[0].Points[idx].ToolTip = BuildInfoUtils.CreateToolTipText(projInfo); 
+                    ctrlProjInfo.Add(new WinFormsControls.ProjectInfo
+                    {
+                        startTime = startTimeSecs,
+                        endTime = endTimeSecs,
+                        projectName = projInfo.ProjectName,
+                        toolTip = BuildInfoUtils.CreateToolTipText(projInfo)
+                    });
                 }
+                BuildGraphChart.ChartData = ctrlProjInfo;
             }
         }
 
