@@ -58,9 +58,8 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             ErrorHandler.ThrowOnFailure(((IVsWindowFrame)Frame).SetProperty((int)__VSFPROPID.VSFPROPID_ViewHelper, windowFrameEventsHandler));
 
             control.EvtRouter = package.EvtRouter;
-            //control.BuildInfoExtractor = new OutputWindowInfoExtractor();
-            control.BuildInfoExtractor = new FakeInfoExtractor();
-            //control.BuildInfoExtractor = new OutputWindowInterativeInfoExtractor(package.EvtRouter);
+            //control.BuildInfoExtractor = new FakeInfoExtractor();
+            control.BuildInfoExtractor = new OutputWindowInterativeInfoExtractor(package.EvtRouter);
             control.CurrentState = windowFrameEventsHandler;
         }
 
