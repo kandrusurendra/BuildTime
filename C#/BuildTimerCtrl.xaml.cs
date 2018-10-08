@@ -37,8 +37,14 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 
             InitializeComponent();
 
-
-            this.LogMessage("Build timer started.");
+            var v = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+            this.LogMessage(string.Format("Visual Studio Build Timer {0}.{1}.{2} Build {3}",
+                v.Major, 
+                v.Minor, 
+                v.Build,        // Version is in the form Major.Minor.Revision.Build. 
+                v.Revision      // What would be the build number following microsoft
+                                // conventions, is for me the revision and vice versa.
+            ));
         }
 
         public IBuildInfoExtractionStrategy BuildInfoExtractor { get; set; }
