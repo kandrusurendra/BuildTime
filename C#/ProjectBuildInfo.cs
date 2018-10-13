@@ -108,7 +108,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 
     public interface IBuildInfoExtractionStrategy
     {
-        List<ProjectBuildInfo> ExtractBuildInfo();
+        List<ProjectBuildInfo> GetBuildProgressInfo();
     }
 
     public static class BuildInfoUtils

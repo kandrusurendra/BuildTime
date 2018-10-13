@@ -6,20 +6,22 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 {
     public class OutputWindowInterativeInfoExtractor : IBuildInfoExtractionStrategy
     {
-        public OutputWindowInterativeInfoExtractor(IEventRouter evtRouter)
+        public OutputWindowInterativeInfoExtractor(IEventRouter evtRouter, ILogger logger=null)
         {
             if (evtRouter == null)
                 throw new System.ArgumentNullException("evtRouter");
 
-            this.evtRouter = evtRouter;
-            this.evtRouter.OutputPaneUpdated += this.OnOutputPaneUpdated;
+            this.m_evtRouter = evtRouter;
+            this.m_evtRouter.OutputPaneUpdated += this.OnOutputPaneUpdated;
+
+            m_logger = (logger != null) ? logger : new NullLogger();
         }
 
-        public IEventRouter EventRouter { get { return this.evtRouter; } }
+        public IEventRouter EventRouter { get { return this.m_evtRouter; } }
 
-        public List<ProjectBuildInfo> ExtractBuildInfo()
+        public List<ProjectBuildInfo> GetBuildProgressInfo()
         {
-            return this.projectBuildInfo;
+            return this.m_projectBuildInfo;
         }
 
         private void OnOutputPaneUpdated(object sender, OutputWndEventArgs args)
@@ -35,12 +37,12 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
         {
             string diff;
             List<ProjectBuildInfo> currentBuildInfo;
-            if (newBuildOutputStr.StartsWith(this.buildOutputStr))
+            if (newBuildOutputStr.StartsWith(this.m_buildOutputStr))
             {
                 // Text has been appended to the already existing text of the window.
                 // Extract the newly added text (also known as diff).
-                diff = newBuildOutputStr.Substring(this.buildOutputStr.Length);
-                currentBuildInfo = this.projectBuildInfo;
+                diff = newBuildOutputStr.Substring(this.m_buildOutputStr.Length);
+                currentBuildInfo = this.m_projectBuildInfo;
             }
             else
             {
@@ -53,22 +55,45 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 
 
             // Given the newly added text and the previous build info, calculate the new build info.
-            this.projectBuildInfo = CalculateProjectBuildInfo(currentBuildInfo, diff, DateTime.Now);
+            List<int> newlyStarted, newlyFinished;
+            this.m_projectBuildInfo = CalculateProjectBuildInfo(
+                currentBuildInfo, diff, DateTime.Now,
+                out newlyStarted, out newlyFinished);
 
             // Update the build-output string, so that the diff can be calculated correctly next time.
-            this.buildOutputStr = newBuildOutputStr;
+            this.m_buildOutputStr = newBuildOutputStr;
+
+            foreach (int id in newlyStarted)
+            {
+                var projInfo = this.m_projectBuildInfo.First(info => info.ProjectId == id);
+                this.m_logger.LogMessage(string.Format("Build of {0} started.", projInfo.ProjectName), 
+                    LogLevel.UserInfo);
+            }
+
+            foreach (int id in newlyFinished)
+            {
+                var projInfo = this.m_projectBuildInfo.First(info => info.ProjectId == id);
+                this.m_logger.LogMessage(string.Format("Build of {0} finished.", projInfo.ProjectName),
+                    LogLevel.UserInfo);
+            }
         }
 
         public static List<ProjectBuildInfo> CalculateProjectBuildInfo(
             List<ProjectBuildInfo> prevBuildInfo,
             string newBuildOutput,
-            System.DateTime currentTime)
+            System.DateTime currentTime,
+            out List<int> newlyStartedProjects,
+            out List<int> newlyFinishedProjects)
         {
             // All projects should already have a start time. If not it is impossible to calculate the end time.
             bool startTimesValid = prevBuildInfo.All(buildInfo => buildInfo.BuildStartTime.HasValue);
             if (!startTimesValid) throw new System.ArgumentException("Projects with an invalid start time found.");
 
             List<ProjectBuildInfo> newBuildInfo = new List<ProjectBuildInfo>(prevBuildInfo);
+
+            // Initialize output lists
+            newlyStartedProjects = new List<int>();
+            newlyFinishedProjects = new List<int>();
 
             string[] lines = newBuildOutput.Split('\n');
             foreach (string line in lines)
@@ -89,6 +114,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
                                 BuildStartTime = currentTime
                             };
                             newBuildInfo.Add(projInfo);
+                            newlyFinishedProjects.Add(projInfo.ProjectId);
                             continue;
                         }
                     }
@@ -106,6 +132,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
                             System.Diagnostics.Debug.Assert(projInfo.BuildStartTime.HasValue);
                             projInfo.BuildDuration = currentTime - projInfo.BuildStartTime.Value;
                             projInfo.BuildSucceeded = resultAndID.Item1;
+                            newlyFinishedProjects.Add(projInfo.ProjectId);
                             continue;
                         }
                     }
@@ -133,9 +160,10 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
         }
 
 
-        private readonly IEventRouter evtRouter;
-        private string buildOutputStr = "";
-        private List<ProjectBuildInfo> projectBuildInfo = new List<ProjectBuildInfo>();
+        private readonly IEventRouter m_evtRouter;
+        private readonly ILogger m_logger;
+        private string m_buildOutputStr = "";
+        private List<ProjectBuildInfo> m_projectBuildInfo = new List<ProjectBuildInfo>();
     }
 
     public class FakeInfoExtractor : IBuildInfoExtractionStrategy
@@ -199,11 +227,9 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             , new ProjectBuildInfo("proj2",28+28, new DateTime(2018,5,5, 1, 2, 0 ), new TimeSpan(0, 0, 26))
         };
 
-        public List<ProjectBuildInfo> ExtractBuildInfo()
+        public List<ProjectBuildInfo> GetBuildProgressInfo()
         {
             return new List<ProjectBuildInfo>(dummyProjectList);
         }
-
-        private int count = 0;
     }
 }

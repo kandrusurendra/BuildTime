@@ -184,6 +184,7 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
     </Compile>
     <Compile Include="BuildTimerWindowPane.cs" />
     <Compile Include="EventRouter.cs" />
+    <Compile Include="ILogger.cs" />
     <Compile Include="OutputWindowInfoExtractor.cs" />
     <Compile Include="OutputWindowInteractiveInfoExtractor.cs" />
     <Compile Include="ProjectBuildInfo.cs" />

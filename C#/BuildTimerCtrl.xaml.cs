@@ -29,8 +29,9 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
     /// <summary>
     /// Interaction logic for BuildTimerCtrl.xaml
     /// </summary>
-    public partial class BuildTimerCtrl : UserControl
+    public partial class BuildTimerCtrl : UserControl, ILogger
     {
+        #region PUBLIC_INTERFACE
         public BuildTimerCtrl(BuildTimerWindowPane windowPane)
         {
             m_windowPane = windowPane;
@@ -44,7 +45,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
                 v.Build,        // Version is in the form Major.Minor.Revision.Build. 
                 v.Revision      // What would be the build number following microsoft
                                 // conventions, is for me the revision and vice versa.
-            ));
+            ), LogLevel.UserInfo);
         }
 
         public IBuildInfoExtractionStrategy BuildInfoExtractor { get; set; }
@@ -87,6 +88,21 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             }
         }
 
+        public void LogMessage(string message, LogLevel level)
+        {
+#if DEBUG
+            var minLevel = LogLevel.DebugInfo;
+#else
+            var minLevel = LogLevel.UserInfo;
+#endif
+            if (level >= minLevel)
+                OutputWindow.AppendText(DateTime.Now + " - " + message + "\n");
+        }
+
+#endregion
+
+#region IMPLEMENTATION
+
         /// <summary>
         /// This method is the call back for state changes events
         /// </summary>
@@ -106,17 +122,16 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
         {
             var extractor = BuildInfoExtractor;
             if (extractor!=null)
-                this.UpdateUI(extractor.ExtractBuildInfo());
+                this.UpdateUI(extractor.GetBuildProgressInfo());
         }
 
         private void OnOutputPaneUpdated(object sender, OutputWndEventArgs args)
         {
             if (args.WindowPane != null && args.WindowPane.Name == "Build")
             {
-                this.LogMessage("Build output updated");
                 var extractor = BuildInfoExtractor;
                 if (extractor != null)
-                    this.UpdateUI(extractor.ExtractBuildInfo());
+                    this.UpdateUI(extractor.GetBuildProgressInfo());
             }
         }
 
@@ -172,11 +187,8 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             }
         }
 
-        private void LogMessage(string message)
-        {
-            OutputWindow.AppendText(DateTime.Now + " - " + message + "\n");
-        }
-
+        
+#endregion
 
 
         //

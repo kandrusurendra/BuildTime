@@ -22,7 +22,6 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
         /// to VS services should be done in OnToolWindowCreated.
         /// </summary>
         public BuildTimerWindowPane()
-            : base(null)
         {
             // Set the image that will appear on the tab of the window frame when docked with another window.
             // KnownMonikers is a set of image monkiers that are globablly recognized by VS. These images can be
@@ -59,7 +58,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 
             control.EvtRouter = package.EvtRouter;
             //control.BuildInfoExtractor = new FakeInfoExtractor();
-            control.BuildInfoExtractor = new OutputWindowInterativeInfoExtractor(package.EvtRouter);
+            control.BuildInfoExtractor = new OutputWindowInterativeInfoExtractor(package.EvtRouter, control);
             control.CurrentState = windowFrameEventsHandler;
         }
 

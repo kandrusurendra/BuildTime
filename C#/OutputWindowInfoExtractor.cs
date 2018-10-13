@@ -11,7 +11,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 {
     public class OutputWindowInfoExtractor : IBuildInfoExtractionStrategy
     {
-        public List<ProjectBuildInfo> ExtractBuildInfo()
+        public List<ProjectBuildInfo> GetBuildProgressInfo()
         {
             EnvDTE80.DTE2 dte = (EnvDTE80.DTE2)Package.GetGlobalService(typeof(DTE));
             Debug.Assert(dte != null);
