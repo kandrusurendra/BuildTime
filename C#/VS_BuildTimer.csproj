@@ -43,6 +43,9 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CopyVsixExtensionFiles>False</CopyVsixExtensionFiles>
+    <CopyVsixExtensionLocation>
+    </CopyVsixExtensionLocation>
   </PropertyGroup>
   <PropertyGroup>
     <StartAction>Program</StartAction>
@@ -57,6 +60,8 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <RunCodeAnalysis>true</RunCodeAnalysis>
+    <CopyVsixExtensionFiles>True</CopyVsixExtensionFiles>
+    <CopyVsixExtensionLocation>INSTALLER_RELEASE</CopyVsixExtensionLocation>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DotNetProjects.Wpf.AvalonDock, Version=3.2.49.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
@@ -240,6 +245,16 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
       <Project>{f540a15f-5140-47e1-93a1-62ae66dafb32}</Project>
       <Name>WinFormsControls</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="timer175.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="timer90.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
   </ItemGroup>
   <PropertyGroup>
     <UseCodebase>true</UseCodebase>
