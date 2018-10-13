@@ -41,19 +41,10 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
            priority, an image, a type, some visibility flags (optional) and a default text. -->
       <Button guid="guidClientCmdSet" id="cmdidBuildTimerWindow" priority="0x102" type="Button">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1" />
-        <Icon guid="ImageCatalogGuid" id="TwoX" />
-        <CommandFlag>IconIsMoniker</CommandFlag>
+        <Icon guid="guidImages" id="timerPic" />
+        <!--<CommandFlag>IconIsMoniker</CommandFlag>-->
         <Strings>
-          <ButtonText>&amp;Build Timer Window</ButtonText>
-        </Strings>
-      </Button>
-      <!-- The following command will appear on the tool window toolbar -->
-      <Button guid="guidClientCmdSet" id="cmdidRefreshWindowsList" priority="0x100" type="Button">
-        <Parent guid="guidClientCmdSet" id="MyToolbarGroup" />
-        <Icon guid="ImageCatalogGuid" id="Refresh" />
-        <CommandFlag>IconIsMoniker</CommandFlag>
-        <Strings>
-          <ButtonText>Refresh</ButtonText>
+          <ButtonText>&amp;Build Timer</ButtonText>
         </Strings>
       </Button>
       <!--The menu items will be placed in one of the first group of the View->Other Windows menu. To
@@ -62,6 +53,9 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
       which groups were already part of that menu. Of those we picked IDG_VS_WNDO_OTRWNDWS1. -->
     </Buttons>
 
+    <Bitmaps>
+      <Bitmap guid="guidImages" href="Resources\timer_small.png" usedList="timerPic"/>
+    </Bitmaps>
   </Commands>
 
   <Symbols>
@@ -84,10 +78,11 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
       <!--Groups-->
       <IDSymbol name="MyToolbarGroup" value="0x1001" />
       <!--Commands-->
-      <IDSymbol name="cmdidPersistedWindow" value="0x2001" />
-      <IDSymbol name="cmdidUiEventsWindow" value="0x2002" />
-      <IDSymbol name="cmdidRefreshWindowsList" value="0x2003" />
-      <IDSymbol name="cmdidBuildTimerWindow" value="0x2004" />
+      <IDSymbol name="cmdidBuildTimerWindow" value="0x2001" />
+    </GuidSymbol>
+
+    <GuidSymbol name="guidImages" value="{4A8E4FE8-D6EE-412B-A24F-B770D1E1B0B4}">
+      <IDSymbol name="timerPic" value="1"/>
     </GuidSymbol>
   </Symbols>
 </CommandTable>

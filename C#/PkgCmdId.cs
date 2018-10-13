@@ -20,10 +20,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 	static class PkgCmdId
 	{
 		// Define the list a set of public static members.
-		public const int cmdidPersistedWindow    = 0x2001;
-		public const int cmdidUiEventsWindow     = 0x2002;
-		public const int cmdidRefreshWindowsList = 0x2003;
-        public const int cmdidBuildTimerWindow   = 0x2004; 
+        public const int cmdidBuildTimerWindow   = 0x2001; 
 
 		// Define the list of menus (these include toolbars)
 		public const int IDM_MyToolbar =           0x0101;
