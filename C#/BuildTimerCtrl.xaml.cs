@@ -39,13 +39,15 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             InitializeComponent();
 
             var v = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-            this.LogMessage(string.Format("Visual Studio Build Timer {0}.{1}.{2} Build {3}",
+            this.LogMessage(string.Format("Visual Studio Build Timer {0}.{1}.{2}",
                 v.Major, 
                 v.Minor, 
-                v.Build,        // Version is in the form Major.Minor.Revision.Build. 
-                v.Revision      // What would be the build number following microsoft
+                v.Build         // Version is in the form Major.Minor.Revision.Build. 
+                                // What would be the build number following microsoft
                                 // conventions, is for me the revision and vice versa.
             ), LogLevel.UserInfo);
+
+            this.LogMessage(string.Format("Build {0}", v.Revision), LogLevel.DebugInfo);
         }
 
         public IBuildInfoExtractionStrategy BuildInfoExtractor { get; set; }

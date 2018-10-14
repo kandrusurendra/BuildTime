@@ -15,6 +15,7 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
         <Identity Id="Visual Studio Build Timer - Test 2" Version="0.1.0" Language="en-US" Publisher="Odysseas P." />
         <DisplayName>Visual Studio Build Timer</DisplayName>
         <Description xml:space="preserve">Times the build of your Visual Studio solution and shows how much time is spent building each project.</Description>
+        <MoreInfo>https://bitbucket.org/odyxanthi/vs_buildtimer/wiki/Home</MoreInfo>
         <Icon>icon.png</Icon>
         <PreviewImage>preview.png</PreviewImage>
         <Tags>build, timer, profiler</Tags>

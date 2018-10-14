@@ -114,7 +114,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
                                 BuildStartTime = currentTime
                             };
                             newBuildInfo.Add(projInfo);
-                            newlyFinishedProjects.Add(projInfo.ProjectId);
+                            newlyStartedProjects.Add(projInfo.ProjectId);
                             continue;
                         }
                     }
