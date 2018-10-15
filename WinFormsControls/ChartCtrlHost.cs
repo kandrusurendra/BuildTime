@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -23,6 +24,7 @@ namespace WinFormsControls
     {
         public ChartCtrlHost()
         {
+            m_chartData = new List<ProjectInfo>();
             InitializeComponent();
         }
 
@@ -30,10 +32,10 @@ namespace WinFormsControls
 
         public List<ProjectInfo> ChartData
         {
-            get { return chartData; }
+            get { return m_chartData; }
             set
             {
-                chartData = value;
+                m_chartData = value;
                 UpdateChart();
             }
         }
@@ -41,8 +43,8 @@ namespace WinFormsControls
         private void UpdateChart()
         {
             var BuildGraphChart = this.chart1;
-
-            BuildGraphChart.Height = System.Math.Max(this.panel1.Height, chartData.Count*this.GetBarHeight());
+            int minChartHeight = 40;
+            BuildGraphChart.Height = minChartHeight + m_chartData.Count*this.GetBarHeight();
             BuildGraphChart.Series.Clear();
             BuildGraphChart.Series.Add(new Charting.Series());
             BuildGraphChart.Series[0].ChartType = Charting.SeriesChartType.RangeBar;
@@ -56,7 +58,7 @@ namespace WinFormsControls
             //xAxis.MajorGrid.LineDashStyle = Charting.ChartDashStyle.Dot;
 
 
-            foreach (ProjectInfo info in this.chartData)
+            foreach (ProjectInfo info in this.m_chartData)
             {
                 int projCount = BuildGraphChart.Series[0].Points.Count;
                 int idx = BuildGraphChart.Series[0].Points.AddXY(projCount + 1, info.startTime, info.endTime);
@@ -68,12 +70,15 @@ namespace WinFormsControls
 
         private int GetBarHeight()
         {
-            double ratio = (zoomLevelTrackbar.Value - zoomLevelTrackbar.Minimum) / (double)(zoomLevelTrackbar.Maximum - zoomLevelTrackbar.Minimum);
-            int min = 5, max = 35;
-            return min + (int)((max - min) * ratio);
+            int[] heights = { 8, 10, 12, 15, 18, 22, 27, 35, 45 };
+
+            int idx = this.zoomLevelTrackbar.Value;
+            Debug.Assert(idx >= 0 && idx <= 8);
+
+            return heights[idx];
         }
 
-        private List<ProjectInfo> chartData;
+        private List<ProjectInfo> m_chartData;
 
         private void zoomLevelTrackbar_ValueChanged(object sender, EventArgs e)
         {

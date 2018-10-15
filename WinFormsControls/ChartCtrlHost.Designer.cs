@@ -132,10 +132,11 @@
             // 
             this.zoomLevelTrackbar.Dock = System.Windows.Forms.DockStyle.Fill;
             this.zoomLevelTrackbar.Location = new System.Drawing.Point(39, 3);
+            this.zoomLevelTrackbar.Maximum = 8;
             this.zoomLevelTrackbar.Name = "zoomLevelTrackbar";
             this.zoomLevelTrackbar.Size = new System.Drawing.Size(467, 34);
             this.zoomLevelTrackbar.TabIndex = 0;
-            this.zoomLevelTrackbar.Value = 5;
+            this.zoomLevelTrackbar.Value = 4;
             this.zoomLevelTrackbar.ValueChanged += new System.EventHandler(this.zoomLevelTrackbar_ValueChanged);
             // 
             // pictureBox1
