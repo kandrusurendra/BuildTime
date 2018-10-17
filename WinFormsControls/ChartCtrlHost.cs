@@ -26,6 +26,7 @@ namespace WinFormsControls
         {
             m_chartData = new List<ProjectInfo>();
             InitializeComponent();
+            UpdateChart();
         }
 
         public Charting.Chart Chart { get { return this.chart1; } }
@@ -50,13 +51,7 @@ namespace WinFormsControls
             BuildGraphChart.Series[0].ChartType = Charting.SeriesChartType.RangeBar;
             BuildGraphChart.Series[0].XValueType = Charting.ChartValueType.Auto;
             BuildGraphChart.Series[0].YValueType = Charting.ChartValueType.Auto;
-
-            //var xAxis = BuildGraphChart.ChartAreas[0].AxisX;
-            //xAxis.Interval = 1;
-            //xAxis.MajorGrid.Enabled = true;
-            //xAxis.MajorGrid.Interval = 1;
-            //xAxis.MajorGrid.LineDashStyle = Charting.ChartDashStyle.Dot;
-
+            BuildGraphChart.Legends[0].Enabled = false;
 
             foreach (ProjectInfo info in this.m_chartData)
             {
@@ -65,7 +60,6 @@ namespace WinFormsControls
                 BuildGraphChart.Series[0].Points[idx].AxisLabel = info.projectName;
                 BuildGraphChart.Series[0].Points[idx].ToolTip = info.toolTip;
             }
-
         }
 
         private int GetBarHeight()
