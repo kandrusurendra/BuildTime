@@ -55,7 +55,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\C#\VS_BuildTimer.csproj">
+    <ProjectReference Include="..\VS_BuildTimer\VS_BuildTimer.csproj">
       <Project>{e7729c46-9822-4d2c-be5b-5c4aac2fea82}</Project>
       <Name>VS_BuildTimer</Name>
     </ProjectReference>
