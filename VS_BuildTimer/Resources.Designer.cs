@@ -88,7 +88,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Build Timer Window.
+        ///   Looks up a localized string similar to Build Timer.
         /// </summary>
         internal static string _120 {
             get {
