@@ -189,7 +189,46 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             }
         }
 
+        private void wfHost_LayoutUpdated(object sender, EventArgs e)
+        {
+            if (m_windowPane != null)
+            {
+                PackageToolWindow package = m_windowPane.Package as PackageToolWindow;
+                if (package != null)
+                {
+                    //package.QueryService(typeof(SVsOutputWindow))
+                    //package.GetOutputPane()
+                    //package.GetOutputPane().OutputString("wfHost_LayoutUpdated " + m_count.ToString());
 
+                    IVsOutputWindow outWindow = Package.GetGlobalService(typeof(SVsOutputWindow)) as IVsOutputWindow;
+                    Guid generalPaneGuid = VSConstants.GUID_OutWindowGeneralPane; // P.S. There's also the GUID_OutWindowDebugPane available.
+                    //Guid generalPaneGuid = VSConstants.GUID_
+                    IVsOutputWindowPane generalPane;
+                    outWindow.GetPane(ref generalPaneGuid, out generalPane);
+
+                    //generalPane.OutputString("Hello World!");
+                    if (generalPane != null)
+                    {
+                        generalPane.OutputString(string.Format("wfHost {0}: width={1}, height={2}\n", m_count, this.wfHost.Width, this.wfHost.Height));
+                        generalPane.OutputString(string.Format("wfHost {0}: width={1}, height={2} - actual \n", m_count, this.wfHost.ActualWidth, this.wfHost.ActualHeight));
+
+                        generalPane.OutputString(string.Format("wfHost {0}: width={1}, height={2} - chart  \n", m_count, this.chartCtrlHost.Width, this.chartCtrlHost.Height));
+                        //generalPane.OutputString(string.Format("wfHost {0}: width={1}, height={2} - actual \n", m_count, this.chartCtrlHost.ActualWidth, this.chartCtrlHost.ActualHeight));
+
+                        generalPane.Activate(); // Brings this pane into view
+                    }
+                    else
+                    {
+                        outWindow.CreatePane(generalPaneGuid, "debug", 1, 0);
+                    }
+                    
+                }
+            }
+
+            //System.Diagnostics.Trace.WriteLine("wfHost_LayoutUpdated " + m_count.ToString());
+            m_count++;
+            //this.chartCtrlHost.Size = new System.Drawing.Size(wfHost.wi, wfHost.ActualHeight);
+        }
         private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             // Try to use screen dimensions of wpf control.
@@ -233,6 +272,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
         private IEventRouter m_evtRouter;
         private WindowStatus currentState = null;
 
+        private int m_count = 0;
         
     }
 }
