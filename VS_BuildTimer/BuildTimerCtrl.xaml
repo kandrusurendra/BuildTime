@@ -15,7 +15,7 @@
     <avalonDock:DockingManager Grid.Column="1" x:Name="DManager" SizeChanged="DManager_SizeChanged">
         <avalonDock:LayoutRoot>
             <avalonDock:LayoutPanel Orientation="Horizontal">
-                <avalonDock:LayoutDocumentPane DockWidth="*">
+                <avalonDock:LayoutDocumentPane x:Name="MainPane"  DockWidth="*">
                     <avalonDock:LayoutDocument Title="Build times" CanClose="False">
                         <Grid>
                             <Grid.RowDefinitions>
@@ -44,7 +44,7 @@
                         </Grid>
                     </avalonDock:LayoutDocument>
                 </avalonDock:LayoutDocumentPane>
-                <avalonDock:LayoutAnchorablePane x:Name="timelineAnchorablePane" DockWidth="300">
+                <avalonDock:LayoutAnchorablePane x:Name="timelineAnchorablePane" DockWidth="300" PropertyChanged="timelineAnchorablePane_PropertyChanged">
                     <avalonDock:LayoutAnchorable x:Name="timelineAnchorable" Title="Timeline" CanClose="False" CanHide="False"
                                                  CanAutoHide="True">
                         <Grid x:Name="TimelineWndGrid" SizeChanged="Grid_SizeChanged">
@@ -53,7 +53,7 @@
                                 <RowDefinition Height="45"></RowDefinition>
                             </Grid.RowDefinitions>
                             <WindowsFormsHost Grid.Row="0" Name="wfHost" Padding="2" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="2"
-                                              MinHeight="100" MaxHeight="999">
+                                              MinHeight="100" MaxHeight="999" SizeChanged="wfHost_SizeChanged">
                                 <WinFormsControls:ChartCtrlHost x:Name="WinFormChartCtrl"/>
                             </WindowsFormsHost>
                             <Grid Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" MaxWidth="300" MinWidth="100">

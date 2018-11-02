@@ -31,6 +31,9 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
     /// </summary>
     public partial class BuildTimerCtrl : UserControl, ILogger
     {
+        //
+        // Public interface
+        //
         #region PUBLIC_INTERFACE
         public BuildTimerCtrl(BuildTimerWindowPane windowPane)
         {
@@ -103,8 +106,11 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 
 #endregion
 
-#region IMPLEMENTATION
 
+        //
+        // Implementation
+        //
+#region IMPLEMENTATION
         /// <summary>
         /// This method is the call back for state changes events
         /// </summary>
@@ -188,47 +194,80 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
                 BuildGraphChart.ChartData = ctrlProjInfo;
             }
         }
+        #endregion
+
+
+        //
+        // Debug code
+        //
+        #region DEBUG_CODE
+        private int GetCount()
+        {
+            return m_count_++;
+        }
+
+        private IVsOutputWindowPane GetDebugPane()
+        {
+            IVsOutputWindow outWindow = Package.GetGlobalService(typeof(SVsOutputWindow)) as IVsOutputWindow;
+            Guid generalPaneGuid = VSConstants.GUID_OutWindowGeneralPane; // P.S. There's also the GUID_OutWindowDebugPane available.
+            IVsOutputWindowPane debugPane = null;
+                    outWindow.GetPane(ref generalPaneGuid, out debugPane);
+
+            if (debugPane == null)
+            {
+                outWindow.CreatePane(generalPaneGuid, "debug", 1, 0);
+                outWindow.GetPane(ref generalPaneGuid, out debugPane);
+            }
+            return debugPane;
+        }
 
         private void wfHost_LayoutUpdated(object sender, EventArgs e)
         {
-            if (m_windowPane != null)
+#if DEBUG
+            var debugPane = GetDebugPane();
+            if (debugPane != null)
             {
-                PackageToolWindow package = m_windowPane.Package as PackageToolWindow;
-                if (package != null)
-                {
-                    //package.QueryService(typeof(SVsOutputWindow))
-                    //package.GetOutputPane()
-                    //package.GetOutputPane().OutputString("wfHost_LayoutUpdated " + m_count.ToString());
-
-                    IVsOutputWindow outWindow = Package.GetGlobalService(typeof(SVsOutputWindow)) as IVsOutputWindow;
-                    Guid generalPaneGuid = VSConstants.GUID_OutWindowGeneralPane; // P.S. There's also the GUID_OutWindowDebugPane available.
-                    //Guid generalPaneGuid = VSConstants.GUID_
-                    IVsOutputWindowPane generalPane;
-                    outWindow.GetPane(ref generalPaneGuid, out generalPane);
-
-                    //generalPane.OutputString("Hello World!");
-                    if (generalPane != null)
-                    {
-                        generalPane.OutputString(string.Format("wfHost {0}: width={1}, height={2}\n", m_count, this.wfHost.Width, this.wfHost.Height));
-                        generalPane.OutputString(string.Format("wfHost {0}: width={1}, height={2} - actual \n", m_count, this.wfHost.ActualWidth, this.wfHost.ActualHeight));
-
-                        generalPane.OutputString(string.Format("wfHost {0}: width={1}, height={2} - chart  \n", m_count, this.chartCtrlHost.Width, this.chartCtrlHost.Height));
-                        //generalPane.OutputString(string.Format("wfHost {0}: width={1}, height={2} - actual \n", m_count, this.chartCtrlHost.ActualWidth, this.chartCtrlHost.ActualHeight));
-
-                        generalPane.Activate(); // Brings this pane into view
-                    }
-                    else
-                    {
-                        outWindow.CreatePane(generalPaneGuid, "debug", 1, 0);
-                    }
-                    
-                }
+                debugPane.OutputString(string.Format("wfHost-layoutUpdated {0}: width={1}, height={2}\n", GetCount(), this.wfHost.Width, this.wfHost.Height));
+                debugPane.OutputString(string.Format("wfHost-layoutUpdated {0}: width={1}, height={2} - actual \n", GetCount(), this.wfHost.ActualWidth, this.wfHost.ActualHeight));
+                debugPane.OutputString(string.Format("wfHost-layoutUpdated {0}: width={1}, height={2} - chart  \n", GetCount(), this.WinFormChartCtrl.Width, this.WinFormChartCtrl.Height));
+                debugPane.Activate(); // Brings this pane into view
             }
-
-            //System.Diagnostics.Trace.WriteLine("wfHost_LayoutUpdated " + m_count.ToString());
-            m_count++;
-            //this.chartCtrlHost.Size = new System.Drawing.Size(wfHost.wi, wfHost.ActualHeight);
+#endif
         }
+
+
+        private void wfHost_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+#if DEBUG
+            var debugPane = GetDebugPane();
+            if (debugPane != null)
+            {
+                debugPane.OutputString(string.Format("wfHost-sizeChanged {0}: width={1}, height={2}\n",           GetCount(), this.wfHost.Width, this.wfHost.Height));
+                debugPane.OutputString(string.Format("wfHost-sizeChanged {0}: width={1}, height={2} - actual \n", GetCount(), this.wfHost.ActualWidth, this.wfHost.ActualHeight));
+                debugPane.OutputString(string.Format("wfHost-sizeChanged {0}: width={1}, height={2} - chart  \n", GetCount(), this.WinFormChartCtrl.Width, this.WinFormChartCtrl.Height));
+                debugPane.Activate(); // Brings this pane into view
+            }
+#endif
+        }
+
+
+        private void DManager_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            #if DEBUG
+            var dx = e.NewSize.Width - e.PreviousSize.Width;
+            var dy = e.NewSize.Height - e.PreviousSize.Height;
+
+            var debugPane = GetDebugPane();
+            if (debugPane != null)
+            {
+                debugPane.OutputString(string.Format("dmanager-sizeChanged {0}: width={1}, height={2}\n", 
+                    GetCount(), this.DManager.ActualWidth, this.DManager.ActualHeight));
+                debugPane.OutputString(string.Format("> main pane dockWidth = {0}\n", this.MainPane.DockWidth));
+                debugPane.OutputString(string.Format("> time pane dockWidth = {0}\n", this.timelineAnchorablePane.DockWidth));
+            }
+            #endif
+        }
+
         private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             // Try to use screen dimensions of wpf control.
@@ -245,21 +284,18 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             }
         }
 
-        private void DManager_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void timelineAnchorablePane_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            // Try to use screen dimensions of wpf control.
-            var paneWidth = timelineAnchorablePane.DockWidth;
-            var paneHeight = timelineAnchorablePane.DockHeight;
-            if (WinFormChartCtrl.Width > (paneWidth.Value - 10.0) ||
-                WinFormChartCtrl.Height > (paneHeight.Value - 10.0))
+            var debugPane = GetDebugPane();
+            if (debugPane != null)
             {
-                wfHost.Visibility = System.Windows.Visibility.Hidden;
-                WinFormChartCtrl.Visible = false;
-            }
-            else
-            {
-                wfHost.Visibility = System.Windows.Visibility.Visible;
-                WinFormChartCtrl.Visible = true;
+                debugPane.OutputString(string.Format("timelinePane-propChanged {0}: {1}\n", GetCount(), e.PropertyName));
+                if (e.PropertyName=="DockWidth")
+                {
+                    //this.timelineAnchorablePane.DockWidth
+                    debugPane.OutputString(string.Format("> main pane dockWidth = {0}\n", this.MainPane.DockWidth));
+                    debugPane.OutputString(string.Format("> time pane dockWidth = {0}\n", this.timelineAnchorablePane.DockWidth));
+                }
             }
         }
         #endregion
@@ -272,7 +308,6 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
         private IEventRouter m_evtRouter;
         private WindowStatus currentState = null;
 
-        private int m_count = 0;
-        
+        private int m_count_ = 0;
     }
 }
