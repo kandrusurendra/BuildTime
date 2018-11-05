@@ -46,11 +46,40 @@
                 </avalonDock:LayoutDocumentPane>
                 <avalonDock:LayoutAnchorablePane DockWidth="300">
                     <avalonDock:LayoutAnchorable Title="Timeline" CanClose="False" CanHide="False">
-                        <WindowsFormsHost Name="wfHost" Padding="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="2">
-                            <WinFormsControls:ChartCtrlHost x:Name="chartCtrlHost"/>
-                            <!-- <WinFormsControls.ChartCtrlHost x:Name="chartCtrlHost"></WinFormsControls.ChartCtrlHost>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"></RowDefinition>
+                                <RowDefinition Height="45"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <!--
+                            <Button Grid.Row="0" Content="Press me" MinHeight="100" MaxHeight="300"/>
                             -->
-                        </WindowsFormsHost>
+                            <WindowsFormsHost Grid.Row="0" Name="wfHost" Padding="2" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="2"
+                                              MinHeight="100" MaxHeight="999">
+                                <WinFormsControls:ChartCtrlHost x:Name="chartCtrlHost"/>
+                            </WindowsFormsHost>
+                            <Grid Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="35"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="35"/>
+                                </Grid.ColumnDefinitions>
+                                <!--<Image Source="Resources\ZoomOut.png" Width="30" Height="35"></Image>-->
+                                <Button Grid.Column="0" Content="B1" Width="30" Height="35"/>
+                                <Slider Grid.Column="1" Minimum="0" Maximum="10" Value="5"
+                                        Width="200" MinWidth="100" MinHeight="20" MaxWidth="250" 
+                                        MaxHeight="40"/>
+                                <Button Grid.Column="2" Content="B2" Width="30" Height="35"/>
+                                <!--<Image Source="Resources\ZoomIn.png" Width="30" Height="35"></Image>-->
+                            </Grid>
+                        </Grid>
+                        <!--
+                            <WindowsFormsHost Name="wfHost" Padding="2" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="2"
+                                              MinHeight="100">
+                                <WinFormsControls:ChartCtrlHost x:Name="chartCtrlHost"/>
+                            </WindowsFormsHost>
+                            -->
+                            
                     </avalonDock:LayoutAnchorable>
                 </avalonDock:LayoutAnchorablePane>
             </avalonDock:LayoutPanel>

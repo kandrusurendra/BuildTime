@@ -260,6 +260,10 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Resource Include="ZoomIn.png" />
+    <Resource Include="ZoomOut.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <PropertyGroup>
     <UseCodebase>true</UseCodebase>
