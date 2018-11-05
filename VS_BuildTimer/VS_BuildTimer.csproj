@@ -261,9 +261,7 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Resource Include="ZoomIn.png" />
-    <Resource Include="ZoomOut.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
+    <Resource Include="ZoomOut.png" />
   </ItemGroup>
   <PropertyGroup>
     <UseCodebase>true</UseCodebase>
