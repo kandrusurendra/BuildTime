@@ -139,7 +139,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 
         private void UpdateUI(List<ProjectBuildInfo> buildInfo)
         {
-            var BuildGraphChart = this.chartCtrlHost;
+            var BuildGraphChart = this.WinFormChartCtrl;
             if (buildInfo == null || buildInfo.Count == 0)
             {
                 BuildGraphChart.ChartData = new List<WinFormsControls.ProjectInfo>();
@@ -189,8 +189,41 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             }
         }
 
-        
-#endregion
+
+        private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            // Try to use screen dimensions of wpf control.
+            if (WinFormChartCtrl.Width > TimelineWndGrid.Width || 
+                WinFormChartCtrl.Height > TimelineWndGrid.Height)
+            {
+                wfHost.Visibility = System.Windows.Visibility.Hidden;
+                WinFormChartCtrl.Visible = false;
+            }
+            else
+            {
+                wfHost.Visibility = System.Windows.Visibility.Visible;
+                WinFormChartCtrl.Visible = true;
+            }
+        }
+
+        private void DManager_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            // Try to use screen dimensions of wpf control.
+            var paneWidth = timelineAnchorablePane.DockWidth;
+            var paneHeight = timelineAnchorablePane.DockHeight;
+            if (WinFormChartCtrl.Width > (paneWidth.Value - 10.0) ||
+                WinFormChartCtrl.Height > (paneHeight.Value - 10.0))
+            {
+                wfHost.Visibility = System.Windows.Visibility.Hidden;
+                WinFormChartCtrl.Visible = false;
+            }
+            else
+            {
+                wfHost.Visibility = System.Windows.Visibility.Visible;
+                WinFormChartCtrl.Visible = true;
+            }
+        }
+        #endregion
 
 
         //
@@ -199,5 +232,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
         private BuildTimerWindowPane m_windowPane;
         private IEventRouter m_evtRouter;
         private WindowStatus currentState = null;
+
+        
     }
 }

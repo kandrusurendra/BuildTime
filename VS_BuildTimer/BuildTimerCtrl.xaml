@@ -12,7 +12,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="480" d:DesignWidth="640">
 
-    <avalonDock:DockingManager Grid.Column="1" x:Name="DManager">
+    <avalonDock:DockingManager Grid.Column="1" x:Name="DManager" SizeChanged="DManager_SizeChanged">
         <avalonDock:LayoutRoot>
             <avalonDock:LayoutPanel Orientation="Horizontal">
                 <avalonDock:LayoutDocumentPane DockWidth="*">
@@ -44,19 +44,17 @@
                         </Grid>
                     </avalonDock:LayoutDocument>
                 </avalonDock:LayoutDocumentPane>
-                <avalonDock:LayoutAnchorablePane DockWidth="300">
-                    <avalonDock:LayoutAnchorable Title="Timeline" CanClose="False" CanHide="False">
-                        <Grid>
+                <avalonDock:LayoutAnchorablePane x:Name="timelineAnchorablePane" DockWidth="300">
+                    <avalonDock:LayoutAnchorable x:Name="timelineAnchorable" Title="Timeline" CanClose="False" CanHide="False"
+                                                 CanAutoHide="True">
+                        <Grid x:Name="TimelineWndGrid" SizeChanged="Grid_SizeChanged">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*"></RowDefinition>
                                 <RowDefinition Height="45"></RowDefinition>
                             </Grid.RowDefinitions>
-                            <!--
-                            <Button Grid.Row="0" Content="Press me" MinHeight="100" MaxHeight="300"/>
-                            -->
                             <WindowsFormsHost Grid.Row="0" Name="wfHost" Padding="2" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="2"
                                               MinHeight="100" MaxHeight="999">
-                                <WinFormsControls:ChartCtrlHost x:Name="chartCtrlHost"/>
+                                <WinFormsControls:ChartCtrlHost x:Name="WinFormChartCtrl"/>
                             </WindowsFormsHost>
                             <Grid Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" MaxWidth="300" MinWidth="100">
                                 <Grid.ColumnDefinitions>
