@@ -242,9 +242,9 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             var debugPane = GetDebugPane();
             if (debugPane != null)
             {
-                debugPane.OutputString(string.Format("wfHost-sizeChanged {0}: width={1}, height={2}\n",           GetCount(), this.wfHost.Width, this.wfHost.Height));
+                //debugPane.OutputString(string.Format("wfHost-sizeChanged {0}: width={1}, height={2}\n",           GetCount(), this.wfHost.Width, this.wfHost.Height));
                 debugPane.OutputString(string.Format("wfHost-sizeChanged {0}: width={1}, height={2} - actual \n", GetCount(), this.wfHost.ActualWidth, this.wfHost.ActualHeight));
-                debugPane.OutputString(string.Format("wfHost-sizeChanged {0}: width={1}, height={2} - chart  \n", GetCount(), this.WinFormChartCtrl.Width, this.WinFormChartCtrl.Height));
+                //debugPane.OutputString(string.Format("wfHost-sizeChanged {0}: width={1}, height={2} - chart  \n", GetCount(), this.WinFormChartCtrl.Width, this.WinFormChartCtrl.Height));
                 debugPane.Activate(); // Brings this pane into view
             }
 #endif
@@ -262,9 +262,16 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             {
                 debugPane.OutputString(string.Format("dmanager-sizeChanged {0}: width={1}, height={2}\n", 
                     GetCount(), this.DManager.ActualWidth, this.DManager.ActualHeight));
-                debugPane.OutputString(string.Format("> main pane dockWidth = {0}\n", this.MainPane.DockWidth));
-                debugPane.OutputString(string.Format("> time pane dockWidth = {0}\n", this.timelineAnchorablePane.DockWidth));
+                debugPane.OutputString(string.Format("> main pane dock (width,height) = ({0},{1})\n", this.MainPane.DockWidth, this.MainPane.DockHeight));
+                debugPane.OutputString(string.Format("> time pane dock (width,height) = ({0},{1})\n", this.timelineAnchorablePane.DockWidth, this.timelineAnchorablePane.DockHeight));
             }
+
+            if (!this.timelineAnchorable.IsFloating)
+            {
+                this.timelineAnchorablePane.DockWidth = new GridLength(
+                    this.timelineAnchorablePane.DockWidth.Value + dx, GridUnitType.Pixel);
+            }
+
             #endif
         }
 
@@ -290,11 +297,11 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             if (debugPane != null)
             {
                 debugPane.OutputString(string.Format("timelinePane-propChanged {0}: {1}\n", GetCount(), e.PropertyName));
-                if (e.PropertyName=="DockWidth")
+                if (e.PropertyName=="DockWidth" || e.PropertyName=="DockHeight")
                 {
                     //this.timelineAnchorablePane.DockWidth
-                    debugPane.OutputString(string.Format("> main pane dockWidth = {0}\n", this.MainPane.DockWidth));
-                    debugPane.OutputString(string.Format("> time pane dockWidth = {0}\n", this.timelineAnchorablePane.DockWidth));
+                    debugPane.OutputString(string.Format("> main pane dock (width,height) = ({0},{1})\n", this.MainPane.DockWidth, this.MainPane.DockHeight));
+                    debugPane.OutputString(string.Format("> time pane dock (width,height) = ({0},{1})\n", this.timelineAnchorablePane.DockWidth, this.timelineAnchorablePane.DockHeight));
                 }
             }
         }
