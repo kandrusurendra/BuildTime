@@ -47,14 +47,21 @@
                 <avalonDock:LayoutAnchorablePane x:Name="timelineAnchorablePane" DockWidth="300" PropertyChanged="timelineAnchorablePane_PropertyChanged">
                     <avalonDock:LayoutAnchorable x:Name="timelineAnchorable" Title="Timeline" CanClose="False" CanHide="False"
                                                  CanAutoHide="True">
+                        
+                        <WindowsFormsHost Grid.Row="0" Name="wfHost" Padding="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="2"
+                                              MinHeight="100" MaxHeight="999" SizeChanged="wfHost_SizeChanged">
+                            <WinFormsControls:TimelineCtrl x:Name="WinFormChartCtrl"/>
+                        </WindowsFormsHost>
+
+                        <!--
                         <Grid x:Name="TimelineWndGrid" SizeChanged="Grid_SizeChanged">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*"></RowDefinition>
                                 <RowDefinition Height="45"></RowDefinition>
                             </Grid.RowDefinitions>
-                            <WindowsFormsHost Grid.Row="0" Name="wfHost" Padding="2" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="2"
+                            <WindowsFormsHost Grid.Row="0" Name="wfHost" Padding="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="2"
                                               MinHeight="100" MaxHeight="999" SizeChanged="wfHost_SizeChanged">
-                                <WinFormsControls:ChartCtrlHost x:Name="WinFormChartCtrl"/>
+                                <WinFormsControls:TimelineCtrl x:Name="WinFormChartCtrl"/>
                             </WindowsFormsHost>
                             <Grid Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" MaxWidth="300" MinWidth="100">
                                 <Grid.ColumnDefinitions>
@@ -67,6 +74,7 @@
                                 <Image Grid.Column="2" Source="ZoomIn.png" Width="32" Height="32"></Image>
                             </Grid>
                         </Grid>
+                        -->
                     </avalonDock:LayoutAnchorable>
                 </avalonDock:LayoutAnchorablePane>
             </avalonDock:LayoutPanel>

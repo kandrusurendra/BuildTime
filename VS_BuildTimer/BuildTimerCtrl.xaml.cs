@@ -110,7 +110,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
         //
         // Implementation
         //
-#region IMPLEMENTATION
+        #region IMPLEMENTATION
         /// <summary>
         /// This method is the call back for state changes events
         /// </summary>
@@ -238,6 +238,9 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 
         private void wfHost_SizeChanged(object sender, SizeChangedEventArgs e)
         {
+            //this.WinFormChartCtrl.Width = (int)(e.NewSize.Width);
+            //this.WinFormChartCtrl.Height = (int)(e.NewSize.Height);
+            //this.WinFormChartCtrl.Size;
 #if DEBUG
             var debugPane = GetDebugPane();
             if (debugPane != null)
@@ -253,10 +256,24 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 
         private void DManager_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            #if DEBUG
             var dx = e.NewSize.Width - e.PreviousSize.Width;
             var dy = e.NewSize.Height - e.PreviousSize.Height;
 
+            if (!this.timelineAnchorable.IsFloating)
+            {
+                if (e.PreviousSize.Width > 0.0)
+                {
+                    double newWidth = this.timelineAnchorablePane.DockWidth.Value + dx;
+                    this.timelineAnchorablePane.DockWidth = new GridLength(newWidth, GridUnitType.Pixel);
+                }
+                
+
+                this.timelineAnchorablePane.DockHeight = new GridLength(e.NewSize.Height - 10, GridUnitType.Pixel);
+                this.wfHost.Height = e.NewSize.Height - 60;
+            }
+
+
+#if DEBUG
             var debugPane = GetDebugPane();
             if (debugPane != null)
             {
@@ -265,30 +282,23 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
                 debugPane.OutputString(string.Format("> main pane dock (width,height) = ({0},{1})\n", this.MainPane.DockWidth, this.MainPane.DockHeight));
                 debugPane.OutputString(string.Format("> time pane dock (width,height) = ({0},{1})\n", this.timelineAnchorablePane.DockWidth, this.timelineAnchorablePane.DockHeight));
             }
-
-            if (!this.timelineAnchorable.IsFloating)
-            {
-                this.timelineAnchorablePane.DockWidth = new GridLength(
-                    this.timelineAnchorablePane.DockWidth.Value + dx, GridUnitType.Pixel);
-            }
-
-            #endif
+#endif            
         }
 
         private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            // Try to use screen dimensions of wpf control.
-            if (WinFormChartCtrl.Width > TimelineWndGrid.Width || 
-                WinFormChartCtrl.Height > TimelineWndGrid.Height)
-            {
-                wfHost.Visibility = System.Windows.Visibility.Hidden;
-                WinFormChartCtrl.Visible = false;
-            }
-            else
-            {
-                wfHost.Visibility = System.Windows.Visibility.Visible;
-                WinFormChartCtrl.Visible = true;
-            }
+            //// Try to use screen dimensions of wpf control.
+            //if (WinFormChartCtrl.Width > TimelineWndGrid.Width || 
+            //    WinFormChartCtrl.Height > TimelineWndGrid.Height)
+            //{
+            //    wfHost.Visibility = System.Windows.Visibility.Hidden;
+            //    WinFormChartCtrl.Visible = false;
+            //}
+            //else
+            //{
+            //    wfHost.Visibility = System.Windows.Visibility.Visible;
+            //    WinFormChartCtrl.Visible = true;
+            //}
         }
 
         private void timelineAnchorablePane_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -305,7 +315,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
                 }
             }
         }
-        #endregion
+#endregion
 
 
         //

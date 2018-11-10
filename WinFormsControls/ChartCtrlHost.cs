@@ -12,14 +12,6 @@ using Charting = System.Windows.Forms.DataVisualization.Charting;
 
 namespace WinFormsControls
 {
-    public struct ProjectInfo
-    {
-        public double startTime;
-        public double endTime;
-        public string projectName;
-        public string toolTip;
-    }
-
     public partial class ChartCtrlHost : UserControl
     {
         public ChartCtrlHost()
@@ -77,6 +69,11 @@ namespace WinFormsControls
         private void zoomLevelTrackbar_ValueChanged(object sender, EventArgs e)
         {
             UpdateChart();
+        }
+
+        private void zoomLevelTrackbar_Scroll(object sender, EventArgs e)
+        {
+
         }
     }
 }
