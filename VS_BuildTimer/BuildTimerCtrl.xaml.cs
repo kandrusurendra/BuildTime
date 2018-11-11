@@ -238,9 +238,6 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 
         private void wfHost_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            //this.WinFormChartCtrl.Width = (int)(e.NewSize.Width);
-            //this.WinFormChartCtrl.Height = (int)(e.NewSize.Height);
-            //this.WinFormChartCtrl.Size;
 #if DEBUG
             var debugPane = GetDebugPane();
             if (debugPane != null)
@@ -263,15 +260,12 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             {
                 if (e.PreviousSize.Width > 0.0)
                 {
-                    double newWidth = this.timelineAnchorablePane.DockWidth.Value + dx;
+                    double newWidth = Math.Max(0.0, this.timelineAnchorablePane.DockWidth.Value + dx);
                     this.timelineAnchorablePane.DockWidth = new GridLength(newWidth, GridUnitType.Pixel);
                 }
                 
-
-                this.timelineAnchorablePane.DockHeight = new GridLength(e.NewSize.Height - 10, GridUnitType.Pixel);
-                this.wfHost.Height = e.NewSize.Height - 60;
+                this.timelineAnchorablePane.DockHeight = new GridLength(e.NewSize.Height-10, GridUnitType.Pixel);
             }
-
 
 #if DEBUG
             var debugPane = GetDebugPane();
