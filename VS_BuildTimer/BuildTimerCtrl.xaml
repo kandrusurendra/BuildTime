@@ -28,8 +28,8 @@
                                 <ColumnDefinition Width="*"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
                             <DataGrid Grid.Row="0" Grid.Column="0" Name="BuildInfoGrid" 
-                                      HorizontalAlignment="Stretch" VerticalAlignment="Top"
-                                      Margin="2" AutoGenerateColumns="False" MouseDoubleClick="OnGridDoubleClick">
+                                      HorizontalAlignment="Stretch" VerticalAlignment="Top" MouseDoubleClick="OnGridDoubleClick"
+                                      Margin="2" AutoGenerateColumns="False" IsReadOnly="True">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="Project" Binding="{Binding Path=ProjectName}"/>
                                     <DataGridTextColumn Header="ID" Binding="{Binding Path=ProjectId}"/>
