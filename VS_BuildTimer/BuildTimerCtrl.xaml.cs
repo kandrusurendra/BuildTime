@@ -126,13 +126,6 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             InvalidateVisual();
         }
 
-        private void OnGridDoubleClick(object sender, EventArgs args)
-        {
-            var extractor = BuildInfoExtractor;
-            if (extractor!=null)
-                this.UpdateUI(extractor.GetBuildProgressInfo());
-        }
-
         private void OnOutputPaneUpdated(object sender, OutputWndEventArgs args)
         {
             if (args.WindowPane != null && args.WindowPane.Name == "Build")
@@ -221,35 +214,29 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             return debugPane;
         }
 
-        private void wfHost_LayoutUpdated(object sender, EventArgs e)
+        private void DebugOutput(string s)
         {
 #if DEBUG
             var debugPane = GetDebugPane();
             if (debugPane != null)
             {
-                debugPane.OutputString(string.Format("wfHost-layoutUpdated {0}: width={1}, height={2}\n", GetCount(), this.wfHost.Width, this.wfHost.Height));
-                debugPane.OutputString(string.Format("wfHost-layoutUpdated {0}: width={1}, height={2} - actual \n", GetCount(), this.wfHost.ActualWidth, this.wfHost.ActualHeight));
-                debugPane.OutputString(string.Format("wfHost-layoutUpdated {0}: width={1}, height={2} - chart  \n", GetCount(), this.WinFormChartCtrl.Width, this.WinFormChartCtrl.Height));
-                debugPane.Activate(); // Brings this pane into view
+                debugPane.Activate();
+                debugPane.OutputString(s);
             }
 #endif
         }
 
+        private void wfHost_LayoutUpdated(object sender, EventArgs e)
+        {
+            DebugOutput(string.Format("wfHost-layoutUpdated {0}: width={1}, height={2}\n", GetCount(), this.wfHost.Width, this.wfHost.Height));
+            DebugOutput(string.Format("wfHost-layoutUpdated {0}: width={1}, height={2} - actual \n", GetCount(), this.wfHost.ActualWidth, this.wfHost.ActualHeight));
+            DebugOutput(string.Format("wfHost-layoutUpdated {0}: width={1}, height={2} - chart  \n", GetCount(), this.WinFormChartCtrl.Width, this.WinFormChartCtrl.Height));
+        }
 
         private void wfHost_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-#if DEBUG
-            var debugPane = GetDebugPane();
-            if (debugPane != null)
-            {
-                //debugPane.OutputString(string.Format("wfHost-sizeChanged {0}: width={1}, height={2}\n",           GetCount(), this.wfHost.Width, this.wfHost.Height));
-                debugPane.OutputString(string.Format("wfHost-sizeChanged {0}: width={1}, height={2} - actual \n", GetCount(), this.wfHost.ActualWidth, this.wfHost.ActualHeight));
-                //debugPane.OutputString(string.Format("wfHost-sizeChanged {0}: width={1}, height={2} - chart  \n", GetCount(), this.WinFormChartCtrl.Width, this.WinFormChartCtrl.Height));
-                debugPane.Activate(); // Brings this pane into view
-            }
-#endif
+            DebugOutput(string.Format("wfHost-sizeChanged {0}: width={1}, height={2} - actual \n", GetCount(), this.wfHost.ActualWidth, this.wfHost.ActualHeight));
         }
-
 
         private void DManager_SizeChanged(object sender, SizeChangedEventArgs e)
         {
@@ -267,49 +254,34 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
                 this.timelineAnchorablePane.DockHeight = new GridLength(e.NewSize.Height-10, GridUnitType.Pixel);
             }
 
-#if DEBUG
-            var debugPane = GetDebugPane();
-            if (debugPane != null)
-            {
-                debugPane.OutputString(string.Format("dmanager-sizeChanged {0}: width={1}, height={2}\n", 
-                    GetCount(), this.DManager.ActualWidth, this.DManager.ActualHeight));
-                debugPane.OutputString(string.Format("> main pane dock (width,height) = ({0},{1})\n", this.MainPane.DockWidth, this.MainPane.DockHeight));
-                debugPane.OutputString(string.Format("> time pane dock (width,height) = ({0},{1})\n", this.timelineAnchorablePane.DockWidth, this.timelineAnchorablePane.DockHeight));
-            }
-#endif            
+            DebugOutput(string.Format("dmanager-sizeChanged {0}: width={1}, height={2}\n", 
+                GetCount(), this.DManager.ActualWidth, this.DManager.ActualHeight));
+            DebugOutput(string.Format("> main pane dock (width,height) = ({0},{1})\n", this.MainPane.DockWidth, this.MainPane.DockHeight));
+            DebugOutput(string.Format("> time pane dock (width,height) = ({0},{1})\n", this.timelineAnchorablePane.DockWidth, this.timelineAnchorablePane.DockHeight));
         }
 
         private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            //// Try to use screen dimensions of wpf control.
-            //if (WinFormChartCtrl.Width > TimelineWndGrid.Width || 
-            //    WinFormChartCtrl.Height > TimelineWndGrid.Height)
-            //{
-            //    wfHost.Visibility = System.Windows.Visibility.Hidden;
-            //    WinFormChartCtrl.Visible = false;
-            //}
-            //else
-            //{
-            //    wfHost.Visibility = System.Windows.Visibility.Visible;
-            //    WinFormChartCtrl.Visible = true;
-            //}
+        }
+
+        private void OnGridDoubleClick(object sender, EventArgs args)
+        {
+            //var extractor = BuildInfoExtractor;
+            //if (extractor != null)
+            //    this.UpdateUI(extractor.GetBuildProgressInfo());
         }
 
         private void timelineAnchorablePane_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            var debugPane = GetDebugPane();
-            if (debugPane != null)
+            DebugOutput(string.Format("timelinePane-propChanged {0}: {1}\n", GetCount(), e.PropertyName));
+            if (e.PropertyName=="DockWidth" || e.PropertyName=="DockHeight")
             {
-                debugPane.OutputString(string.Format("timelinePane-propChanged {0}: {1}\n", GetCount(), e.PropertyName));
-                if (e.PropertyName=="DockWidth" || e.PropertyName=="DockHeight")
-                {
-                    //this.timelineAnchorablePane.DockWidth
-                    debugPane.OutputString(string.Format("> main pane dock (width,height) = ({0},{1})\n", this.MainPane.DockWidth, this.MainPane.DockHeight));
-                    debugPane.OutputString(string.Format("> time pane dock (width,height) = ({0},{1})\n", this.timelineAnchorablePane.DockWidth, this.timelineAnchorablePane.DockHeight));
-                }
+                //this.timelineAnchorablePane.DockWidth
+                DebugOutput(string.Format("> main pane dock (width,height) = ({0},{1})\n", this.MainPane.DockWidth, this.MainPane.DockHeight));
+                DebugOutput(string.Format("> time pane dock (width,height) = ({0},{1})\n", this.timelineAnchorablePane.DockWidth, this.timelineAnchorablePane.DockHeight));
             }
         }
-#endregion
+        #endregion
 
 
         //
