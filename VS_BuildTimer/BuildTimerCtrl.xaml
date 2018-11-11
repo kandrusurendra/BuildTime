@@ -12,10 +12,11 @@
              mc:Ignorable="d" 
              d:DesignHeight="480" d:DesignWidth="640">
 
-    <avalonDock:DockingManager Grid.Column="1" x:Name="DManager">
+    <avalonDock:DockingManager Grid.Column="1" x:Name="DManager" SizeChanged="DManager_SizeChanged"
+                               Background="White">
         <avalonDock:LayoutRoot>
             <avalonDock:LayoutPanel Orientation="Horizontal">
-                <avalonDock:LayoutDocumentPane DockWidth="*">
+                <avalonDock:LayoutDocumentPane x:Name="MainPane"  DockWidth="*">
                     <avalonDock:LayoutDocument Title="Build times" CanClose="False">
                         <Grid>
                             <Grid.RowDefinitions>
@@ -27,8 +28,8 @@
                                 <ColumnDefinition Width="*"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
                             <DataGrid Grid.Row="0" Grid.Column="0" Name="BuildInfoGrid" 
-                                      HorizontalAlignment="Stretch" VerticalAlignment="Top"
-                                      Margin="2" AutoGenerateColumns="False" MouseDoubleClick="OnGridDoubleClick">
+                                      HorizontalAlignment="Stretch" VerticalAlignment="Top" MouseDoubleClick="OnGridDoubleClick"
+                                      Margin="2" AutoGenerateColumns="False" IsReadOnly="True">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="Project" Binding="{Binding Path=ProjectName}"/>
                                     <DataGridTextColumn Header="ID" Binding="{Binding Path=ProjectId}"/>
@@ -44,13 +45,37 @@
                         </Grid>
                     </avalonDock:LayoutDocument>
                 </avalonDock:LayoutDocumentPane>
-                <avalonDock:LayoutAnchorablePane DockWidth="300">
-                    <avalonDock:LayoutAnchorable Title="Timeline" CanClose="False" CanHide="False">
-                        <WindowsFormsHost Name="wfHost" Padding="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="2">
-                            <WinFormsControls:ChartCtrlHost x:Name="chartCtrlHost"/>
-                            <!-- <WinFormsControls.ChartCtrlHost x:Name="chartCtrlHost"></WinFormsControls.ChartCtrlHost>
-                            -->
+                <avalonDock:LayoutAnchorablePane x:Name="timelineAnchorablePane" DockWidth="300" PropertyChanged="timelineAnchorablePane_PropertyChanged">
+                    <avalonDock:LayoutAnchorable x:Name="timelineAnchorable" Title="Timeline" AutoHideHeight="100" CanClose="False" CanHide="False"
+                                                 CanAutoHide="True">
+                        
+                        <WindowsFormsHost Grid.Row="0" Name="wfHost" Padding="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="2"
+                                              MinHeight="100" MaxHeight="999" SizeChanged="wfHost_SizeChanged">
+                            <WinFormsControls:TimelineCtrl x:Name="WinFormChartCtrl"/>
                         </WindowsFormsHost>
+
+                        <!--
+                        <Grid x:Name="TimelineWndGrid" SizeChanged="Grid_SizeChanged">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"></RowDefinition>
+                                <RowDefinition Height="45"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <WindowsFormsHost Grid.Row="0" Name="wfHost" Padding="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="2"
+                                              MinHeight="100" MaxHeight="999" SizeChanged="wfHost_SizeChanged">
+                                <WinFormsControls:TimelineCtrl x:Name="WinFormChartCtrl"/>
+                            </WindowsFormsHost>
+                            <Grid Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" MaxWidth="300" MinWidth="100">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="35"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="35"/>
+                                </Grid.ColumnDefinitions>
+                                <Image Grid.Column="0" Source="ZoomOut.png" Width="32" Height="32"></Image>
+                                <Slider Grid.Column="1" Minimum="0" Maximum="10" Value="5" MinHeight="20" MaxHeight="40"/>
+                                <Image Grid.Column="2" Source="ZoomIn.png" Width="32" Height="32"></Image>
+                            </Grid>
+                        </Grid>
+                        -->
                     </avalonDock:LayoutAnchorable>
                 </avalonDock:LayoutAnchorablePane>
             </avalonDock:LayoutPanel>

@@ -31,6 +31,9 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
     /// </summary>
     public partial class BuildTimerCtrl : UserControl, ILogger
     {
+        //
+        // Public interface
+        //
         #region PUBLIC_INTERFACE
         public BuildTimerCtrl(BuildTimerWindowPane windowPane)
         {
@@ -103,8 +106,11 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 
 #endregion
 
-#region IMPLEMENTATION
 
+        //
+        // Implementation
+        //
+        #region IMPLEMENTATION
         /// <summary>
         /// This method is the call back for state changes events
         /// </summary>
@@ -120,13 +126,6 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             InvalidateVisual();
         }
 
-        private void OnGridDoubleClick(object sender, EventArgs args)
-        {
-            var extractor = BuildInfoExtractor;
-            if (extractor!=null)
-                this.UpdateUI(extractor.GetBuildProgressInfo());
-        }
-
         private void OnOutputPaneUpdated(object sender, OutputWndEventArgs args)
         {
             if (args.WindowPane != null && args.WindowPane.Name == "Build")
@@ -139,7 +138,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 
         private void UpdateUI(List<ProjectBuildInfo> buildInfo)
         {
-            var BuildGraphChart = this.chartCtrlHost;
+            var BuildGraphChart = this.WinFormChartCtrl;
             if (buildInfo == null || buildInfo.Count == 0)
             {
                 BuildGraphChart.ChartData = new List<WinFormsControls.ProjectInfo>();
@@ -188,9 +187,101 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
                 BuildGraphChart.ChartData = ctrlProjInfo;
             }
         }
+        #endregion
 
-        
-#endregion
+
+        //
+        // Debug code
+        //
+        #region DEBUG_CODE
+        private int GetCount()
+        {
+            return m_count_++;
+        }
+
+        private IVsOutputWindowPane GetDebugPane()
+        {
+            IVsOutputWindow outWindow = Package.GetGlobalService(typeof(SVsOutputWindow)) as IVsOutputWindow;
+            Guid generalPaneGuid = VSConstants.GUID_OutWindowGeneralPane; // P.S. There's also the GUID_OutWindowDebugPane available.
+            IVsOutputWindowPane debugPane = null;
+                    outWindow.GetPane(ref generalPaneGuid, out debugPane);
+
+            if (debugPane == null)
+            {
+                outWindow.CreatePane(generalPaneGuid, "debug", 1, 0);
+                outWindow.GetPane(ref generalPaneGuid, out debugPane);
+            }
+            return debugPane;
+        }
+
+        private void DebugOutput(string s)
+        {
+#if DEBUG
+            var debugPane = GetDebugPane();
+            if (debugPane != null)
+            {
+                debugPane.Activate();
+                debugPane.OutputString(s);
+            }
+#endif
+        }
+
+        private void wfHost_LayoutUpdated(object sender, EventArgs e)
+        {
+            DebugOutput(string.Format("wfHost-layoutUpdated {0}: width={1}, height={2}\n", GetCount(), this.wfHost.Width, this.wfHost.Height));
+            DebugOutput(string.Format("wfHost-layoutUpdated {0}: width={1}, height={2} - actual \n", GetCount(), this.wfHost.ActualWidth, this.wfHost.ActualHeight));
+            DebugOutput(string.Format("wfHost-layoutUpdated {0}: width={1}, height={2} - chart  \n", GetCount(), this.WinFormChartCtrl.Width, this.WinFormChartCtrl.Height));
+        }
+
+        private void wfHost_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            DebugOutput(string.Format("wfHost-sizeChanged {0}: width={1}, height={2} - actual \n", GetCount(), this.wfHost.ActualWidth, this.wfHost.ActualHeight));
+        }
+
+        private void DManager_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            var dx = e.NewSize.Width - e.PreviousSize.Width;
+            var dy = e.NewSize.Height - e.PreviousSize.Height;
+
+            if (!this.timelineAnchorable.IsFloating)
+            {
+                if (e.PreviousSize.Width > 0.0)
+                {
+                    double newWidth = Math.Max(0.0, this.timelineAnchorablePane.DockWidth.Value + dx);
+                    this.timelineAnchorablePane.DockWidth = new GridLength(newWidth, GridUnitType.Pixel);
+                }
+                
+                this.timelineAnchorablePane.DockHeight = new GridLength(e.NewSize.Height-10, GridUnitType.Pixel);
+            }
+
+            DebugOutput(string.Format("dmanager-sizeChanged {0}: width={1}, height={2}\n", 
+                GetCount(), this.DManager.ActualWidth, this.DManager.ActualHeight));
+            DebugOutput(string.Format("> main pane dock (width,height) = ({0},{1})\n", this.MainPane.DockWidth, this.MainPane.DockHeight));
+            DebugOutput(string.Format("> time pane dock (width,height) = ({0},{1})\n", this.timelineAnchorablePane.DockWidth, this.timelineAnchorablePane.DockHeight));
+        }
+
+        private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+        }
+
+        private void OnGridDoubleClick(object sender, EventArgs args)
+        {
+            //var extractor = BuildInfoExtractor;
+            //if (extractor != null)
+            //    this.UpdateUI(extractor.GetBuildProgressInfo());
+        }
+
+        private void timelineAnchorablePane_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            DebugOutput(string.Format("timelinePane-propChanged {0}: {1}\n", GetCount(), e.PropertyName));
+            if (e.PropertyName=="DockWidth" || e.PropertyName=="DockHeight")
+            {
+                //this.timelineAnchorablePane.DockWidth
+                DebugOutput(string.Format("> main pane dock (width,height) = ({0},{1})\n", this.MainPane.DockWidth, this.MainPane.DockHeight));
+                DebugOutput(string.Format("> time pane dock (width,height) = ({0},{1})\n", this.timelineAnchorablePane.DockWidth, this.timelineAnchorablePane.DockHeight));
+            }
+        }
+        #endregion
 
 
         //
@@ -199,5 +290,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
         private BuildTimerWindowPane m_windowPane;
         private IEventRouter m_evtRouter;
         private WindowStatus currentState = null;
+
+        private int m_count_ = 0;
     }
 }
