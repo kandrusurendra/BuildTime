@@ -73,6 +73,17 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             }
         }
 
+        public void LogMessage(string message, LogLevel level)
+        {
+#if DEBUG
+            var minLevel = LogLevel.DebugInfo;
+#else
+            var minLevel = LogLevel.UserInfo;
+#endif
+            if (level >= minLevel)
+                OutputWindow.AppendText(DateTime.Now + " - " + message + "\n");
+        }
+
         /// <summary>
         /// This is the object that will keep track of the state of the IVsWindowFrame
         /// that is hosting this control. The pane should set this property once
@@ -93,15 +104,13 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             }
         }
 
-        public void LogMessage(string message, LogLevel level)
+        public void UpdateData()
         {
-#if DEBUG
-            var minLevel = LogLevel.DebugInfo;
-#else
-            var minLevel = LogLevel.UserInfo;
-#endif
-            if (level >= minLevel)
-                OutputWindow.AppendText(DateTime.Now + " - " + message + "\n");
+            if (BuildInfoExtractor!=null)
+            {
+                var buildInfo = BuildInfoExtractor.GetBuildProgressInfo();
+                this.UpdateUI(buildInfo);
+            }
         }
 
 #endregion

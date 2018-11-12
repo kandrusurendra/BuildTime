@@ -67,22 +67,34 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
     [MsVsShell.ProvideToolWindow(typeof(BuildTimerWindowPane), PositionX = 250, PositionY = 250, Width = 160, Height = 180, Transient = true)]
     [MsVsShell.ProvideMenuResource(1000, 1)]
     [MsVsShell.PackageRegistration(UseManagedResourcesOnly = true)]
+    [MsVsShell.ProvideAutoLoad(UIContextGuids80.SolutionExists)]
     [Guid("01069CDD-95CE-4620-AC21-DDFF6C57F012")]
     [MsVsShell.ProvideBindingPath]
-    public class PackageToolWindow : MsVsShell.Package
+    public class PackageToolWindow : MsVsShell.Package, ILogger
     {
         public EventRouter EvtRouter { get { return evtRouter; } }
 
-		/// <summary>
-		/// Initialization of the package; this is the place where you can put all the initialization
-		/// code that rely on services provided by VisualStudio.
-		/// </summary>
-		protected override void Initialize()
+        public IBuildInfoExtractionStrategy BuildInfoExtractor { get { return buildInfoExtractor; } }
+
+        public void LogMessage(string message, LogLevel level)
+        {
+            if (this.wndPane != null && this.wndPane.BuildTimerUICtrl !=null)
+            {
+                this.wndPane.BuildTimerUICtrl.LogMessage(message, level);
+            }
+        }
+
+        /// <summary>
+        /// Initialization of the package; this is the place where you can put all the initialization
+        /// code that rely on services provided by VisualStudio.
+        /// </summary>
+        protected override void Initialize()
 		{
 			base.Initialize();
 
             // Before anything else, create the event router. Other objects are going to need it.
             this.evtRouter = new EventRouter(this);
+            this.buildInfoExtractor = new OutputWindowInterativeInfoExtractor(this.evtRouter, this);
 
             // Create one object derived from MenuCommand for each command defined in
             // the VSCT file and add it to the command service.
@@ -96,18 +108,6 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
         }
 
         
-
-        private void OnBuildBegin(EnvDTE.vsBuildScope scope, EnvDTE.vsBuildAction action)
-        {
-            //System.Windows.Forms.MessageBox.Show("OnBuildBegin");
-        }
-
-        private void OnPublishBegin(ref bool pubContinue)
-        {
-            //System.Windows.Forms.MessageBox.Show("OnPublishBegin");
-        }
-
-
         /// <summary>
         /// Define a command handler.
         /// When the user press the button corresponding to the CommandID
@@ -164,13 +164,13 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
         private void ShowBuildTimerWindow(object sender, EventArgs arguments)
         {
             // Get the one (index 0) and only instance of our tool window (if it does not already exist it will get created)
-            MsVsShell.ToolWindowPane pane = FindToolWindow(typeof(BuildTimerWindowPane), 0, true);
-            if (pane == null)
+            this.wndPane = FindToolWindow(typeof(BuildTimerWindowPane), 0, true) as BuildTimerWindowPane;
+            if (this.wndPane == null)
             {
                 throw new COMException(GetResourceString("@101"));
             }
 
-            IVsWindowFrame frame = pane.Frame as IVsWindowFrame;
+            IVsWindowFrame frame = this.wndPane.Frame as IVsWindowFrame;
             if (frame == null)
             {
                 throw new COMException(GetResourceString("@102"));
@@ -181,6 +181,9 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 
         // Cache the Menu Command Service since we will use it multiple times
         private MsVsShell.OleMenuCommandService menuService;
+
         private EventRouter evtRouter;
+        private IBuildInfoExtractionStrategy buildInfoExtractor;
+        private BuildTimerWindowPane wndPane;
     }
 }
