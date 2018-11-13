@@ -11,11 +11,6 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
     [Guid("0520C451-DB04-4622-90EC-B7113574346F")]
     public class BuildTimerWindowPane : ToolWindowPane
     {
-        // Control that will be hosted in the tool window
-        private BuildTimerCtrl control = null;
-        // Caching our output window pane
-        private IVsOutputWindowPane outputWindowPane = null;
-
         /// <summary>
         /// Constructor for ToolWindowPane.
         /// Initialization that depends on the package or that requires access
@@ -58,9 +53,12 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 
             control.EvtRouter = package.EvtRouter;
             //control.BuildInfoExtractor = new FakeInfoExtractor();
-            control.BuildInfoExtractor = new OutputWindowInterativeInfoExtractor(package.EvtRouter, control);
+            control.BuildInfoExtractor = package.BuildInfoExtractor;
             control.CurrentState = windowFrameEventsHandler;
+            control.UpdateData();
         }
+
+        public BuildTimerCtrl BuildTimerUICtrl { get { return control; } }
 
         /// <summary>
         /// Retrieve the pane that should be used to output information.
@@ -99,5 +97,11 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
                 return outputWindowPane;
             }
         }
+
+
+        // Control that will be hosted in the tool window
+        private BuildTimerCtrl control = null;
+        // Caching our output window pane
+        private IVsOutputWindowPane outputWindowPane = null;
     }
 }
