@@ -17,8 +17,8 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
         <Description xml:space="preserve">Times the build of your Visual Studio solution and shows how much time is spent building each project.</Description>
         <MoreInfo>https://bitbucket.org/odyxanthi/vs_buildtimer</MoreInfo>
         <License>LICENCE.txt</License>
-        <Icon>Resources\icon.png</Icon>
-        <PreviewImage>Resources\preview.png</PreviewImage>
+        <Icon>icon.png</Icon>
+        <PreviewImage>preview.png</PreviewImage>
         <Tags>build, timer, profiler</Tags>
     </Metadata>
     <Installation InstalledByMsi="false">
