@@ -34,7 +34,6 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
         //
         // Public interface
         //
-        #region PUBLIC_INTERFACE
         public BuildTimerCtrl(BuildTimerWindowPane windowPane)
         {
             m_windowPane = windowPane;
@@ -42,15 +41,13 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             InitializeComponent();
 
             var v = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-            this.LogMessage(string.Format("Visual Studio Build Timer {0}.{1}.{2}",
+            this.LogMessage(string.Format("Visual Studio Build Timer {0}.{1}.{2} - Build {3}",
                 v.Major, 
                 v.Minor, 
-                v.Build         // Version is in the form Major.Minor.Revision.Build. 
-                                // What would be the build number following microsoft
-                                // conventions, is for me the revision and vice versa.
+                v.Build,        // Microsfot versioning follows the scheme: major.minor.build.revision.
+                v.Revision      // I prefer it in the form:                 major.minor.revision.build.
+                                // Therefore I use the "Build" field as my revision number and vice-versa.
             ), LogLevel.UserInfo);
-
-            this.LogMessage(string.Format("Build {0}", v.Revision), LogLevel.DebugInfo);
         }
 
         public IBuildInfoExtractionStrategy BuildInfoExtractor { get; set; }
@@ -84,11 +81,6 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
                 OutputWindow.AppendText(DateTime.Now + " - " + message + "\n");
         }
 
-        /// <summary>
-        /// This is the object that will keep track of the state of the IVsWindowFrame
-        /// that is hosting this control. The pane should set this property once
-        /// the frame is created to enable us to stay up to date.
-        /// </summary>
         public WindowStatus CurrentState
         {
             get { return currentState; }
@@ -113,18 +105,9 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             }
         }
 
-#endregion
-
-
         //
         // Implementation
         //
-        #region IMPLEMENTATION
-        /// <summary>
-        /// This method is the call back for state changes events
-        /// </summary>
-        /// <param name="sender">Event senders</param>
-        /// <param name="arguments">Event arguments</param>
         private void RefreshValues(object sender, EventArgs arguments)
         {
             //xText.Text = currentState.X.ToString(CultureInfo.CurrentCulture);
@@ -196,7 +179,6 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
                 BuildGraphChart.ChartData = ctrlProjInfo;
             }
         }
-        #endregion
 
 
         //
@@ -293,9 +275,6 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
         #endregion
 
 
-        //
-        // Variables
-        //
         private BuildTimerWindowPane m_windowPane;
         private IEventRouter m_evtRouter;
         private WindowStatus currentState = null;
