@@ -175,11 +175,12 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
         /// <returns>HRESULT</returns>
         public int OnShow(int fShow)
         {
-            __FRAMESHOW state = (__FRAMESHOW)fShow;
-            if (outputPane != null)
-                return outputPane.OutputString(string.Format(CultureInfo.CurrentCulture, "  IVsWindowFrameNotify3.OnShow({0})\n", state.ToString()));
-            else
-                return Microsoft.VisualStudio.VSConstants.S_OK;
+            //__FRAMESHOW state = (__FRAMESHOW)fShow;
+            //if (outputPane != null)
+            //    return outputPane.OutputString(string.Format(CultureInfo.CurrentCulture, "  IVsWindowFrameNotify3.OnShow({0})\n", state.ToString()));
+            //else
+            //    return Microsoft.VisualStudio.VSConstants.S_OK;
+            return Microsoft.VisualStudio.VSConstants.S_OK;
         }
 
         /// <summary>
