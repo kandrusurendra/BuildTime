@@ -41,7 +41,14 @@
                                 </DataGrid.Columns>
                             </DataGrid>
                             <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" />
-                            <TextBox Grid.Row="2" Grid.Column="0" x:Name="OutputWindow" IsReadOnly="True"></TextBox>
+                            <TextBox Grid.Row="2" Grid.Column="0" x:Name="OutputWindow" IsReadOnly="True">
+                                <TextBox.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Clear" Click="OnClearOutputWindow" />
+                                        <MenuItem Command="ApplicationCommands.Copy" />
+                                    </ContextMenu>
+                                </TextBox.ContextMenu>
+                            </TextBox>
                         </Grid>
                     </avalonDock:LayoutDocument>
                 </avalonDock:LayoutDocumentPane>

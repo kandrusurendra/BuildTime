@@ -108,13 +108,8 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
         //
         // Implementation
         //
-        private void RefreshValues(object sender, EventArgs arguments)
+        private void RefreshValues(object sender, EventArgs args)
         {
-            //xText.Text = currentState.X.ToString(CultureInfo.CurrentCulture);
-            //yText.Text = currentState.Y.ToString(CultureInfo.CurrentCulture);
-            //widthText.Text = currentState.Width.ToString(CultureInfo.CurrentCulture);
-            //heightText.Text = currentState.Height.ToString(CultureInfo.CurrentCulture);
-            //dockedCheckBox.IsChecked = currentState.IsDockable;
             InvalidateVisual();
         }
 
@@ -126,6 +121,11 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
                 if (extractor != null)
                     this.UpdateUI(extractor.GetBuildProgressInfo());
             }
+        }
+
+        private void OnClearOutputWindow(object sender, RoutedEventArgs e)
+        {
+            this.OutputWindow.Clear();
         }
 
         private void UpdateUI(List<ProjectBuildInfo> buildInfo)
