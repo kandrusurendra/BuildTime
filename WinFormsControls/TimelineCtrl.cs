@@ -52,6 +52,11 @@ namespace WinFormsControls
             chart.Series[0].XValueType = Charting.ChartValueType.Auto;
             chart.Series[0].YValueType = Charting.ChartValueType.Auto;
             chart.Legends[0].Enabled = false;
+            chart.ChartAreas[0].AxisY.Title = "time (seconds)";
+
+            // Set IntervalAutoMode to variable. This adjusts number of labels displayed:
+            // not to many so that they fit in the available space, not to few either.
+            chart.ChartAreas[0].AxisX.IntervalAutoMode = Charting.IntervalAutoMode.VariableCount;
 
             foreach (ProjectInfo info in this.m_chartData)
             {
