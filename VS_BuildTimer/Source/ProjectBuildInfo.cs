@@ -154,37 +154,27 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             return null;
         }
 
-        public static Tuple<int,string> ExtractProjectNameAndID(string s)
+        public static string ExtractProjectName(string s)
         {
-            // Trim configuration information if any.
-            // Unfortunately this is not very robust, VS2017 version
-            // output has the form "... Project: projectName, Configuration: Debug Win32".
-            // This is not guaranteed to stay like this, so try to remove various variants
-            // of the configuration information. Start by trying the most exact versions
-            // and progressively move to more relaxed. In any case the Configuration info
-            // must be after the project name.
-            // e.g. "2>------ Rebuild All started: Project: FASTER.core, Configuration: Debug Win32 ------";
-            string sLower = s.ToLower();
-            int projectNamePos = sLower.IndexOf("project:") + "project:".Length;
-            int configInfoPos = -1;
-            if ((configInfoPos = sLower.LastIndexOf(", configuration")) >= projectNamePos)
-            {
-                s = s.Substring(0, configInfoPos);
-            }
-            else if ((configInfoPos = s.LastIndexOf("configuration")) >= projectNamePos)
-            {
-                s = s.Substring(0, configInfoPos);
-            }
-
             //Example pattern to match: "2>------ Rebuild All started: Project: Lib3D, Configuration: Debug Win32 ------";
-            string pattern = @"(\d+)>.+Project:\s+(.*)";
+            string pattern = @"\d+>.+:.+:\s+(.*),.*";
             Regex r = new Regex(pattern, RegexOptions.IgnoreCase);
             Match m = r.Match(s);
             if (m.Success)
             {
-                int projID = int.Parse(m.Groups[1].Captures[0].ToString());
-                string projName = m.Groups[2].Captures[0].ToString();
-                return new Tuple<int, string>(projID, projName);
+                string projName = m.Groups[1].Captures[0].ToString();
+                return projName;
+            }
+            return null;
+        }
+
+        public static Tuple<int,string> ExtractProjectNameAndID(string s)
+        {
+            int? id = ExtractProjectID(s);
+            string name = ExtractProjectName(s);
+            if (id.HasValue && name!=null)
+            {
+                return new Tuple<int, string>(id.Value, name);
             }
             return null;
         }

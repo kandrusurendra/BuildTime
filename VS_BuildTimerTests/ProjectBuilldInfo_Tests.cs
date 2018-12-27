@@ -60,6 +60,23 @@ namespace ToolWindowTests
         }
 
         [TestMethod]
+        public void ExtractProjectName()
+        {
+            List<string> strings = new List<string>{
+                "1>------ Rebuild All started: Project: adv-file-ops, Configuration: Debug Win32 ------"
+            ,   "1>------ Neues Erstellen gestartet: Projekt: adv-file-ops, Konfiguration: Release x64 ------"
+            ,   "1>------ 已启动生成: 项目: adv-file-ops, 配置: Debug x64 ------"
+            };
+
+            foreach (string s in strings)
+            {
+                string projName = BuildInfoUtils.ExtractProjectName(s);
+                Assert.IsTrue(projName != null);
+                Assert.AreEqual("adv-file-ops", projName);
+            }
+        }
+
+        [TestMethod]
         public void ExtractProjectNameAndID_ValidString_ContainsFullStop()
         {
             string s = "2>------ Rebuild All started: Project: FASTER.core, Configuration: Debug Win32 ------";
