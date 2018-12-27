@@ -26,7 +26,8 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 
         private void OnOutputPaneUpdated(object sender, OutputWndEventArgs args)
         {
-            if (args.WindowPane.Name == "Build")
+            // Check if the update is on the "Build" window, if yes handle the update.
+            if (BuildInfoUtils.IsBuildOutputPane(args.WindowPane))
             {
                 args.WindowPane.TextDocument.Selection.SelectAll();
                 this.UpdateBuildInfo(args.WindowPane.TextDocument.Selection.Text);
@@ -101,16 +102,20 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
                 // Check if this line contains a project name and id. If the id has not been
                 // encountered before, this is a new project and should be added to the list.
                 {
-                    Tuple<int, string> nameAndId = BuildInfoUtils.ExtractProjectNameAndID(line);
-                    if (nameAndId != null)
+                    int? projectID = BuildInfoUtils.ExtractProjectID(line);
+                    if (projectID.HasValue)
                     {
-                        if (!prevBuildInfo.Any(buildInfo => buildInfo.ProjectId == nameAndId.Item1))   // check if any existing item has this id
+                        if (!newBuildInfo.Any(buildInfo => buildInfo.ProjectId == projectID.Value))   // check if any existing item has this id
                         {
-                            // this project is encountered for the first time.
+                            // Try to extract the project name. This theoretically might fail
+                            // if the output string doesn't match the expected pattern. This
+                            // could happen with a new language pack or if Microsoft changes the
+                            // format of the output string.
+                            string projName = BuildInfoUtils.ExtractProjectName(line);
                             var projInfo = new ProjectBuildInfo
                             {
-                                ProjectId = nameAndId.Item1,
-                                ProjectName = nameAndId.Item2,
+                                ProjectId = projectID.Value,
+                                ProjectName = (projName!=null) ? projName : "?",
                                 BuildStartTime = currentTime
                             };
                             newBuildInfo.Add(projInfo);

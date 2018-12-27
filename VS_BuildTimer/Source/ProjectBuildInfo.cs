@@ -113,6 +113,22 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 
     public static class BuildInfoUtils
     {
+        static BuildInfoUtils()
+        {
+            s_buildWindowAliases = new HashSet<string>
+            {
+                "Build"     // English, German
+            ,   "生成"      // Simplified chinese      
+            };
+        }
+
+        public static bool IsBuildOutputPane(EnvDTE.OutputWindowPane pane)
+        {
+            if (pane != null && s_buildWindowAliases.Contains(pane.Name))
+                return true;
+            return false;
+        }
+
         public static DateTime? StringToDateTime(string s)
         {
             try
@@ -304,5 +320,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             }
             return "";
         }
+
+        static readonly HashSet<string> s_buildWindowAliases;
     }
 }

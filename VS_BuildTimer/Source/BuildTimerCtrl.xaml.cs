@@ -115,7 +115,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 
         private void OnOutputPaneUpdated(object sender, OutputWndEventArgs args)
         {
-            if (args.WindowPane != null && args.WindowPane.Name == "Build")
+            if (BuildInfoUtils.IsBuildOutputPane(args.WindowPane))
             {
                 var extractor = BuildInfoExtractor;
                 if (extractor != null)
