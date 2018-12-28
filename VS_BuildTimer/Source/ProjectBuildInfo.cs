@@ -175,7 +175,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
         public static string ExtractProjectName(string s)
         {
             //Example pattern to match: "2>------ Rebuild All started: Project: Lib3D, Configuration: Debug Win32 ------";
-            string pattern = @"\d+>.+:.+:\s+(.*),.*";
+            string pattern = @"\d+>.+:.+:\s*(.*),.*";
             Regex r = new Regex(pattern, RegexOptions.IgnoreCase);
             Match m = r.Match(s);
             if (m.Success)
