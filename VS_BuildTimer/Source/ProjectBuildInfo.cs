@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio;
 
 
 namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
@@ -113,19 +114,20 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 
     public static class BuildInfoUtils
     {
-        static BuildInfoUtils()
-        {
-            s_buildWindowAliases = new HashSet<string>
-            {
-                "Build"     // English, German
-            ,   "生成"      // Simplified chinese      
-            };
-        }
-
         public static bool IsBuildOutputPane(EnvDTE.OutputWindowPane pane)
         {
-            if (pane != null && s_buildWindowAliases.Contains(pane.Name))
-                return true;
+            if (pane != null)
+            {
+                try
+                {
+                    Guid paneID = Guid.Parse(pane.Guid);
+                    return (paneID == VSConstants.OutputWindowPaneGuid.BuildOutputPane_guid);
+                }
+                catch(System.Exception e)
+                {
+                    return false;
+                }
+            }
             return false;
         }
 
@@ -320,7 +322,5 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             }
             return "";
         }
-
-        static readonly HashSet<string> s_buildWindowAliases;
     }
 }
