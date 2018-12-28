@@ -123,7 +123,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
                     Guid paneID = Guid.Parse(pane.Guid);
                     return (paneID == VSConstants.OutputWindowPaneGuid.BuildOutputPane_guid);
                 }
-                catch(System.Exception e)
+                catch(System.Exception)
                 {
                     return false;
                 }

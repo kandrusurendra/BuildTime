@@ -13,6 +13,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
     {
         /// <summary>
         /// Constructor for ToolWindowPane.
+        /// 
         /// Initialization that depends on the package or that requires access
         /// to VS services should be done in OnToolWindowCreated.
         /// </summary>
@@ -27,7 +28,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 
             // Creating the user control that will be displayed in the window
             control = new BuildTimerCtrl(this);
-            Content = control;
+            base.Content = control;
         }
 
         /// <summary>
