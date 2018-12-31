@@ -13,6 +13,7 @@ using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.InteropServices;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using MsVsShell = Microsoft.VisualStudio.Shell;
 using EnvDTE;
@@ -84,17 +85,16 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             }
         }
 
-        /// <summary>
-        /// Initialization of the package; this is the place where you can put all the initialization
-        /// code that rely on services provided by VisualStudio.
-        /// </summary>
         protected override void Initialize()
 		{
 			base.Initialize();
 
             // Before anything else, create the event router. Other objects are going to need it.
             this.evtRouter = new EventRouter(this);
-            this.buildInfoExtractor = new OutputWindowInterativeInfoExtractor(this.evtRouter, this);
+
+            IVsSolutionBuildManager2 buildManager = GetService(typeof(SVsSolutionBuildManager)) as IVsSolutionBuildManager2;
+            this.buildInfoExtractor = new SDKBasedInfoExtractor(this, buildManager);
+            //this.buildInfoExtractor = new OutputWindowInterativeInfoExtractor(this.evtRouter, this);
 
             // Create one object derived from MenuCommand for each command defined in
             // the VSCT file and add it to the command service.
@@ -107,15 +107,6 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             //var events = (Events2)service.Events;  // It is recommended to keep a ref to events to protect them from GC.
         }
 
-        
-        /// <summary>
-        /// Define a command handler.
-        /// When the user press the button corresponding to the CommandID
-        /// the EventHandler will be called.
-        /// </summary>
-        /// <param name="id">The CommandID (Guid/ID pair) as defined in the .vsct file</param>
-        /// <param name="handler">Method that should be called to implement the command</param>
-        /// <returns>The menu command. This can be used to set parameter such as the default visibility once the package is loaded</returns>
         internal MsVsShell.OleMenuCommand DefineCommandHandler(EventHandler handler, CommandID id)
 		{
 			// if the package is zombied, we don't want to add commands
@@ -139,11 +130,6 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 			return command;
 		}
 
-		/// <summary>
-		/// This method loads a localized string based on the specified resource.
-		/// </summary>
-		/// <param name="resourceName">Resource to load</param>
-		/// <returns>String loaded for the specified resource</returns>
 		internal string GetResourceString(string resourceName)
 		{
 			string resourceValue;
@@ -158,9 +144,6 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 			return resourceValue;
 		}
 
-        /// <summary>
-        /// Shows the plugin's main window.
-        /// </summary>
         private void ShowBuildTimerWindow(object sender, EventArgs arguments)
         {
             // Get the one (index 0) and only instance of our tool window (if it does not already exist it will get created)
@@ -179,9 +162,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             ErrorHandler.ThrowOnFailure(frame.Show());
         }
 
-        // Cache the Menu Command Service since we will use it multiple times
         private MsVsShell.OleMenuCommandService menuService;
-
         private EventRouter evtRouter;
         private IBuildInfoExtractionStrategy buildInfoExtractor;
         private BuildTimerWindowPane wndPane;

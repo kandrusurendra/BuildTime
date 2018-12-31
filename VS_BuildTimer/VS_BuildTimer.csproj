@@ -199,6 +199,7 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Misc\GlobalSuppressions.cs" />
+    <Compile Include="Source\SDKBasedInfoExtractor.cs" />
     <Compile Include="Source\SelectionProperties.cs" />
     <Compile Include="Source\WindowList.cs" />
     <Compile Include="Source\WindowStatus.cs" />
