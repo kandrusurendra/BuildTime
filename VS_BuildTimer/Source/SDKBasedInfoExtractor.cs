@@ -16,10 +16,11 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
     {
         public SDKBasedInfoExtractor(MsVsShell.Package package, IVsSolutionBuildManager2 buildManager)
         {
-            this.m_sbm = buildManager;
-            this.m_sbm.AdviseUpdateSolutionEvents(this, out uint cookie);
-
+            this.m_buildManager = buildManager;
+            this.m_buildManager.AdviseUpdateSolutionEvents(this, out uint cookie);
             this.m_package = package;
+            this.m_timer = new System.Timers.Timer(1000);
+            this.m_timer.Elapsed += this.OnTimerTick;
             this.m_projectBuildInfo = new Dictionary<string, ProjectBuildInfo>();
         }
 
@@ -29,15 +30,9 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             return projInfo;
         }
 
-        private void Solution_Opened()
-        {
-            //solution = new BuildMonitor.Domain.Solution { Name = GetSolutionName() };
-            //PrintLine("\nSolution loaded:  \t{0}", solution.Name);
-            //PrintLine("{0}", 60.Times("-"));
-        }
-
         int IVsUpdateSolutionEvents.UpdateSolution_Begin(ref int pfCancelUpdate)
         {
+            this.m_timer.Enabled = true;
             this.m_projectBuildInfo.Clear();
             return VSConstants.S_OK;
         }
@@ -70,11 +65,9 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 
         int IVsUpdateSolutionEvents.UpdateSolution_Done(int fSucceeded, int fModified, int fCancelCommand)
         {
-            // This method is called when the entire solution is done building.
+            this.m_timer.Enabled = false;
             return VSConstants.S_OK;
         }
-
-        #region empty impl. of solution events interface
 
         int IVsUpdateSolutionEvents2.UpdateSolution_StartUpdate(ref int pfCancelUpdate)
         {
@@ -108,6 +101,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 
         int IVsUpdateSolutionEvents.UpdateSolution_Cancel()
         {
+            this.m_timer.Enabled = false;
             return VSConstants.S_OK;
         }
 
@@ -116,11 +110,24 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             return VSConstants.S_OK;
         }
 
-        #endregion
+        private void OnTimerTick(Object source, System.Timers.ElapsedEventArgs e)
+        {
+            if (this.m_projectBuildInfo!=null)
+            {
+                foreach (var kv in this.m_projectBuildInfo)
+                {
+                    ProjectBuildInfo info = kv.Value;
+                    if (!info.BuildSucceeded.HasValue)
+                    {
+                        info.BuildDuration = System.DateTime.Now - info.BuildStartTime.Value;
+                    }
+                }
+            }
+        }
 
         private Dictionary<string, ProjectBuildInfo> m_projectBuildInfo;
-        //private IVsSolution2 m_vsSolution;
-        private IVsSolutionBuildManager2 m_sbm;
+        private IVsSolutionBuildManager2 m_buildManager;
         private MsVsShell.Package m_package;
+        private System.Timers.Timer m_timer;
     }
 }
