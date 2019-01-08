@@ -173,6 +173,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
                         startTime = startTimeSecs,
                         endTime = endTimeSecs,
                         projectName = projInfo.ProjectName,
+                        buildSucceeded = projInfo.BuildSucceeded,
                         toolTip = BuildInfoUtils.CreateToolTipText(projInfo)
                     });
                 }

@@ -15,6 +15,7 @@ namespace WinFormsControls
         public double startTime;
         public double endTime;
         public string projectName;
+        public bool? buildSucceeded;
         public string toolTip;
     }
 
@@ -40,6 +41,18 @@ namespace WinFormsControls
             }
         }
 
+        private static System.Drawing.Color GetBarColor(bool? buildSuccess)
+        {
+            if (buildSuccess.HasValue)
+            {
+                return (buildSuccess.Value == true) ? System.Drawing.Color.LightGreen : System.Drawing.Color.Red;
+            }
+            else
+            {
+                return System.Drawing.Color.LightBlue;
+            }
+        }
+
         private void UpdateChart()
         {
             int newChartHeight = 40 + m_chartData.Count * this.GetBarHeight();
@@ -62,6 +75,7 @@ namespace WinFormsControls
             {
                 int projCount = chart.Series[0].Points.Count;
                 int idx = chart.Series[0].Points.AddXY(projCount + 1, info.startTime, info.endTime);
+                chart.Series[0].Points[idx].Color = GetBarColor(info.buildSucceeded);
                 chart.Series[0].Points[idx].AxisLabel = info.projectName;
                 chart.Series[0].Points[idx].ToolTip = info.toolTip;
             }
