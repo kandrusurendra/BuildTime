@@ -107,11 +107,6 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
         private readonly ProjectBuildInfo _buildInfo;
     }
 
-    public interface IBuildInfoExtractionStrategy
-    {
-        List<ProjectBuildInfo> GetBuildProgressInfo();
-    }
-
     public static class BuildInfoUtils
     {
         public static bool IsBuildOutputPane(EnvDTE.OutputWindowPane pane)

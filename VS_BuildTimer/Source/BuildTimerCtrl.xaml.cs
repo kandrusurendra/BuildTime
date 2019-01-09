@@ -50,7 +50,28 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             ), LogLevel.UserInfo);
         }
 
-        public IBuildInfoExtractionStrategy BuildInfoExtractor { get; set; }
+        public IBuildInfoExtractionStrategy BuildInfoExtractor
+        {    
+            set
+            {
+                if (m_buildInfoExtractor!=null)
+                {
+                    m_buildInfoExtractor.BuildInfoUpdated -= this.OnBuildInfoUpdated;
+                }
+
+                m_buildInfoExtractor = value;
+
+                if (m_buildInfoExtractor != null)
+                {
+                    m_buildInfoExtractor.BuildInfoUpdated += this.OnBuildInfoUpdated;
+                }
+            }
+
+            get
+            {
+                return m_buildInfoExtractor;
+            }
+        }
 
         public IEventRouter EvtRouter
         {
@@ -58,14 +79,14 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             {
                 if (m_evtRouter != null)
                 {
-                    m_evtRouter.OutputPaneUpdated -= this.OnOutputPaneUpdated;
+                    // unregister any events received from previous event router.
                 }
 
                 m_evtRouter = value;
 
                 if (m_evtRouter != null)
                 {
-                    m_evtRouter.OutputPaneUpdated += this.OnOutputPaneUpdated;
+                    // register to new event router.
                 }
             }
         }
@@ -113,14 +134,11 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             InvalidateVisual();
         }
 
-        private void OnOutputPaneUpdated(object sender, OutputWndEventArgs args)
+        private void OnBuildInfoUpdated(object sender, EventArgs args)
         {
-            if (BuildInfoUtils.IsBuildOutputPane(args.WindowPane))
-            {
-                var extractor = BuildInfoExtractor;
-                if (extractor != null)
-                    this.UpdateUI(extractor.GetBuildProgressInfo());
-            }
+            var extractor = BuildInfoExtractor;
+            if (extractor != null)
+                this.UpdateUI(extractor.GetBuildProgressInfo());
         }
 
         private void OnClearOutputWindow(object sender, RoutedEventArgs e)
@@ -292,6 +310,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 
         private BuildTimerWindowPane m_windowPane;
         private IEventRouter m_evtRouter;
+        private IBuildInfoExtractionStrategy m_buildInfoExtractor;
         private WindowStatus currentState = null;
 
         private int m_count_ = 0;

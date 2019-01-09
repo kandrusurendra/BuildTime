@@ -24,6 +24,8 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             return this.m_projectBuildInfo;
         }
 
+        public event EventHandler BuildInfoUpdated;
+
         private void OnOutputPaneUpdated(object sender, OutputWndEventArgs args)
         {
             // Check if the update is on the "Build" window, if yes handle the update.
@@ -31,6 +33,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             {
                 args.WindowPane.TextDocument.Selection.SelectAll();
                 this.UpdateBuildInfo(args.WindowPane.TextDocument.Selection.Text);
+                this.BuildInfoUpdated(this, null);
             }
         }
 
@@ -236,5 +239,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
         {
             return new List<ProjectBuildInfo>(dummyProjectList);
         }
+
+        public event EventHandler BuildInfoUpdated { add {} remove {} } //tric to remove warning CS0067 (event not used).
     }
 }

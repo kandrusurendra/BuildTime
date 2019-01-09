@@ -30,6 +30,8 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             return projInfo;
         }
 
+        public event EventHandler BuildInfoUpdated;
+
         int IVsUpdateSolutionEvents.UpdateSolution_Begin(ref int pfCancelUpdate)
         {
             this.m_timer.Enabled = true;
@@ -48,6 +50,9 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
                 var info = new ProjectBuildInfo(name, projIdx, System.DateTime.Now, null, null);
                 m_projectBuildInfo[canonicalName] = info;
             }
+
+            this.BuildInfoUpdated(this, null);
+
             return VSConstants.S_OK;
         }
 
@@ -60,6 +65,9 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
                 info.BuildDuration = System.DateTime.Now - info.BuildStartTime;
                 info.BuildSucceeded = (fSuccess!=0);
             }
+
+            this.BuildInfoUpdated(this, null);
+
             return VSConstants.S_OK;
         }
 
@@ -122,6 +130,8 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
                         info.BuildDuration = System.DateTime.Now - info.BuildStartTime.Value;
                     }
                 }
+
+                this.BuildInfoUpdated(this, null);
             }
         }
 
