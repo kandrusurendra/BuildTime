@@ -14,13 +14,14 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 {
     class SDKBasedInfoExtractor : IVsUpdateSolutionEvents2, IBuildInfoExtractionStrategy
     {
-        public SDKBasedInfoExtractor(MsVsShell.Package package, IVsSolutionBuildManager2 buildManager)
+        public SDKBasedInfoExtractor(MsVsShell.Package package, IVsSolutionBuildManager2 buildManager, ILogger logger = null)
         {
             this.m_buildManager = buildManager;
             this.m_buildManager.AdviseUpdateSolutionEvents(this, out uint cookie);
             this.m_package = package;
             this.m_timer = new System.Timers.Timer(1000);
             this.m_timer.Elapsed += this.OnTimerTick;
+            this.m_logger = logger;
             this.m_projectBuildInfo = new Dictionary<string, ProjectBuildInfo>();
         }
 
@@ -41,6 +42,8 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 
         int IVsUpdateSolutionEvents2.UpdateProjectCfg_Begin(IVsHierarchy pHierProj, IVsCfg pCfgProj, IVsCfg pCfgSln, uint dwAction, ref int pfCancel)
         {
+            this.LogBuildEvent(pHierProj, pCfgProj, "Build started.");
+
             if (pHierProj != null)
             {
                 pHierProj.GetCanonicalName((uint)VSConstants.VSITEMID.Root, out string canonicalName);
@@ -58,6 +61,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 
         int IVsUpdateSolutionEvents2.UpdateProjectCfg_Done(IVsHierarchy pHierProj, IVsCfg pCfgProj, IVsCfg pCfgSln, uint dwAction, int fSuccess, int fCancel)
         {
+            this.LogBuildEvent(pHierProj, pCfgProj, "Build completed.");
             if (pHierProj != null)
             {
                 pHierProj.GetCanonicalName((uint)VSConstants.VSITEMID.Root, out string canonicalName);
@@ -135,9 +139,26 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             }
         }
 
+        private void LogBuildEvent(IVsHierarchy pHierProj, IVsCfg pCfgProj, string msg)
+        {
+            if (m_logger!=null)
+            {
+                object projName = String.Empty;
+                string configName = String.Empty;
+                if (pHierProj != null)
+                    pHierProj.GetProperty((uint)VSConstants.VSITEMID.Root, (int)__VSHPROPID.VSHPROPID_Name, out projName);
+                if (pCfgProj != null)
+                    pCfgProj.get_DisplayName(out configName);
+
+                string s = string.Format("{0} - {1}:  {2}", projName as string, configName, msg);
+                m_logger.LogMessage(s, LogLevel.UserInfo);
+            }
+        }
+
         private Dictionary<string, ProjectBuildInfo> m_projectBuildInfo;
-        private IVsSolutionBuildManager2 m_buildManager;
-        private MsVsShell.Package m_package;
-        private System.Timers.Timer m_timer;
+        private readonly IVsSolutionBuildManager2 m_buildManager;
+        private readonly MsVsShell.Package m_package;
+        private readonly System.Timers.Timer m_timer;
+        private readonly ILogger m_logger;
     }
 }

@@ -93,7 +93,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             this.evtRouter = new EventRouter(this);
 
             IVsSolutionBuildManager2 buildManager = GetService(typeof(SVsSolutionBuildManager)) as IVsSolutionBuildManager2;
-            this.buildInfoExtractor = new SDKBasedInfoExtractor(this, buildManager);
+            this.buildInfoExtractor = new SDKBasedInfoExtractor(this, buildManager, this);
             //this.buildInfoExtractor = new OutputWindowInterativeInfoExtractor(this.evtRouter, this);
 
             // Create one object derived from MenuCommand for each command defined in
