@@ -322,5 +322,24 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             }
             return "";
         }
+
+        public static void WriteBuildInfoToCSV(IEnumerable<ProjectBuildInfo> buildInfo, System.IO.TextWriter w)
+        {
+            if (buildInfo == null)
+                throw new ArgumentNullException("buildInfo");
+
+            if (w == null)
+                throw new ArgumentNullException("w");
+
+            foreach (var projInfo in buildInfo)
+            {
+                w.Write("\""+projInfo.ProjectName + "\",");
+                w.Write(projInfo.ProjectId + ",");
+                w.Write(projInfo.BuildStartTime + ",");
+                w.Write(projInfo.BuildDuration + ",");
+                w.Write(projInfo.BuildEndTime + ",");
+                w.Write((projInfo.BuildSucceeded.HasValue ? projInfo.BuildSucceeded.Value.ToString() : "?") + "\n");
+            }
+        }
     }
 }

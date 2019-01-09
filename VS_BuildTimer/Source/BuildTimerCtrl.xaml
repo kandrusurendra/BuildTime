@@ -39,6 +39,11 @@
                                     <DataGridTextColumn Header="End time" Binding="{Binding Path=BuildEndTime_Relative, StringFormat={}{0:hh':'mm':'ss'.'f}, TargetNullValue=' ? '}"/>
                                     <DataGridTextColumn Header="Succeeded" Binding="{Binding Path=BuildSucceeded, TargetNullValue=' ? '}"/>
                                 </DataGrid.Columns>
+                                <DataGrid.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Export ..." Click="OnExportGrid" />
+                                    </ContextMenu>
+                                </DataGrid.ContextMenu>
                             </DataGrid>
                             <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" />
                             <TextBox Grid.Row="2" Grid.Column="0" x:Name="OutputWindow" IsReadOnly="True">

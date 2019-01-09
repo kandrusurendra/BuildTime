@@ -128,6 +128,20 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             this.OutputWindow.Clear();
         }
 
+        private void OnExportGrid(object sender, RoutedEventArgs e)
+        {
+            var fileDlg = new System.Windows.Forms.SaveFileDialog();
+            fileDlg.Filter = "csv files (*.csv)|*.csv";
+            if (fileDlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                using (System.IO.StreamWriter writer = System.IO.File.CreateText(fileDlg.FileName))
+                {
+                    var buildInfo = this.BuildInfoExtractor.GetBuildProgressInfo();
+                    BuildInfoUtils.WriteBuildInfoToCSV(buildInfo, writer);
+                }
+            }
+        }
+
         private void UpdateUI(List<ProjectBuildInfo> buildInfo)
         {
             var BuildGraphChart = this.WinFormChartCtrl;
