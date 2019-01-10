@@ -12,7 +12,7 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
 
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="Visual Studio Build Timer" Version="0.1.1" Language="en-US" Publisher="Odysseas Petrocheilos" />
+        <Identity Id="Visual Studio Build Timer" Version="0.2.0" Language="en-US" Publisher="Odysseas Petrocheilos" />
         <DisplayName>Visual Studio Build Timer</DisplayName>
         <Description xml:space="preserve">Times the build of your Visual Studio solution and shows how much time is spent building each project.</Description>
         <MoreInfo>https://bitbucket.org/odyxanthi/vs_buildtimer</MoreInfo>
