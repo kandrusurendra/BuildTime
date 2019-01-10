@@ -141,21 +141,28 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
                 this.UpdateUI(extractor.GetBuildProgressInfo());
         }
 
-        private void OnClearOutputWindow(object sender, RoutedEventArgs e)
+        private void OnClearOutputWindow(object sender, RoutedEventArgs args)
         {
             this.OutputWindow.Clear();
         }
 
-        private void OnExportGrid(object sender, RoutedEventArgs e)
+        private void OnExportGrid(object sender, RoutedEventArgs args)
         {
             var fileDlg = new System.Windows.Forms.SaveFileDialog();
             fileDlg.Filter = "csv files (*.csv)|*.csv";
             if (fileDlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                using (System.IO.StreamWriter writer = System.IO.File.CreateText(fileDlg.FileName))
+                try
                 {
-                    var buildInfo = this.BuildInfoExtractor.GetBuildProgressInfo();
-                    BuildInfoUtils.WriteBuildInfoToCSV(buildInfo, writer);
+                    using (System.IO.StreamWriter writer = System.IO.File.CreateText(fileDlg.FileName))
+                    {
+                        var buildInfo = this.BuildInfoExtractor.GetBuildProgressInfo();
+                        BuildInfoUtils.WriteBuildInfoToCSV(buildInfo, writer);
+                    }
+                }
+                catch (Exception e)
+                {
+                    this.LogMessage("Failed to export build information: " + e.Message, LogLevel.Error);
                 }
             }
         }
@@ -205,6 +212,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
                         startTime = startTimeSecs,
                         endTime = endTimeSecs,
                         projectName = projInfo.ProjectName,
+                        configuration = projInfo.Configuration,
                         buildSucceeded = projInfo.BuildSucceeded,
                         toolTip = BuildInfoUtils.CreateToolTipText(projInfo)
                     });

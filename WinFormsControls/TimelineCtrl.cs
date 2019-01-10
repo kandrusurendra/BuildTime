@@ -15,6 +15,7 @@ namespace WinFormsControls
         public double startTime;
         public double endTime;
         public string projectName;
+        public string configuration;
         public bool? buildSucceeded;
         public string toolTip;
     }

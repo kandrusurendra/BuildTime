@@ -32,7 +32,7 @@
                                       Margin="2" AutoGenerateColumns="False" IsReadOnly="True">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="Project" Binding="{Binding Path=ProjectName}"/>
-                                    <DataGridTextColumn Header="ID" Binding="{Binding Path=ProjectId}"/>
+                                    <DataGridTextColumn Header="Configuration" Binding="{Binding Path=Configuration, TargetNullValue=' ? '}"/>
                                     <DataGridTextColumn Header="Start time (absolute)" Binding="{Binding Path=BuildStartTime_Absolute, TargetNullValue=' ? '}"/>
                                     <DataGridTextColumn Header="Start time" Binding="{Binding Path=BuildStartTime_Relative, StringFormat={}{0:hh':'mm':'ss'.'f}, TargetNullValue=' ? '}"/>
                                     <DataGridTextColumn Header="Duration" Binding="{Binding Path=BuildDuration, StringFormat={}{0:hh':'mm':'ss'.'f}, TargetNullValue=' ? '}"/>

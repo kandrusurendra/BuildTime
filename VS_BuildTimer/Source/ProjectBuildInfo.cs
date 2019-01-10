@@ -26,6 +26,8 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 
         public int ProjectId { get; set; }
 
+        public string Configuration { get; set; }
+
         public DateTime? BuildStartTime { get; set; }
 
         public TimeSpan? BuildDuration { get; set; }
@@ -51,37 +53,42 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
         {
             if (buildInfo == null) throw new ArgumentNullException("build info");
             if (referenceTime == null) throw new ArgumentNullException("reference time");
-            _buildInfo = buildInfo;
-            _referenceTime = referenceTime;
+            m_buildInfo = buildInfo;
+            m_referenceTime = referenceTime;
         }
 
         // Transformed data
         public string ProjectName
         {
-            get { return _buildInfo.ProjectName; }
+            get { return m_buildInfo.ProjectName; }
+        }
+
+        public string Configuration
+        {
+            get { return m_buildInfo.Configuration; }
         }
 
         public int ProjectId
         {
-            get { return _buildInfo.ProjectId; }
+            get { return m_buildInfo.ProjectId; }
         }
 
         public DateTime? BuildStartTime_Absolute
         {
-            get { return _buildInfo.BuildStartTime; }
+            get { return m_buildInfo.BuildStartTime; }
         }
 
         public TimeSpan? BuildDuration
         {
-            get { return _buildInfo.BuildDuration; }
+            get { return m_buildInfo.BuildDuration; }
         }
 
         public TimeSpan? BuildStartTime_Relative
         {
             get
             {
-                if (_buildInfo.BuildStartTime.HasValue)
-                    return _buildInfo.BuildStartTime - _referenceTime;
+                if (m_buildInfo.BuildStartTime.HasValue)
+                    return m_buildInfo.BuildStartTime - m_referenceTime;
                 return null;
             }
         }
@@ -90,9 +97,9 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
         {
             get
             {
-                if (_buildInfo.BuildEndTime.HasValue)
+                if (m_buildInfo.BuildEndTime.HasValue)
                 {
-                    return _buildInfo.BuildEndTime - _referenceTime;
+                    return m_buildInfo.BuildEndTime - m_referenceTime;
                 }
                 return null;
             }
@@ -100,11 +107,11 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 
         public bool? BuildSucceeded
         {
-            get { return _buildInfo.BuildSucceeded; }
+            get { return m_buildInfo.BuildSucceeded; }
         }
 
-        private readonly DateTime _referenceTime;
-        private readonly ProjectBuildInfo _buildInfo;
+        private readonly DateTime m_referenceTime;
+        private readonly ProjectBuildInfo m_buildInfo;
     }
 
     public static class BuildInfoUtils
@@ -310,7 +317,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             {
                 return
                     "Project: " + info.ProjectName + "\n" +
-                    "ID: " + info.ProjectId + "\n" + 
+                    "Config:  " + info.Configuration + "\n" + 
                     "start time: " + TimeSpanToStr(info.BuildStartTime_Relative)  + " (absolute: " + info.BuildStartTime_Absolute + ")\n" +
                     "duration:   " + TimeSpanToStr(info.BuildDuration) + "\n" +
                     "end time:   " + TimeSpanToStr(info.BuildEndTime_Relative) + "\n";
@@ -326,13 +333,14 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             if (w == null)
                 throw new ArgumentNullException("w");
 
+            w.Write("\"Project Name\",Configuration,\"Start time (abs)\",Duration,\"End time\",Succeeded\n");
             foreach (var projInfo in buildInfo)
             {
                 w.Write("\""+projInfo.ProjectName + "\",");
-                w.Write(projInfo.ProjectId + ",");
-                w.Write(projInfo.BuildStartTime + ",");
-                w.Write(projInfo.BuildDuration + ",");
-                w.Write(projInfo.BuildEndTime + ",");
+                w.Write(projInfo.Configuration    + ",");
+                w.Write(projInfo.BuildStartTime   + ",");
+                w.Write(projInfo.BuildDuration    + ",");
+                w.Write(projInfo.BuildEndTime     + ",");
                 w.Write((projInfo.BuildSucceeded.HasValue ? projInfo.BuildSucceeded.Value.ToString() : "?") + "\n");
             }
         }

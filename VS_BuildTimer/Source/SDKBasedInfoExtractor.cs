@@ -12,6 +12,8 @@ using EnvDTE80;
 
 namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 {
+    using ProjectKey = Tuple<string, string>;
+
     class SDKBasedInfoExtractor : IVsUpdateSolutionEvents2, IBuildInfoExtractionStrategy
     {
         public SDKBasedInfoExtractor(MsVsShell.Package package, IVsSolutionBuildManager2 buildManager, ILogger logger = null)
@@ -22,7 +24,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             this.m_timer = new System.Timers.Timer(1000);
             this.m_timer.Elapsed += this.OnTimerTick;
             this.m_logger = logger;
-            this.m_projectBuildInfo = new Dictionary<string, ProjectBuildInfo>();
+            this.m_projectBuildInfo = new Dictionary<ProjectKey, ProjectBuildInfo>();
         }
 
         public List<ProjectBuildInfo> GetBuildProgressInfo()
@@ -44,14 +46,20 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
         {
             this.LogBuildEvent(pHierProj, pCfgProj, "Build started.");
 
-            if (pHierProj != null)
+            if (pHierProj != null && pCfgProj != null)
             {
                 pHierProj.GetCanonicalName((uint)VSConstants.VSITEMID.Root, out string canonicalName);
-                pHierProj.GetProperty((uint)VSConstants.VSITEMID.Root, (int)__VSHPROPID.VSHPROPID_Name, out object propVal);
-                var name = propVal as string;
-                int projIdx = m_projectBuildInfo.Count+1;
-                var info = new ProjectBuildInfo(name, projIdx, System.DateTime.Now, null, null);
-                m_projectBuildInfo[canonicalName] = info;
+                pHierProj.GetProperty((uint)VSConstants.VSITEMID.Root, (int)__VSHPROPID.VSHPROPID_Name, out object projName);
+                pCfgProj.get_DisplayName(out string configName);
+                
+                var info = new ProjectBuildInfo
+                {
+                    ProjectName     = projName as string,
+                    Configuration   = configName,
+                    ProjectId       = m_projectBuildInfo.Count + 1,
+                    BuildStartTime  = System.DateTime.Now
+                };
+                m_projectBuildInfo[new ProjectKey(canonicalName, configName)] = info;
             }
 
             this.BuildInfoUpdated(this, null);
@@ -62,10 +70,11 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
         int IVsUpdateSolutionEvents2.UpdateProjectCfg_Done(IVsHierarchy pHierProj, IVsCfg pCfgProj, IVsCfg pCfgSln, uint dwAction, int fSuccess, int fCancel)
         {
             this.LogBuildEvent(pHierProj, pCfgProj, "Build completed.");
-            if (pHierProj != null)
+            if (pHierProj != null && pCfgProj != null)
             {
                 pHierProj.GetCanonicalName((uint)VSConstants.VSITEMID.Root, out string canonicalName);
-                var info = m_projectBuildInfo[canonicalName];
+                pCfgProj.get_DisplayName(out string configName);
+                var info = m_projectBuildInfo[new ProjectKey(canonicalName,configName)];
                 info.BuildDuration = System.DateTime.Now - info.BuildStartTime;
                 info.BuildSucceeded = (fSuccess!=0);
             }
@@ -155,7 +164,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             }
         }
 
-        private Dictionary<string, ProjectBuildInfo> m_projectBuildInfo;
+        private Dictionary<ProjectKey, ProjectBuildInfo> m_projectBuildInfo;
         private readonly IVsSolutionBuildManager2 m_buildManager;
         private readonly MsVsShell.Package m_package;
         private readonly System.Timers.Timer m_timer;
