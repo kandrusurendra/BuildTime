@@ -38,13 +38,6 @@ namespace VSBuildTimer
         {
             m_windowPane = windowPane;
 
-            this.m_timer = new System.Timers.Timer();
-            this.m_timer.Interval = 1000;
-            this.m_timer.Elapsed += this.OnTimerTick;
-            this.m_timer.Enabled = true;
-
-            m_lastUpdateTime = System.DateTime.Now;
-
             InitializeComponent();
 
             var v = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
@@ -143,9 +136,7 @@ namespace VSBuildTimer
 
         private void OnBuildInfoUpdated(object sender, EventArgs args)
         {
-            var extractor = BuildInfoExtractor;
-            if (extractor != null)
-                this.UpdateUI(extractor.GetBuildProgressInfo());
+            this.Dispatcher.BeginInvoke(new Action(this.UpdateData));
         }
 
         private void OnClearOutputWindow(object sender, RoutedEventArgs args)
@@ -170,19 +161,6 @@ namespace VSBuildTimer
                 catch (Exception e)
                 {
                     this.LogMessage("Failed to export build information: " + e.Message, LogLevel.Error);
-                }
-            }
-        }
-
-        private void OnTimerTick(Object source, System.Timers.ElapsedEventArgs e)
-        {
-            if (m_buildInfoExtractor != null)
-            {
-                var t = m_buildInfoExtractor.LastUpdateTime();
-                if (t > m_lastUpdateTime)
-                {
-                    this.UpdateUI(m_buildInfoExtractor.GetBuildProgressInfo());
-                    m_lastUpdateTime = t;
                 }
             }
         }
@@ -240,7 +218,7 @@ namespace VSBuildTimer
                 BuildGraphChart.ChartData = ctrlProjInfo;
             }
         }
-
+        
 
         //
         // Debug code
@@ -339,8 +317,6 @@ namespace VSBuildTimer
         private BuildTimerWindowPane m_windowPane;
         private IEventRouter m_evtRouter;
         private IBuildInfoExtractionStrategy m_buildInfoExtractor;
-        private System.Timers.Timer m_timer;
-        private System.DateTime m_lastUpdateTime;
         private WindowStatus currentState = null;
 
         private int m_count_ = 0;

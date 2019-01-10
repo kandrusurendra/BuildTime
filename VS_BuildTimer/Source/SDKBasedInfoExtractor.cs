@@ -21,10 +21,9 @@ namespace VSBuildTimer
             this.m_buildManager = buildManager;
             this.m_buildManager.AdviseUpdateSolutionEvents(this, out uint cookie);
             this.m_package = package;
-            this.m_timer = new System.Timers.Timer(1000);
+            this.m_timer = new System.Timers.Timer(500);
             this.m_timer.Elapsed += this.OnTimerTick;
             this.m_logger = logger;
-            this.m_lastUpdateTime = System.DateTime.Now;
             this.m_projectBuildInfo = new Dictionary<ProjectKey, ProjectBuildInfo>();
         }
 
@@ -35,11 +34,6 @@ namespace VSBuildTimer
         }
 
         public event EventHandler BuildInfoUpdated;
-
-        public System.DateTime LastUpdateTime()
-        {
-            return m_lastUpdateTime;
-        }
 
         int IVsUpdateSolutionEvents.UpdateSolution_Begin(ref int pfCancelUpdate)
         {
@@ -67,7 +61,6 @@ namespace VSBuildTimer
                 };
                 m_projectBuildInfo[new ProjectKey(canonicalName, configName)] = info;
             }
-            this.m_lastUpdateTime = System.DateTime.Now;
             this.BuildInfoUpdated(this, null);
 
             return VSConstants.S_OK;
@@ -84,7 +77,6 @@ namespace VSBuildTimer
                 info.BuildDuration = System.DateTime.Now - info.BuildStartTime;
                 info.BuildSucceeded = (fSuccess!=0);
             }
-            this.m_lastUpdateTime = System.DateTime.Now;
             this.BuildInfoUpdated(this, null);
 
             return VSConstants.S_OK;
@@ -150,7 +142,6 @@ namespace VSBuildTimer
                     }
                 }
 
-                this.m_lastUpdateTime = System.DateTime.Now;
                 this.BuildInfoUpdated(this, null);
             }
         }
@@ -176,6 +167,5 @@ namespace VSBuildTimer
         private readonly MsVsShell.Package m_package;
         private readonly System.Timers.Timer m_timer;
         private readonly ILogger m_logger;
-        private System.DateTime m_lastUpdateTime;
     }
 }

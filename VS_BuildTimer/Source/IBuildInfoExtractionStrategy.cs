@@ -10,7 +10,5 @@ namespace VSBuildTimer
         List<ProjectBuildInfo> GetBuildProgressInfo();
 
         event EventHandler BuildInfoUpdated;
-
-        System.DateTime LastUpdateTime();
     }
 }
