@@ -26,6 +26,11 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
 
         public event EventHandler BuildInfoUpdated;
 
+        public System.DateTime LastUpdateTime()
+        {
+            return m_lastUpdateTime;
+        }
+
         private void OnOutputPaneUpdated(object sender, OutputWndEventArgs args)
         {
             // Check if the update is on the "Build" window, if yes handle the update.
@@ -33,6 +38,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             {
                 args.WindowPane.TextDocument.Selection.SelectAll();
                 this.UpdateBuildInfo(args.WindowPane.TextDocument.Selection.Text);
+                this.m_lastUpdateTime = System.DateTime.Now;
                 this.BuildInfoUpdated(this, null);
             }
         }
@@ -172,6 +178,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
         private readonly ILogger m_logger;
         private string m_buildOutputStr = "";
         private List<ProjectBuildInfo> m_projectBuildInfo = new List<ProjectBuildInfo>();
+        private System.DateTime m_lastUpdateTime;
     }
 
     public class FakeInfoExtractor : IBuildInfoExtractionStrategy
@@ -241,5 +248,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
         }
 
         public event EventHandler BuildInfoUpdated { add {} remove {} } //tric to remove warning CS0067 (event not used).
+
+        public System.DateTime LastUpdateTime() { throw new NotImplementedException(); }
     }
 }

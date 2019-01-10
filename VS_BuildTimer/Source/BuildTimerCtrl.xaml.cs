@@ -38,6 +38,13 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
         {
             m_windowPane = windowPane;
 
+            this.m_timer = new System.Timers.Timer();
+            this.m_timer.Interval = 1000;
+            this.m_timer.Elapsed += this.OnTimerTick;
+            this.m_timer.Enabled = true;
+
+            m_lastUpdateTime = System.DateTime.Now;
+
             InitializeComponent();
 
             var v = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
@@ -163,6 +170,19 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
                 catch (Exception e)
                 {
                     this.LogMessage("Failed to export build information: " + e.Message, LogLevel.Error);
+                }
+            }
+        }
+
+        private void OnTimerTick(Object source, System.Timers.ElapsedEventArgs e)
+        {
+            if (m_buildInfoExtractor != null)
+            {
+                var t = m_buildInfoExtractor.LastUpdateTime();
+                if (t > m_lastUpdateTime)
+                {
+                    this.UpdateUI(m_buildInfoExtractor.GetBuildProgressInfo());
+                    m_lastUpdateTime = t;
                 }
             }
         }
@@ -319,6 +339,8 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
         private BuildTimerWindowPane m_windowPane;
         private IEventRouter m_evtRouter;
         private IBuildInfoExtractionStrategy m_buildInfoExtractor;
+        private System.Timers.Timer m_timer;
+        private System.DateTime m_lastUpdateTime;
         private WindowStatus currentState = null;
 
         private int m_count_ = 0;

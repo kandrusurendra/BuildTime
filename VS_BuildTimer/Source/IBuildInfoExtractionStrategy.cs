@@ -10,5 +10,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
         List<ProjectBuildInfo> GetBuildProgressInfo();
 
         event EventHandler BuildInfoUpdated;
+
+        System.DateTime LastUpdateTime();
     }
 }
