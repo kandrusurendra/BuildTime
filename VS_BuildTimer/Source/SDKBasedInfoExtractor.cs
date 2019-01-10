@@ -10,7 +10,7 @@ using MsVsShell = Microsoft.VisualStudio.Shell;
 using EnvDTE;
 using EnvDTE80;
 
-namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
+namespace VSBuildTimer
 {
     using ProjectKey = Tuple<string, string>;
 

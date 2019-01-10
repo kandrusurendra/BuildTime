@@ -17,7 +17,7 @@ using MsVsShell = Microsoft.VisualStudio.Shell;
 using VsConstants = Microsoft.VisualStudio.VSConstants;
 using ErrorHandler = Microsoft.VisualStudio.ErrorHandler;
 
-namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
+namespace VSBuildTimer
 {
 	/// <summary>
 	/// This class is responsible for retrieving and keeping

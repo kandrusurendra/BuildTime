@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Microsoft.Samples.VisualStudio.IDE.ToolWindow.BuildTimerCtrl"
+﻿<UserControl x:Class="VSBuildTimer.BuildTimerCtrl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -8,7 +8,7 @@
              xmlns:winform="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
              xmlns:avalonDock="http://schemas.xceed.com/wpf/xaml/avalondock"
              xmlns:WinFormsControls="clr-namespace:WinFormsControls;assembly=WinFormsControls"
-             xmlns:local="clr-namespace:Microsoft.Samples.VisualStudio.IDE.ToolWindow"
+             xmlns:local="clr-namespace:VSBuildTimer"
              mc:Ignorable="d" 
              d:DesignHeight="480" d:DesignWidth="640">
 

@@ -13,7 +13,7 @@ using MsVsShell = Microsoft.VisualStudio.Shell;
 using EnvDTE;
 using EnvDTE80;
 
-namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
+namespace VSBuildTimer
 {
     public class OutputWndEventArgs : System.EventArgs
     {

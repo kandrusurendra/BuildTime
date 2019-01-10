@@ -10,7 +10,7 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
 
 using System;
 
-namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
+namespace VSBuildTimer
 {
 	/// <summary>
 	/// This class is used only to expose the list of Guids used by this package.

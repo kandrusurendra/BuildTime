@@ -10,7 +10,7 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
 
 using System;
 
-namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
+namespace VSBuildTimer
 {
 	/// <summary>
 	/// This class is used to expose the list of the IDs of the commands implemented

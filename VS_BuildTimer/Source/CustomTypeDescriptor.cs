@@ -13,7 +13,7 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
+namespace VSBuildTimer
 {
 	/// <summary>
 	/// This base class forwards all the ICustomTypeDescriptor calls

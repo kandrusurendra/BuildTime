@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.Samples.VisualStudio.IDE.ToolWindow;
+using VSBuildTimer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ToolWindowTests

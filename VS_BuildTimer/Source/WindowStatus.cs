@@ -14,7 +14,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.VisualStudio.Shell.Interop;
 
-namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
+namespace VSBuildTimer
 {
     /// <summary>
     /// This class keeps track of the position, size and dockable state of the

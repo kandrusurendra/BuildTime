@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio;
 
 
-namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
+namespace VSBuildTimer
 {
     public class ProjectBuildInfo
     {

@@ -20,7 +20,7 @@ using EnvDTE;
 using EnvDTE80;
 using ErrorHandler = Microsoft.VisualStudio.ErrorHandler;
 
-namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
+namespace VSBuildTimer
 {
     /// <summary>
     /// The Package class is responsible for the following:
@@ -71,7 +71,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
     [MsVsShell.ProvideAutoLoad(UIContextGuids80.SolutionExists)]
     [Guid("01069CDD-95CE-4620-AC21-DDFF6C57F012")]
     [MsVsShell.ProvideBindingPath]
-    public class PackageToolWindow : MsVsShell.Package, ILogger
+    public class VSBuildTimerPackage : MsVsShell.Package, ILogger
     {
         public EventRouter EvtRouter { get { return evtRouter; } }
 

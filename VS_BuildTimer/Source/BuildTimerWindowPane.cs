@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using ErrorHandler = Microsoft.VisualStudio.ErrorHandler;
 
-namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
+namespace VSBuildTimer
 {
     [Guid("0520C451-DB04-4622-90EC-B7113574346F")]
     public class BuildTimerWindowPane : ToolWindowPane
@@ -24,7 +24,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
             // used in any project without needing to include the source image.
             BitmapImageMoniker = Microsoft.VisualStudio.Imaging.KnownMonikers.Search;
 
-            var package = Package as PackageToolWindow;
+            var package = Package as VSBuildTimerPackage;
 
             // Creating the user control that will be displayed in the window
             control = new BuildTimerCtrl(this);
@@ -40,7 +40,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
         {
             base.OnToolWindowCreated();
 
-            PackageToolWindow package = (PackageToolWindow)Package;
+            VSBuildTimerPackage package = (VSBuildTimerPackage)Package;
 
             // Set the text that will appear in the title bar of the tool window.
             // Note that because we need access to the package for localization,
@@ -88,7 +88,7 @@ namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
                     // be created if it does not already exist.
                     Guid paneGuid = new Guid("{291A5129-ADA8-4FB7-A9C4-7557854E00F0}");
                     // Create the pane
-                    PackageToolWindow package = (PackageToolWindow)Package;
+                    VSBuildTimerPackage package = (VSBuildTimerPackage)Package;
                     string paneName = package.GetResourceString("@120");
                     ErrorHandler.ThrowOnFailure(outputWindow.CreatePane(ref paneGuid, paneName, 1 /*visible=true*/, 0 /*clearWithSolution=false*/));
                     // Retrieve the pane

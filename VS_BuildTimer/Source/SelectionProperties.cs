@@ -13,7 +13,7 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
+namespace VSBuildTimer
 {
 	/// <summary>
 	/// This class holds the properties that will be displayed in the Properties

@@ -24,7 +24,7 @@ using EnvDTE;
 using System.Windows.Forms.DataVisualization.Charting;
 using winformchart = System.Windows.Forms.DataVisualization.Charting;
 
-namespace Microsoft.Samples.VisualStudio.IDE.ToolWindow
+namespace VSBuildTimer
 {
     /// <summary>
     /// Interaction logic for BuildTimerCtrl.xaml
