@@ -296,14 +296,21 @@ namespace VSBuildTimer
 
         public static List<ProjectPresentationInfo> ExtractPresentationInfo(IEnumerable<ProjectBuildInfo> buildInfo)
         {
+            if (buildInfo == null)
+                throw new ArgumentNullException("buildInfo");
+
+            if (buildInfo.Count() == 0)
+                return new List<ProjectPresentationInfo>();
+
             DateTime? minStartTime = buildInfo.Min(projectInfo => projectInfo.BuildStartTime);
 
             // Projects must have a non-empty BuildStartTime in order to be in the list.
             System.Diagnostics.Debug.Assert(minStartTime.HasValue);
 
-            // Update build-info grid.
-            var presentationInfo = buildInfo.Select(projectInfo => new ProjectPresentationInfo(minStartTime.Value, projectInfo));
-            return presentationInfo.ToList();
+            // Map projInfo elements to Presentation info. Then convert the collection to list.
+            var presentationInfo = buildInfo.Select(projectInfo => new ProjectPresentationInfo(minStartTime.Value, projectInfo)).ToList();
+
+            return presentationInfo;
         }
 
         public static string CreateToolTipText(ProjectPresentationInfo info)
@@ -333,15 +340,27 @@ namespace VSBuildTimer
             if (w == null)
                 throw new ArgumentNullException("w");
 
-            w.Write("\"Project Name\",Configuration,\"Start time (abs)\",Duration,\"End time\",Succeeded\n");
-            foreach (var projInfo in buildInfo)
+            var presentationInfo = ExtractPresentationInfo(buildInfo);
+            presentationInfo.Sort((i1, i2) =>
             {
-                w.Write("\""+projInfo.ProjectName + "\",");
-                w.Write(projInfo.Configuration    + ",");
-                w.Write(projInfo.BuildStartTime   + ",");
-                w.Write(projInfo.BuildDuration    + ",");
-                w.Write(projInfo.BuildEndTime     + ",");
-                w.Write((projInfo.BuildSucceeded.HasValue ? projInfo.BuildSucceeded.Value.ToString() : "?") + "\n");
+                if (!i1.BuildStartTime_Absolute.HasValue) return 1;
+                else if (!i2.BuildStartTime_Absolute.HasValue) return -1;
+                else return (i1.BuildStartTime_Absolute.Value.CompareTo(i2.BuildStartTime_Absolute.Value));
+            });
+
+
+            w.Write("Project,Configuration,\"Start time (abs)\",\"Start time\",Duration,\"End time\",Succeeded\n");
+            foreach (var projInfo in presentationInfo)
+            {
+                w.Write("\"" + projInfo.ProjectName                 + "\",");
+                w.Write("\"" + projInfo.Configuration               + "\",");
+                w.Write("\"" + projInfo.BuildStartTime_Absolute     + "\",");
+                w.Write("\"" + projInfo.BuildStartTime_Relative     + "\",");
+                w.Write("\"" + projInfo.BuildDuration               + "\",");
+                w.Write("\"" + projInfo.BuildEndTime_Relative       + "\",");
+
+                string s = projInfo.BuildSucceeded.HasValue ? projInfo.BuildSucceeded.Value.ToString() : "?";
+                w.Write(s + "\n");
             }
         }
     }

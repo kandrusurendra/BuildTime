@@ -165,13 +165,7 @@ namespace VSBuildTimer
             }
             else
             {
-                DateTime? minStartTime = buildInfo.Min(projectInfo => projectInfo.BuildStartTime);
-
-                // Projects must have a non-empty BuildStartTime in order to be in the list.
-                System.Diagnostics.Debug.Assert(minStartTime.HasValue);
-
-                // Update build-info grid.
-                var presentationInfo = buildInfo.Select(projectInfo => new ProjectPresentationInfo(minStartTime.Value, projectInfo));
+                var presentationInfo = BuildInfoUtils.ExtractPresentationInfo(buildInfo);
                 BuildInfoGrid.ItemsSource = presentationInfo;
 
                 var infoSorted = presentationInfo.ToList();
