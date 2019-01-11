@@ -79,9 +79,23 @@ namespace VSBuildTimer
 
         public void LogMessage(string message, LogLevel level)
         {
-            if (this.wndPane != null && this.wndPane.BuildTimerUICtrl !=null)
+            if (this.wndPane != null)
             {
-                this.wndPane.BuildTimerUICtrl.LogMessage(message, level);
+                #if DEBUG
+                var minLevel = LogLevel.DebugInfo;
+                #else
+                var minLevel = LogLevel.UserInfo;
+                #endif
+
+                if (level >= minLevel)
+                {
+                    var time = System.DateTime.Now;
+                    // Write message to both windows.
+                    if (this.wndPane.OutputWindowPane != null)
+                        this.wndPane.OutputWindowPane.OutputString(time + " - " + message + "\n");
+                    if (this.wndPane.BuildTimerUICtrl != null)
+                        this.wndPane.BuildTimerUICtrl.OutputString(time + " - " + message + "\n");
+                }
             }
         }
 
@@ -166,5 +180,21 @@ namespace VSBuildTimer
         private EventRouter evtRouter;
         private IBuildInfoExtractionStrategy buildInfoExtractor;
         private BuildTimerWindowPane wndPane;
+    }
+
+
+    abstract class PackageUtils
+    {
+        public static string PackageVersionString()
+        {
+            var v = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+            return string.Format("Visual Studio Build Timer {0}.{1}.{2} - Build {3}\n",
+                v.Major,
+                v.Minor,
+                v.Build,        // Microsfot versioning follows the scheme: major.minor.build.revision.
+                v.Revision      // I prefer it in the form:                 major.minor.revision.build.
+                                // Therefore I use the "Build" field as my revision number and vice-versa.
+            );
+        }
     }
 }

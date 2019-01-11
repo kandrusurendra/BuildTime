@@ -29,7 +29,7 @@ namespace VSBuildTimer
     /// <summary>
     /// Interaction logic for BuildTimerCtrl.xaml
     /// </summary>
-    public partial class BuildTimerCtrl : UserControl, ILogger
+    public partial class BuildTimerCtrl : UserControl
     {
         //
         // Public interface
@@ -40,14 +40,7 @@ namespace VSBuildTimer
 
             InitializeComponent();
 
-            var v = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-            this.LogMessage(string.Format("Visual Studio Build Timer {0}.{1}.{2} - Build {3}",
-                v.Major, 
-                v.Minor, 
-                v.Build,        // Microsfot versioning follows the scheme: major.minor.build.revision.
-                v.Revision      // I prefer it in the form:                 major.minor.revision.build.
-                                // Therefore I use the "Build" field as my revision number and vice-versa.
-            ), LogLevel.UserInfo);
+            this.OutputString(PackageUtils.PackageVersionString());
         }
 
         public IBuildInfoExtractionStrategy BuildInfoExtractor
@@ -91,17 +84,6 @@ namespace VSBuildTimer
             }
         }
 
-        public void LogMessage(string message, LogLevel level)
-        {
-#if DEBUG
-            var minLevel = LogLevel.DebugInfo;
-#else
-            var minLevel = LogLevel.UserInfo;
-#endif
-            if (level >= minLevel)
-                OutputWindow.AppendText(DateTime.Now + " - " + message + "\n");
-        }
-
         public WindowStatus CurrentState
         {
             get { return currentState; }
@@ -115,6 +97,12 @@ namespace VSBuildTimer
                 // Update the display now
                 RefreshValues(this, null);
             }
+        }
+
+        public void OutputString(string message)
+        {
+            if (OutputWindow != null)
+                OutputWindow.AppendText(message);
         }
 
         public void UpdateData()
@@ -160,7 +148,8 @@ namespace VSBuildTimer
                 }
                 catch (Exception e)
                 {
-                    this.LogMessage("Failed to export build information: " + e.Message, LogLevel.Error);
+                    var package = m_windowPane.Package as VSBuildTimerPackage;
+                    package.LogMessage("Failed to export build information: " + e.Message, LogLevel.Error);
                 }
             }
         }

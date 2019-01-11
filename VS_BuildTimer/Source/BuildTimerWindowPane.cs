@@ -31,13 +31,12 @@ namespace VSBuildTimer
             base.Content = control;
         }
 
-        /// <summary>
-        /// This is called after our control has been created and sited.
-        /// This is a good place to initialize the control with data gathered
-        /// from Visual Studio services.
-        /// </summary>
         public override void OnToolWindowCreated()
         {
+            // This is called after our control has been created and sited.
+            // This is a good place to initialize the control with data gathered
+            // from Visual Studio services.
+             
             base.OnToolWindowCreated();
 
             VSBuildTimerPackage package = (VSBuildTimerPackage)Package;
@@ -61,10 +60,7 @@ namespace VSBuildTimer
 
         public BuildTimerCtrl BuildTimerUICtrl { get { return control; } }
 
-        /// <summary>
-        /// Retrieve the pane that should be used to output information.
-        /// </summary>
-        private IVsOutputWindowPane OutputWindowPane
+        public IVsOutputWindowPane OutputWindowPane
         {
             get
             {
@@ -93,6 +89,12 @@ namespace VSBuildTimer
                     ErrorHandler.ThrowOnFailure(outputWindow.CreatePane(ref paneGuid, paneName, 1 /*visible=true*/, 0 /*clearWithSolution=false*/));
                     // Retrieve the pane
                     ErrorHandler.ThrowOnFailure(outputWindow.GetPane(ref paneGuid, out outputWindowPane));
+
+
+                    if (outputWindowPane != null)
+                    {
+                        OutputWindowPane.OutputString(PackageUtils.PackageVersionString());
+                    }
                 }
 
                 return outputWindowPane;
