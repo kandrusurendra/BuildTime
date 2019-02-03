@@ -1,21 +1,15 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-
 using System.Threading.Tasks;
 using System.Diagnostics;
-
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -27,6 +21,23 @@ using winformchart = System.Windows.Forms.DataVisualization.Charting;
 namespace VSBuildTimer
 {
     /// <summary>
+    /// ViewModel: class to facilitate data-binding with WPF DataGrid.
+    /// </summary>
+    public class ViewModel
+    {
+        public ViewModel()
+        {
+            this.MyDataSource = new ObservableCollection<ProjectPresentationInfo>();
+            this.ViewSource = new CollectionViewSource();
+            this.ViewSource.Source = this.MyDataSource;
+        }
+
+        public ObservableCollection<ProjectPresentationInfo> MyDataSource { get; set; }
+
+        public CollectionViewSource ViewSource { get; set; }
+    }
+
+    /// <summary>
     /// Interaction logic for BuildTimerCtrl.xaml
     /// </summary>
     public partial class BuildTimerCtrl : UserControl
@@ -37,6 +48,8 @@ namespace VSBuildTimer
         public BuildTimerCtrl(BuildTimerWindowPane windowPane)
         {
             m_windowPane = windowPane;
+            m_viewModel = new ViewModel();
+            this.DataContext = m_viewModel;
 
             InitializeComponent();
 
@@ -44,10 +57,10 @@ namespace VSBuildTimer
         }
 
         public IBuildInfoExtractionStrategy BuildInfoExtractor
-        {    
+        {
             set
             {
-                if (m_buildInfoExtractor!=null)
+                if (m_buildInfoExtractor != null)
                 {
                     m_buildInfoExtractor.BuildInfoUpdated -= this.OnBuildInfoUpdated;
                 }
@@ -107,7 +120,7 @@ namespace VSBuildTimer
 
         public void UpdateData()
         {
-            if (BuildInfoExtractor!=null)
+            if (BuildInfoExtractor != null)
             {
                 var buildInfo = BuildInfoExtractor.GetBuildProgressInfo();
                 this.UpdateUI(buildInfo);
@@ -160,13 +173,18 @@ namespace VSBuildTimer
             if (buildInfo == null || buildInfo.Count == 0)
             {
                 BuildGraphChart.ChartData = new List<WinFormsControls.ProjectInfo>();
-                BuildInfoGrid.ItemsSource = new List<ProjectPresentationInfo>();
+                m_viewModel.MyDataSource.Clear();
+                m_viewModel.ViewSource.View.Refresh();
                 return;
             }
             else
             {
                 var presentationInfo = BuildInfoUtils.ExtractPresentationInfo(buildInfo);
-                BuildInfoGrid.ItemsSource = presentationInfo;
+                m_viewModel.MyDataSource.Clear();
+                foreach (var info in presentationInfo)
+                    m_viewModel.MyDataSource.Add(info);
+                m_viewModel.ViewSource.View.Refresh();
+
 
                 var infoSorted = presentationInfo.ToList();
                 infoSorted.Sort((i1, i2) =>
@@ -201,7 +219,6 @@ namespace VSBuildTimer
                 BuildGraphChart.ChartData = ctrlProjInfo;
             }
         }
-        
 
         //
         // Debug code
@@ -279,9 +296,6 @@ namespace VSBuildTimer
 
         private void OnGridDoubleClick(object sender, EventArgs args)
         {
-            //var extractor = BuildInfoExtractor;
-            //if (extractor != null)
-            //    this.UpdateUI(extractor.GetBuildProgressInfo());
         }
 
         private void timelineAnchorablePane_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -298,10 +312,10 @@ namespace VSBuildTimer
 
 
         private BuildTimerWindowPane m_windowPane;
+        private readonly ViewModel m_viewModel;
         private IEventRouter m_evtRouter;
         private IBuildInfoExtractionStrategy m_buildInfoExtractor;
         private WindowStatus currentState = null;
-
         private int m_count_ = 0;
     }
 }

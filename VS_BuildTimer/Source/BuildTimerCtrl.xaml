@@ -11,7 +11,9 @@
              xmlns:local="clr-namespace:VSBuildTimer"
              mc:Ignorable="d" 
              d:DesignHeight="480" d:DesignWidth="640">
-
+    <UserControl.Resources>
+        <CollectionViewSource x:Key="ProjectCollectionViewSource" Source="{Binding MyDataSource}" />
+    </UserControl.Resources>
     <avalonDock:DockingManager Grid.Column="1" x:Name="DManager" SizeChanged="DManager_SizeChanged"
                                Background="White">
         <avalonDock:LayoutRoot>
@@ -27,9 +29,10 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
-                            <DataGrid Grid.Row="0" Grid.Column="0" Name="BuildInfoGrid" 
+                            <DataGrid Grid.Row="0" Grid.Column="0" Name="BuildInfoGrid" AutoGenerateColumns="False"
+                                      ItemsSource="{Binding Source={StaticResource ProjectCollectionViewSource}}" 
                                       HorizontalAlignment="Stretch" VerticalAlignment="Top" MouseDoubleClick="OnGridDoubleClick"
-                                      Margin="2" AutoGenerateColumns="False" IsReadOnly="True">
+                                      Margin="2" IsReadOnly="True">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="Project" Binding="{Binding Path=ProjectName}"/>
                                     <DataGridTextColumn Header="Configuration" Binding="{Binding Path=Configuration, TargetNullValue=' ? '}"/>
