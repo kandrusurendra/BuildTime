@@ -64,11 +64,83 @@
                     <avalonDock:LayoutAnchorable x:Name="timelineAnchorable" Title="Timeline" AutoHideHeight="100" CanClose="False" CanHide="False"
                                                  CanAutoHide="True">
                         
-                        <WindowsFormsHost Grid.Row="0" Name="wfHost" Padding="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="2"
-                                              MinHeight="100" MaxHeight="999" SizeChanged="wfHost_SizeChanged">
-                            <WinFormsControls:TimelineCtrl x:Name="WinFormChartCtrl"/>
-                        </WindowsFormsHost>
+                        <Grid x:Name="TimelineWndGrid">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <!--<RowDefinition Height="0"/>-->
+                            </Grid.RowDefinitions>
+                            <Border Name="placeHolder" Grid.Row="0" Margin="5" BorderThickness="2">
+                                <Border.BorderBrush>
+                                    <DrawingBrush Viewport="0,0,8,8" ViewportUnits="Absolute" TileMode="Tile">
+                                        <DrawingBrush.Drawing>
+                                            <DrawingGroup>
+                                                <GeometryDrawing Brush="DarkBlue">
+                                                    <GeometryDrawing.Geometry>
+                                                        <GeometryGroup>
+                                                            <RectangleGeometry Rect="0,0,50,50" />
+                                                            <RectangleGeometry Rect="50,50,50,50" />
+                                                        </GeometryGroup>
+                                                    </GeometryDrawing.Geometry>
+                                                </GeometryDrawing>
+                                            </DrawingGroup>
+                                        </DrawingBrush.Drawing>
+                                    </DrawingBrush>
+                                </Border.BorderBrush>
+                                <Label  
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                   FontSize="12" FontStyle="Italic"
+                                   Content="Timeline will appear when the build starts." >
+                                </Label>
+                            </Border>
 
+                            
+                            <WindowsFormsHost Grid.Row="0" Name="wfHost" Padding="0" 
+                                              Margin="1" VerticalAlignment="Stretch" 
+                                              HorizontalAlignment="Stretch"
+                                              MinHeight="100" MaxHeight="999" 
+                                              Visibility="Hidden"
+                                              SizeChanged="wfHost_SizeChanged">
+                                <WinFormsControls:TimelineCtrl x:Name="WinFormChartCtrl"/>
+                            </WindowsFormsHost>
+                        </Grid>
+                        
+                        <!--
+                        <StackPanel>
+                            <Border Margin="5" BorderThickness="2">
+                                <Border.BorderBrush>
+                                    <DrawingBrush Viewport="0,0,8,8" ViewportUnits="Absolute" TileMode="Tile">
+                                        <DrawingBrush.Drawing>
+                                            <DrawingGroup>
+                                                <GeometryDrawing Brush="DarkBlue">
+                                                    <GeometryDrawing.Geometry>
+                                                        <GeometryGroup>
+                                                            <RectangleGeometry Rect="0,0,50,50" />
+                                                            <RectangleGeometry Rect="50,50,50,50" />
+                                                        </GeometryGroup>
+                                                    </GeometryDrawing.Geometry>
+                                                </GeometryDrawing>
+                                            </DrawingGroup>
+                                        </DrawingBrush.Drawing>
+                                    </DrawingBrush>
+                                </Border.BorderBrush>
+                                <Label Name="placeHolder" 
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                   FontSize="12" FontStyle="Italic"
+                                   Content="Timeline will appear when the build starts." >
+                                </Label>
+                            </Border>
+
+
+                            <WindowsFormsHost Name="wfHost" Padding="0" 
+                                              Margin="1" VerticalAlignment="Stretch" 
+                                              HorizontalAlignment="Stretch"
+                                              MinHeight="100" MaxHeight="999" 
+                                              Visibility="Hidden"
+                                              SizeChanged="wfHost_SizeChanged">
+                                <WinFormsControls:TimelineCtrl x:Name="WinFormChartCtrl"/>
+                            </WindowsFormsHost>
+                        </StackPanel>
+                        -->
                         <!--
                         <Grid x:Name="TimelineWndGrid" SizeChanged="Grid_SizeChanged">
                             <Grid.RowDefinitions>

@@ -52,7 +52,7 @@ namespace VSBuildTimer
             this.DataContext = m_viewModel;
 
             InitializeComponent();
-
+            this.UpdateUI(new List<ProjectBuildInfo>());
             this.OutputString(PackageUtils.PackageVersionString());
         }
 
@@ -169,23 +169,44 @@ namespace VSBuildTimer
 
         private void UpdateUI(List<ProjectBuildInfo> buildInfo)
         {
+            //
+            // Hide placeholder or chart depending on the state.
+            //
+            if (buildInfo.Count == 0)
+            {
+                this.placeHolder.Visibility = Visibility.Visible;
+                this.wfHost.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                this.placeHolder.Visibility = Visibility.Hidden;
+                this.wfHost.Visibility = Visibility.Visible;
+            }
+
+            //
+            // Update grid and chart with new data.
+            //
             var BuildGraphChart = this.WinFormChartCtrl;
             if (buildInfo == null || buildInfo.Count == 0)
             {
-                BuildGraphChart.ChartData = new List<WinFormsControls.ProjectInfo>();
+                // update model; grid will update accordingly.
                 m_viewModel.MyDataSource.Clear();
                 m_viewModel.ViewSource.View.Refresh();
+                
+                // update chart
+                BuildGraphChart.ChartData = new List<WinFormsControls.ProjectInfo>();
                 return;
             }
             else
             {
+                // update model; grid will update accordingly.
                 var presentationInfo = BuildInfoUtils.ExtractPresentationInfo(buildInfo);
                 m_viewModel.MyDataSource.Clear();
                 foreach (var info in presentationInfo)
                     m_viewModel.MyDataSource.Add(info);
                 m_viewModel.ViewSource.View.Refresh();
 
-
+                // update chart.
                 var infoSorted = presentationInfo.ToList();
                 infoSorted.Sort((i1, i2) =>
                 {

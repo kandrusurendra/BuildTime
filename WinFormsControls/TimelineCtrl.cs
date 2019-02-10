@@ -98,5 +98,10 @@ namespace WinFormsControls
         {
             UpdateChart();
         }
+
+        private void chartAreaPanel_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }
