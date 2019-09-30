@@ -1,14 +1,8 @@
 # Visual Studio Build Timer
 
-Times the build of your Visual Studio solution and shows how much time is spent building each project.
+A visual studio add-on that times the build of your Visual Studio solution and shows how much time is spent building each project.
 
-## User guide
-
-Open the tool window from the top menu View -> Other Windows -> Build Timer.
-
-Start building your Visual Studio solution. Build Timer records time spent building each project and creates a timeline. 
-
-![buildTimer.PNG](https://bitbucket.org/repo/gk959xg/images/3618972332-buildTimer.PNG)
+For more information and a user guide, check the [Visual Studio Market Place page](https://marketplace.visualstudio.com/items?itemName=OdysseasPetrocheilos.VisualStudioBuildTimer).
 
 ## Credits
 
