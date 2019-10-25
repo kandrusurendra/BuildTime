@@ -34,10 +34,8 @@ namespace VSBuildTimer
         public event System.EventHandler BuildCompleted = (sender, args) => { };
         public event System.EventHandler<OutputWndEventArgs> OutputPaneUpdated = (sender, args) => { };
 
-        public EventRouter(MsVsShell.Package package)
+        public EventRouter(EnvDTE.DTE dte)
         {
-            IServiceContainer serviceContainer = package as IServiceContainer;
-            var dte = serviceContainer.GetService(typeof(SDTE)) as EnvDTE.DTE;
             this.buildEvents = dte.Events.BuildEvents;
             this.outputWndEvents = dte.Events.OutputWindowEvents;
 

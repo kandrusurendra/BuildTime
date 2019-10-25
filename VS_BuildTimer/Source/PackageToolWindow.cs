@@ -9,16 +9,19 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
 ***************************************************************************/
 
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
-using MsVsShell = Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell;
 using EnvDTE;
 using EnvDTE80;
 using ErrorHandler = Microsoft.VisualStudio.ErrorHandler;
+using Task = System.Threading.Tasks.Task;
 
 namespace VSBuildTimer
 {
@@ -65,13 +68,13 @@ namespace VSBuildTimer
     /// this means that it is possible to cause the window to be displayed simply by
     /// creating a solution/project.
     /// </summary>
-    [MsVsShell.ProvideToolWindow(typeof(BuildTimerWindowPane), PositionX = 250, PositionY = 250, Width = 160, Height = 180, Transient = true)]
-    [MsVsShell.ProvideMenuResource(1000, 1)]
-    [MsVsShell.PackageRegistration(UseManagedResourcesOnly = true)]
-    [MsVsShell.ProvideAutoLoad(UIContextGuids80.SolutionExists)]
+    [ProvideToolWindow(typeof(BuildTimerWindowPane), PositionX = 250, PositionY = 250, Width = 160, Height = 180, Transient = true)]
+    [ProvideMenuResource(1000, 1)]
+    [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
+    [ProvideAutoLoad(UIContextGuids80.SolutionExists, PackageAutoLoadFlags.BackgroundLoad)]
     [Guid("01069CDD-95CE-4620-AC21-DDFF6C57F012")]
-    [MsVsShell.ProvideBindingPath]
-    public class VSBuildTimerPackage : MsVsShell.Package, ILogger
+    [ProvideBindingPath]
+    public class VSBuildTimerPackage : AsyncPackage, ILogger
     {
         public EventRouter EvtRouter { get { return evtRouter; } }
 
@@ -99,29 +102,30 @@ namespace VSBuildTimer
             }
         }
 
-        protected override void Initialize()
+        protected override async Task InitializeAsync(
+            CancellationToken cancellationToken,
+            IProgress<ServiceProgressData> progress
+        )
 		{
-			base.Initialize();
+			await base.InitializeAsync(cancellationToken, progress);
+
+            await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 
             // Before anything else, create the event router. Other objects are going to need it.
-            this.evtRouter = new EventRouter(this);
+            IServiceContainer serviceContainer = this as IServiceContainer;
+            var dte = serviceContainer.GetService(typeof(SDTE)) as EnvDTE.DTE;
 
-            IVsSolutionBuildManager2 buildManager = GetService(typeof(SVsSolutionBuildManager)) as IVsSolutionBuildManager2;
+            //var dte = GetServiceAsync(typeof(SDTE));
+            this.evtRouter = new EventRouter(dte);
+
+            IVsSolutionBuildManager2 buildManager = await GetServiceAsync(typeof(SVsSolutionBuildManager)) as IVsSolutionBuildManager2;
             this.buildInfoExtractor = new SDKBasedInfoExtractor(this, buildManager, this);
-            //this.buildInfoExtractor = new OutputWindowInterativeInfoExtractor(this.evtRouter, this);
 
-            // Create one object derived from MenuCommand for each command defined in
-            // the VSCT file and add it to the command service.
-            // Each command is uniquely identified by a Guid/integer pair.
-            // Add the handler for the tool window with dynamic visibility and events
             CommandID id = new CommandID(GuidsList.guidClientCmdSet, PkgCmdId.cmdidBuildTimerWindow);
             DefineCommandHandler(new EventHandler(ShowBuildTimerWindow), id);
-
-            //var service = (DTE2)this.GetService(typeof(DTE));
-            //var events = (Events2)service.Events;  // It is recommended to keep a ref to events to protect them from GC.
         }
 
-        internal MsVsShell.OleMenuCommand DefineCommandHandler(EventHandler handler, CommandID id)
+        internal OleMenuCommand DefineCommandHandler(EventHandler handler, CommandID id)
 		{
 			// if the package is zombied, we don't want to add commands
 			if (Zombied)
@@ -132,13 +136,13 @@ namespace VSBuildTimer
 			{
 				// Get the OleCommandService object provided by the MPF; this object is the one
 				// responsible for handling the collection of commands implemented by the package.
-				menuService = GetService(typeof(IMenuCommandService)) as MsVsShell.OleMenuCommandService;
+				menuService = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
 			}
-			MsVsShell.OleMenuCommand command = null;
+			OleMenuCommand command = null;
 			if (null != menuService)
 			{
 				// Add the command handler
-				command = new MsVsShell.OleMenuCommand(handler, id);
+				command = new OleMenuCommand(handler, id);
 				menuService.AddCommand(command);
 			}
 			return command;
@@ -176,7 +180,7 @@ namespace VSBuildTimer
             ErrorHandler.ThrowOnFailure(frame.Show());
         }
 
-        private MsVsShell.OleMenuCommandService menuService;
+        private OleMenuCommandService menuService;
         private EventRouter evtRouter;
         private IBuildInfoExtractionStrategy buildInfoExtractor;
         private BuildTimerWindowPane wndPane;
