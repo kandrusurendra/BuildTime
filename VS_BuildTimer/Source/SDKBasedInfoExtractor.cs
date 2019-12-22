@@ -14,7 +14,9 @@ namespace VSBuildTimer
 {
     using ProjectKey = Tuple<string, string>;
 
-    class SDKBasedInfoExtractor : IVsUpdateSolutionEvents2, IBuildInfoExtractionStrategy
+    class SDKBasedInfoExtractor : IVsUpdateSolutionEvents2
+                                , IBuildInfoExtractionStrategy
+                                , IDisposable
     {
         public SDKBasedInfoExtractor(MsVsShell.Package package, IVsSolutionBuildManager2 buildManager, ILogger logger = null)
         {
@@ -33,7 +35,21 @@ namespace VSBuildTimer
             return projInfo;
         }
 
-        public event EventHandler BuildInfoUpdated;
+        public event EventHandler BuildInfoUpdated = delegate { };
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                this.m_timer.Dispose();
+            }
+        }
 
         int IVsUpdateSolutionEvents.UpdateSolution_Begin(ref int pfCancelUpdate)
         {
