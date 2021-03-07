@@ -34,27 +34,27 @@ namespace VSBuildTimer
         public event System.EventHandler BuildCompleted = (sender, args) => { };
         public event System.EventHandler<OutputWndEventArgs> OutputPaneUpdated = (sender, args) => { };
 
-        public EventRouter(EnvDTE.DTE dte)
+        public EventRouter(VSBuildTimerPackage package, EnvDTE.DTE dte)
         {
             this.buildEvents = dte.Events.BuildEvents;
             this.outputWndEvents = dte.Events.OutputWindowEvents;
 
-            this.buildEvents.OnBuildBegin += this.OnBuildBegin;
-            this.buildEvents.OnBuildDone += this.OnBuildCompleted;
-            this.outputWndEvents.PaneUpdated += this.OnOutputPaneUpdated;
+            this.buildEvents.OnBuildBegin += this.OnBuildBeginHandler;
+            this.buildEvents.OnBuildDone += this.OnBuildCompletedHandler;
+            this.outputWndEvents.PaneUpdated += this.OnOutputPaneUpdatedHandler;
         }
 
-        private void OnBuildBegin(EnvDTE.vsBuildScope sc, EnvDTE.vsBuildAction ac)
+        private void OnBuildBeginHandler(EnvDTE.vsBuildScope sc, EnvDTE.vsBuildAction ac)
         {
             BuildStarted(this, new EventArgs());
         }
 
-        private void OnBuildCompleted(EnvDTE.vsBuildScope sc, EnvDTE.vsBuildAction ac)
+        private void OnBuildCompletedHandler(EnvDTE.vsBuildScope sc, EnvDTE.vsBuildAction ac)
         {
             BuildCompleted(this, new EventArgs());
         }
 
-        private void OnOutputPaneUpdated(OutputWindowPane wndPane)
+        private void OnOutputPaneUpdatedHandler(OutputWindowPane wndPane)
         {
             var args = new OutputWndEventArgs
             {
@@ -62,8 +62,7 @@ namespace VSBuildTimer
             };
             OutputPaneUpdated(this, args);
         }
-
-        
+       
         private readonly BuildEvents buildEvents;
         private readonly OutputWindowEvents outputWndEvents;
     }

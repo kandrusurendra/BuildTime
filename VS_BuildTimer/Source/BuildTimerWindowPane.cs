@@ -51,11 +51,7 @@ namespace VSBuildTimer
             WindowStatus windowFrameEventsHandler = new WindowStatus(OutputWindowPane, Frame as IVsWindowFrame);
             ErrorHandler.ThrowOnFailure(((IVsWindowFrame)Frame).SetProperty((int)__VSFPROPID.VSFPROPID_ViewHelper, windowFrameEventsHandler));
 
-            control.EvtRouter = package.EvtRouter;
-            //control.BuildInfoExtractor = new FakeInfoExtractor();
-            control.BuildInfoExtractor = package.BuildInfoExtractor;
-            control.CurrentState = windowFrameEventsHandler;
-            control.UpdateData();
+            control.Initialize(package.BuildInfoExtractor, package.EvtRouter, windowFrameEventsHandler, package.SettingsManager);
         }
 
         public BuildTimerCtrl BuildTimerUICtrl { get { return control; } }

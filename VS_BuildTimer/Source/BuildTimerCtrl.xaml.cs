@@ -56,17 +56,22 @@ namespace VSBuildTimer
             this.OutputString(PackageUtils.PackageVersionString());
         }
 
-        public IBuildInfoExtractionStrategy BuildInfoExtractor
+        public void Initialize(IBuildInfoExtractionStrategy infoExtractor, IEventRouter evtRouter, 
+                                WindowStatus status, SettingsManager settingsManager)
+        {
+            this.EvtRouter = evtRouter;
+            this.BuildInfoExtractor = infoExtractor;
+            this.WindowStatus = status;
+            this.SettingsManager = settingsManager;
+
+            this.WinFormChartCtrl.ZoomLevel = this.SettingsManager.GetSettings().ZoomLevel;
+            this.UpdateData();
+        }
+        private IBuildInfoExtractionStrategy BuildInfoExtractor
         {
             set
             {
-                if (m_buildInfoExtractor != null)
-                {
-                    m_buildInfoExtractor.BuildInfoUpdated -= this.OnBuildInfoUpdated;
-                }
-
                 m_buildInfoExtractor = value;
-
                 if (m_buildInfoExtractor != null)
                 {
                     m_buildInfoExtractor.BuildInfoUpdated += this.OnBuildInfoUpdated;
@@ -79,25 +84,17 @@ namespace VSBuildTimer
             }
         }
 
-        public IEventRouter EvtRouter
+        private IEventRouter EvtRouter
         {
             set
             {
-                if (m_evtRouter != null)
-                {
-                    // unregister any events received from previous event router.
-                }
-
                 m_evtRouter = value;
-
-                if (m_evtRouter != null)
-                {
-                    // register to new event router.
-                }
             }
         }
+        
+        private SettingsManager SettingsManager { get; set; }
 
-        public WindowStatus CurrentState
+        private WindowStatus WindowStatus
         {
             get { return currentState; }
             set

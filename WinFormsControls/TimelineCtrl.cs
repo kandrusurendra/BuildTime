@@ -42,6 +42,22 @@ namespace WinFormsControls
             }
         }
 
+        public double ZoomLevel
+        {
+            get
+            {
+                return (this.zoomTrackbar.Value - this.zoomTrackbar.Minimum) /
+                       (double)(this.zoomTrackbar.Maximum - this.zoomTrackbar.Minimum);
+            }
+
+            set
+            {
+                value = System.Math.Min(1.0, System.Math.Max(0.0, value));
+                this.zoomTrackbar.Value = System.Convert.ToInt32(
+                    this.zoomTrackbar.Minimum + value * (this.zoomTrackbar.Maximum - this.zoomTrackbar.Minimum));
+            }
+        }
+
         private static System.Drawing.Color GetBarColor(bool? buildSuccess)
         {
             if (buildSuccess.HasValue)
