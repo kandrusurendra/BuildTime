@@ -56,7 +56,18 @@ namespace VSBuildTimer
             this.OutputString(PackageUtils.PackageVersionString());
         }
 
-        public IBuildInfoExtractionStrategy BuildInfoExtractor
+        public void Initialize(IBuildInfoExtractionStrategy infoExtractor, IEventRouter evtRouter, 
+                                WindowStatus status, SettingsManager settingsManager)
+        {
+            this.EvtRouter = evtRouter;
+            this.BuildInfoExtractor = infoExtractor;
+            this.WindowStatus = status;
+            this.SettingsManager = settingsManager;
+
+            this.WinFormChartCtrl.ZoomLevel = this.SettingsManager.GetSettings().ZoomLevel;
+            this.UpdateData();
+        }
+        private IBuildInfoExtractionStrategy BuildInfoExtractor
         {
             set
             {
@@ -79,7 +90,7 @@ namespace VSBuildTimer
             }
         }
 
-        public IEventRouter EvtRouter
+        private IEventRouter EvtRouter
         {
             set
             {
@@ -96,8 +107,10 @@ namespace VSBuildTimer
                 }
             }
         }
+        
+        private SettingsManager SettingsManager { get; set; }
 
-        public WindowStatus CurrentState
+        private WindowStatus WindowStatus
         {
             get { return currentState; }
             set

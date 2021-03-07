@@ -80,6 +80,8 @@ namespace VSBuildTimer
 
         public IBuildInfoExtractionStrategy BuildInfoExtractor { get { return buildInfoExtractor; } }
 
+        public SettingsManager SettingsManager { get { return settingsManager; } }
+
         public void LogMessage(string message, LogLevel level)
         {
             if (this.wndPane != null)
@@ -120,6 +122,8 @@ namespace VSBuildTimer
 
             IVsSolutionBuildManager2 buildManager = await GetServiceAsync(typeof(SVsSolutionBuildManager)) as IVsSolutionBuildManager2;
             this.buildInfoExtractor = new SDKBasedInfoExtractor(this, buildManager, this);
+
+            this.settingsManager = new SettingsManager();
 
             CommandID id = new CommandID(GuidsList.guidClientCmdSet, PkgCmdId.cmdidBuildTimerWindow);
             DefineCommandHandler(new EventHandler(ShowBuildTimerWindow), id);
@@ -183,6 +187,7 @@ namespace VSBuildTimer
         private OleMenuCommandService menuService;
         private EventRouter evtRouter;
         private IBuildInfoExtractionStrategy buildInfoExtractor;
+        private SettingsManager settingsManager;
         private BuildTimerWindowPane wndPane;
     }
 
