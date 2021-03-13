@@ -32,22 +32,14 @@ namespace VSBuildTimer
         {
             public UserSettings ReadSettings()
             {
-                try
+                string filename = System.IO.Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                    "VSBuildTimer.json");
+                using (StreamReader file = File.OpenText(filename))
                 {
-                    string filename = System.IO.Path.Combine(
-                        Environment.GetFolderPath(Environment.SpecialFolder.System),
-                        "VSBuildTimer.json");
-                    using (StreamReader file = File.OpenText(filename))
-                    {
-                        JsonSerializer serializer = new JsonSerializer();
-                        UserSettings settings = (UserSettings)serializer.Deserialize(file, typeof(UserSettings));
-                        return settings;
-                    }
-                }
-                catch (System.Exception e)
-                {
-                    System.Console.WriteLine(String.Format("Error while reading user settings {0}", e.Message));
-                    return null;
+                    JsonSerializer serializer = new JsonSerializer();
+                    UserSettings settings = (UserSettings)serializer.Deserialize(file, typeof(UserSettings));
+                    return settings;
                 }
             }
         }
@@ -59,7 +51,7 @@ namespace VSBuildTimer
                 try
                 {
                     string filename = System.IO.Path.Combine(
-                        Environment.GetFolderPath(Environment.SpecialFolder.System),
+                        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                         "VSBuildTimer.json");
 
                     using (StreamWriter writer = new StreamWriter(filename))
@@ -79,8 +71,20 @@ namespace VSBuildTimer
     {
         public SettingsV1.UserSettings GetSettings()
         {
-            var reader = new SettingsV1.SettingsReader();
-            this.settings = reader.ReadSettings();
+            if (this.settings != null)
+                return this.settings;
+            
+            try
+            {
+                var reader = new SettingsV1.SettingsReader();
+                this.settings = reader.ReadSettings();
+            }
+            catch (System.Exception e)
+            {
+                System.Console.WriteLine(String.Format("Error while reading user settings {0}", e.Message));
+                this.settings = new SettingsV1.UserSettings();
+            }
+            
             return this.settings;
         }
 

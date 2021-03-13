@@ -25,6 +25,7 @@ namespace VSBuildTimer
         event System.EventHandler BuildStarted;
         event System.EventHandler BuildCompleted;
         event System.EventHandler<OutputWndEventArgs> OutputPaneUpdated;
+        event System.EventHandler OnShutdown;
     }
 
 
@@ -33,8 +34,9 @@ namespace VSBuildTimer
         public event System.EventHandler BuildStarted = (sender, args) => { };
         public event System.EventHandler BuildCompleted = (sender, args) => { };
         public event System.EventHandler<OutputWndEventArgs> OutputPaneUpdated = (sender, args) => { };
+        public event System.EventHandler OnShutdown = (sender, args) => { };
 
-        public EventRouter(EnvDTE.DTE dte)
+        public EventRouter(VSBuildTimerPackage package, EnvDTE.DTE dte)
         {
             this.buildEvents = dte.Events.BuildEvents;
             this.outputWndEvents = dte.Events.OutputWindowEvents;
@@ -42,6 +44,7 @@ namespace VSBuildTimer
             this.buildEvents.OnBuildBegin += this.OnBuildBegin;
             this.buildEvents.OnBuildDone += this.OnBuildCompleted;
             this.outputWndEvents.PaneUpdated += this.OnOutputPaneUpdated;
+            package.OnQueryClose += this.OnShutdown;
         }
 
         private void OnBuildBegin(EnvDTE.vsBuildScope sc, EnvDTE.vsBuildAction ac)

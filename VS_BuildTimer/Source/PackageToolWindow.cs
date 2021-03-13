@@ -118,7 +118,7 @@ namespace VSBuildTimer
             var dte = serviceContainer.GetService(typeof(SDTE)) as EnvDTE.DTE;
 
             //var dte = GetServiceAsync(typeof(SDTE));
-            this.evtRouter = new EventRouter(dte);
+            this.evtRouter = new EventRouter(this, dte);
 
             IVsSolutionBuildManager2 buildManager = await GetServiceAsync(typeof(SVsSolutionBuildManager)) as IVsSolutionBuildManager2;
             this.buildInfoExtractor = new SDKBasedInfoExtractor(this, buildManager, this);
@@ -129,6 +129,13 @@ namespace VSBuildTimer
             DefineCommandHandler(new EventHandler(ShowBuildTimerWindow), id);
         }
 
+        protected override int QueryClose(out bool canClose)
+        {
+            canClose = true;
+            OnQueryClose(this, new System.EventArgs());
+            this.SettingsManager.StoreSettings();
+            return 0;
+        }
         internal OleMenuCommand DefineCommandHandler(EventHandler handler, CommandID id)
 		{
 			// if the package is zombied, we don't want to add commands
@@ -189,6 +196,7 @@ namespace VSBuildTimer
         private IBuildInfoExtractionStrategy buildInfoExtractor;
         private SettingsManager settingsManager;
         private BuildTimerWindowPane wndPane;
+        public event System.EventHandler OnQueryClose = (sender, args) => { };
     }
 
 

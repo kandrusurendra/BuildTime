@@ -71,13 +71,7 @@ namespace VSBuildTimer
         {
             set
             {
-                if (m_buildInfoExtractor != null)
-                {
-                    m_buildInfoExtractor.BuildInfoUpdated -= this.OnBuildInfoUpdated;
-                }
-
                 m_buildInfoExtractor = value;
-
                 if (m_buildInfoExtractor != null)
                 {
                     m_buildInfoExtractor.BuildInfoUpdated += this.OnBuildInfoUpdated;
@@ -94,16 +88,10 @@ namespace VSBuildTimer
         {
             set
             {
-                if (m_evtRouter != null)
-                {
-                    // unregister any events received from previous event router.
-                }
-
                 m_evtRouter = value;
-
                 if (m_evtRouter != null)
                 {
-                    // register to new event router.
+                    m_evtRouter.OnShutdown += this.OnShutdown;
                 }
             }
         }
@@ -180,6 +168,10 @@ namespace VSBuildTimer
             }
         }
 
+        private void OnShutdown(object sender, System.EventArgs args)
+        {
+            this.SettingsManager.GetSettings().ZoomLevel = this.WinFormChartCtrl.ZoomLevel;
+        }
         private void UpdateUI(List<ProjectBuildInfo> buildInfo)
         {
             //
