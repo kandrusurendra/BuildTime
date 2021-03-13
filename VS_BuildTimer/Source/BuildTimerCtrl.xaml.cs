@@ -139,6 +139,8 @@ namespace VSBuildTimer
         private void OnBuildInfoUpdated(object sender, EventArgs args)
         {
             this.Dispatcher.BeginInvoke(new Action(this.UpdateData));
+            this.SettingsManager.GetSettings().ZoomLevel = this.WinFormChartCtrl.ZoomLevel;
+            this.SettingsManager.StoreSettings();
         }
 
         private void OnClearOutputWindow(object sender, RoutedEventArgs args)
