@@ -24,7 +24,7 @@ namespace VSBuildTimer
             // used in any project without needing to include the source image.
             BitmapImageMoniker = Microsoft.VisualStudio.Imaging.KnownMonikers.Search;
 
-            var package = Package as VSBuildTimerPackage;
+            var package = Package as BuildTimerPackage;
 
             // Creating the user control that will be displayed in the window
             control = new BuildTimerCtrl(this);
@@ -39,7 +39,7 @@ namespace VSBuildTimer
              
             base.OnToolWindowCreated();
 
-            VSBuildTimerPackage package = (VSBuildTimerPackage)Package;
+            BuildTimerPackage package = (BuildTimerPackage)Package;
 
             // Set the text that will appear in the title bar of the tool window.
             // Note that because we need access to the package for localization,
@@ -80,7 +80,7 @@ namespace VSBuildTimer
                     // be created if it does not already exist.
                     Guid paneGuid = new Guid("{291A5129-ADA8-4FB7-A9C4-7557854E00F0}");
                     // Create the pane
-                    VSBuildTimerPackage package = (VSBuildTimerPackage)Package;
+                    BuildTimerPackage package = (BuildTimerPackage)Package;
                     string paneName = package.GetResourceString("@120");
                     ErrorHandler.ThrowOnFailure(outputWindow.CreatePane(ref paneGuid, paneName, 1 /*visible=true*/, 0 /*clearWithSolution=false*/));
                     // Retrieve the pane

@@ -162,7 +162,7 @@ namespace VSBuildTimer
                 }
                 catch (Exception e)
                 {
-                    var package = m_windowPane.Package as VSBuildTimerPackage;
+                    var package = m_windowPane.Package as BuildTimerPackage;
                     package.LogMessage("Failed to export build information: " + e.Message, LogLevel.Error);
                 }
             }
