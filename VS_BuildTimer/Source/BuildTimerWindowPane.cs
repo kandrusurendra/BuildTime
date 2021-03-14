@@ -89,7 +89,7 @@ namespace VSBuildTimer
 
                     if (outputWindowPane != null)
                     {
-                        OutputWindowPane.OutputString(PackageUtils.PackageVersionString());
+                        OutputWindowPane.OutputString(BuildTimerPackage.GetVersionString());
                     }
                 }
 
