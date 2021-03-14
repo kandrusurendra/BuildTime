@@ -187,14 +187,15 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
     </Compile>
     <Compile Include="Source\BuildTimerWindowPane.cs" />
     <Compile Include="Source\EventRouter.cs" />
-    <Compile Include="Source\IBuildInfoExtractionStrategy.cs" />
-    <Compile Include="Source\ILogger.cs" />
+    <Compile Include="Source\Interface\IBuildInfoExtractionStrategy.cs" />
+    <Compile Include="Source\Interface\ILogger.cs" />
+    <Compile Include="Source\Interface\IEventRouter.cs" />
     <Compile Include="Source\OutputWindowInteractiveInfoExtractor.cs" />
     <Compile Include="Source\ProjectBuildInfo.cs" />
-    <Compile Include="Source\CustomTypeDescriptor.cs" />
+    <Compile Include="Source\PackageDetails\CustomTypeDescriptor.cs" />
     <Compile Include="Misc\Guids.cs" />
-    <Compile Include="Source\PackageToolWindow.cs" />
-    <Compile Include="Source\PkgCmdId.cs" />
+    <Compile Include="Source\BuildTimerPackage.cs" />
+    <Compile Include="Source\PackageDetails\PkgCmdId.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -203,10 +204,10 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
     </Compile>
     <Compile Include="Misc\GlobalSuppressions.cs" />
     <Compile Include="Source\SDKBasedInfoExtractor.cs" />
-    <Compile Include="Source\SelectionProperties.cs" />
-    <Compile Include="Source\UserSettings.cs" />
-    <Compile Include="Source\WindowList.cs" />
-    <Compile Include="Source\WindowStatus.cs" />
+    <Compile Include="Source\PackageDetails\SelectionProperties.cs" />
+    <Compile Include="Source\SettingsManager.cs" />
+    <Compile Include="Source\PackageDetails\WindowList.cs" />
+    <Compile Include="Source\PackageDetails\WindowStatus.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources.resx">
@@ -232,7 +233,7 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Source\ListViewStyle.xaml">
+    <Page Include="Source\PackageDetails\ListViewStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
