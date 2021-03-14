@@ -27,8 +27,8 @@ namespace VSBuildTimer
             var package = Package as BuildTimerPackage;
 
             // Creating the user control that will be displayed in the window
-            control = new BuildTimerCtrl(this);
-            base.Content = control;
+            BuildTimerUICtrl = new BuildTimerCtrl(this);
+            base.Content = BuildTimerUICtrl;
         }
 
         public override void OnToolWindowCreated()
@@ -51,10 +51,10 @@ namespace VSBuildTimer
             WindowStatus windowFrameEventsHandler = new WindowStatus(OutputWindowPane, Frame as IVsWindowFrame);
             ErrorHandler.ThrowOnFailure(((IVsWindowFrame)Frame).SetProperty((int)__VSFPROPID.VSFPROPID_ViewHelper, windowFrameEventsHandler));
 
-            control.Initialize(package.BuildInfoExtractor, package.EvtRouter, windowFrameEventsHandler, package.SettingsManager);
+            BuildTimerUICtrl.Initialize(package.BuildInfoExtractor, package.EvtRouter, windowFrameEventsHandler, package.SettingsManager);
         }
 
-        public BuildTimerCtrl BuildTimerUICtrl { get { return control; } }
+        public BuildTimerCtrl BuildTimerUICtrl { get; } = null;
 
         public IVsOutputWindowPane OutputWindowPane
         {
@@ -97,9 +97,6 @@ namespace VSBuildTimer
             }
         }
 
-
-        // Control that will be hosted in the tool window
-        private BuildTimerCtrl control = null;
         // Caching our output window pane
         private IVsOutputWindowPane outputWindowPane = null;
     }

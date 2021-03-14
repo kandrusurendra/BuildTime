@@ -66,11 +66,11 @@ namespace VSBuildTimer
     [ProvideBindingPath]
     public class BuildTimerPackage : AsyncPackage, ILogger
     {
-        public EventRouter EvtRouter { get { return evtRouter; } }
+        public EventRouter EvtRouter { get; private set; }
 
-        public IBuildInfoExtractionStrategy BuildInfoExtractor { get { return buildInfoExtractor; } }
+        public IBuildInfoExtractionStrategy BuildInfoExtractor { get; private set; }
 
-        public SettingsManager SettingsManager { get { return settingsManager; } }
+        public SettingsManager SettingsManager { get; private set; }
 
         public void LogMessage(string message, LogLevel level)
         {
@@ -108,12 +108,12 @@ namespace VSBuildTimer
             var dte = serviceContainer.GetService(typeof(SDTE)) as EnvDTE.DTE;
 
             //var dte = GetServiceAsync(typeof(SDTE));
-            this.evtRouter = new EventRouter(this, dte);
+            this.EvtRouter = new EventRouter(this, dte);
 
             IVsSolutionBuildManager2 buildManager = await GetServiceAsync(typeof(SVsSolutionBuildManager)) as IVsSolutionBuildManager2;
-            this.buildInfoExtractor = new SDKBasedInfoExtractor(this, buildManager, this);
+            this.BuildInfoExtractor = new SDKBasedInfoExtractor(this, buildManager, this);
 
-            this.settingsManager = new SettingsManager();
+            this.SettingsManager = new SettingsManager();
 
             CommandID id = new CommandID(GuidsList.guidClientCmdSet, PkgCmdId.cmdidBuildTimerWindow);
             DefineCommandHandler(new EventHandler(ShowBuildTimerWindow), id);
@@ -183,9 +183,6 @@ namespace VSBuildTimer
         }
 
         private OleMenuCommandService menuService;
-        private EventRouter evtRouter;
-        private IBuildInfoExtractionStrategy buildInfoExtractor;
-        private SettingsManager settingsManager;
         private BuildTimerWindowPane wndPane;
         public event System.EventHandler OnQueryClose = (sender, args) => { };
     }
