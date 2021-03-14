@@ -132,6 +132,7 @@ namespace VSBuildTimer
         protected override int QueryClose(out bool canClose)
         {
             canClose = true;
+            this.LogMessage("Visual Studio Build Timer saving settings before exiting.", LogLevel.DebugInfo);
             OnQueryClose(this, new System.EventArgs());
             this.SettingsManager.StoreSettings();
             return 0;

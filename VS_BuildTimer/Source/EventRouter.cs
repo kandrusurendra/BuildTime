@@ -41,23 +41,23 @@ namespace VSBuildTimer
             this.buildEvents = dte.Events.BuildEvents;
             this.outputWndEvents = dte.Events.OutputWindowEvents;
 
-            this.buildEvents.OnBuildBegin += this.OnBuildBegin;
-            this.buildEvents.OnBuildDone += this.OnBuildCompleted;
-            this.outputWndEvents.PaneUpdated += this.OnOutputPaneUpdated;
-            package.OnQueryClose += this.OnShutdown;
+            this.buildEvents.OnBuildBegin += this.OnBuildBeginHandler;
+            this.buildEvents.OnBuildDone += this.OnBuildCompletedHandler;
+            this.outputWndEvents.PaneUpdated += this.OnOutputPaneUpdatedHandler;
+            package.OnQueryClose += this.OnShutdownHandler;
         }
 
-        private void OnBuildBegin(EnvDTE.vsBuildScope sc, EnvDTE.vsBuildAction ac)
+        private void OnBuildBeginHandler(EnvDTE.vsBuildScope sc, EnvDTE.vsBuildAction ac)
         {
             BuildStarted(this, new EventArgs());
         }
 
-        private void OnBuildCompleted(EnvDTE.vsBuildScope sc, EnvDTE.vsBuildAction ac)
+        private void OnBuildCompletedHandler(EnvDTE.vsBuildScope sc, EnvDTE.vsBuildAction ac)
         {
             BuildCompleted(this, new EventArgs());
         }
 
-        private void OnOutputPaneUpdated(OutputWindowPane wndPane)
+        private void OnOutputPaneUpdatedHandler(OutputWindowPane wndPane)
         {
             var args = new OutputWndEventArgs
             {
@@ -66,6 +66,10 @@ namespace VSBuildTimer
             OutputPaneUpdated(this, args);
         }
 
+        private void OnShutdownHandler(System.Object sender, System.EventArgs args)
+        {
+            OnShutdown(sender, args);
+        }
         
         private readonly BuildEvents buildEvents;
         private readonly OutputWindowEvents outputWndEvents;
