@@ -1,13 +1,3 @@
-/***************************************************************************
-
-Copyright (c) Microsoft Corporation. All rights reserved.
-THIS CODE IS PROVIDED *AS IS* WITHOUT WARRANTY OF
-ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY
-IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR
-PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
-
-***************************************************************************/
-
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -74,7 +64,7 @@ namespace VSBuildTimer
     [ProvideAutoLoad(UIContextGuids80.SolutionExists, PackageAutoLoadFlags.BackgroundLoad)]
     [Guid("01069CDD-95CE-4620-AC21-DDFF6C57F012")]
     [ProvideBindingPath]
-    public class VSBuildTimerPackage : AsyncPackage, ILogger
+    public class BuildTimerPackage : AsyncPackage, ILogger
     {
         public EventRouter EvtRouter { get { return evtRouter; } }
 
