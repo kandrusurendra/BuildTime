@@ -53,7 +53,7 @@ namespace VSBuildTimer
 
             InitializeComponent();
             this.UpdateUI(new List<ProjectBuildInfo>());
-            this.OutputString(PackageUtils.PackageVersionString());
+            this.OutputString(BuildTimerPackage.GetVersionString());
         }
 
         public void Initialize(IBuildInfoExtractionStrategy infoExtractor, IEventRouter evtRouter, 

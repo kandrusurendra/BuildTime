@@ -1,9 +1,9 @@
 using System;
 using System.Threading;
-using System.Threading.Tasks;
 using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -94,6 +94,11 @@ namespace VSBuildTimer
             }
         }
 
+        public static string GetVersionString()
+        {
+            return BuildTimerPackage.versionString;
+        }
+
         protected override async Task InitializeAsync(
             CancellationToken cancellationToken,
             IProgress<ServiceProgressData> progress
@@ -182,24 +187,26 @@ namespace VSBuildTimer
             ErrorHandler.ThrowOnFailure(frame.Show());
         }
 
-        private OleMenuCommandService menuService;
-        private BuildTimerWindowPane wndPane;
-        public event System.EventHandler OnQueryClose = (sender, args) => { };
-    }
-
-
-    abstract class PackageUtils
-    {
-        public static string PackageVersionString()
+        private static string ReadVersion()
         {
-            var v = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-            return string.Format("Visual Studio Build Timer {0}.{1}.{2} - Build {3}\n",
-                v.Major,
-                v.Minor,
-                v.Build,        // Microsfot versioning follows the scheme: major.minor.build.revision.
-                v.Revision      // I prefer it in the form:                 major.minor.revision.build.
-                                // Therefore I use the "Build" field as my revision number and vice-versa.
+            var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            string gitVersion = String.Empty;
+            string resourceName = assembly.GetManifestResourceNames().Single(str => str.EndsWith("version.txt"));
+            using (System.IO.Stream stream = assembly.GetManifestResourceStream(resourceName))
+            using (System.IO.StreamReader reader = new System.IO.StreamReader(stream))
+            {
+                gitVersion = reader.ReadToEnd();
+            }
+
+            var v = assembly.GetName().Version;
+            return string.Format("Visual Studio Build Timer {0}.{1}.{2}-{3}\n",
+                v.Major, v.Minor, v.Revision, gitVersion
             );
         }
+
+        private OleMenuCommandService menuService;
+        private BuildTimerWindowPane wndPane;
+        private static readonly string versionString = ReadVersion();
+        public event System.EventHandler OnQueryClose = (sender, args) => { };
     }
 }
