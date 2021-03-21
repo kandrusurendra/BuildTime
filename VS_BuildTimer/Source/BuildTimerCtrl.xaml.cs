@@ -65,6 +65,10 @@ namespace VSBuildTimer
             this.SettingsManager = settingsManager;
 
             this.WinFormChartCtrl.ZoomLevel = this.SettingsManager.GetSettings().ZoomLevel;
+            //m_viewModel.ViewSource.SortDescriptions.Clear();
+            //m_viewModel.ViewSource.SortDescriptions.Add(new SortDescription("BuildDuration", ListSortDirection.Ascending));
+            this.BuildInfoGrid.Items.SortDescriptions.Clear();
+            this.BuildInfoGrid.Items.SortDescriptions.Add(new SortDescription("BuildDuration", ListSortDirection.Ascending));
             this.UpdateData();
         }
         private IBuildInfoExtractionStrategy BuildInfoExtractor
@@ -209,6 +213,10 @@ namespace VSBuildTimer
                 m_viewModel.MyDataSource.Clear();
                 foreach (var info in presentationInfo)
                     m_viewModel.MyDataSource.Add(info);
+                this.BuildInfoGrid.Items.SortDescriptions.Clear();
+                this.BuildInfoGrid.Items.SortDescriptions.Add(new SortDescription("BuildDuration", ListSortDirection.Ascending));
+                //m_viewModel.ViewSource.SortDescriptions.Clear();
+                //m_viewModel.ViewSource.SortDescriptions.Add(new SortDescription("Duration", ListSortDirection.Ascending));
                 m_viewModel.ViewSource.View.Refresh();
 
                 // update chart.
