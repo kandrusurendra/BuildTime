@@ -31,8 +31,16 @@ namespace VSBuildTimer
 
         public List<ProjectBuildInfo> GetBuildProgressInfo()
         {
-            List<ProjectBuildInfo> projInfo = m_projectBuildInfo.Values.ToList();
-            return projInfo;
+            List<ProjectBuildInfo> buildInfo = m_projectBuildInfo.Values.ToList();
+            if (buildInfo.Count>0)
+            {
+                DateTime? minStartTime = buildInfo.Min(projectInfo => projectInfo.BuildStartTime);
+                // Projects must have non-empty BuildStartTime to be in the list.
+                System.Diagnostics.Debug.Assert(minStartTime.HasValue);
+                buildInfo.ForEach(projInfo => projInfo.ReferenceTime = minStartTime.Value);
+            }
+
+            return buildInfo;
         }
 
         public event EventHandler BuildInfoUpdated = delegate { };

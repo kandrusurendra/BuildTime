@@ -17,6 +17,7 @@ namespace VSBuildTimer
         {
             ProjectName = name;
             ProjectId = id;
+            ReferenceTime = System.DateTime.Now;
             BuildStartTime = startTime;
             BuildDuration = duration;
             BuildSucceeded = buildSucceeded;
@@ -30,7 +31,17 @@ namespace VSBuildTimer
 
         public DateTime? BuildStartTime { get; set; }
 
+        public TimeSpan? BuildStartTime_Relative
+        {
+            get
+            {
+                return BuildStartTime.HasValue ? BuildStartTime - ReferenceTime : null;
+            }
+        }
+
         public TimeSpan? BuildDuration { get; set; }
+
+        public DateTime ReferenceTime { get; set; }
 
         public DateTime? BuildEndTime
         {
@@ -42,77 +53,17 @@ namespace VSBuildTimer
                 return null;
             }
         }
-
-        public bool? BuildSucceeded { get; set; }
-    }
-
-    public class ProjectPresentationInfo
-    {
-        // Input parameters
-        public ProjectPresentationInfo(DateTime referenceTime, ProjectBuildInfo buildInfo)
-        {
-            if (buildInfo == null) throw new ArgumentNullException("build info");
-            if (referenceTime == null) throw new ArgumentNullException("reference time");
-            m_buildInfo = buildInfo;
-            m_referenceTime = referenceTime;
-        }
-
-        // Transformed data
-        public string ProjectName
-        {
-            get { return m_buildInfo.ProjectName; }
-        }
-
-        public string Configuration
-        {
-            get { return m_buildInfo.Configuration; }
-        }
-
-        public int ProjectId
-        {
-            get { return m_buildInfo.ProjectId; }
-        }
-
-        public DateTime? BuildStartTime_Absolute
-        {
-            get { return m_buildInfo.BuildStartTime; }
-        }
-
-        public TimeSpan? BuildDuration
-        {
-            get { return m_buildInfo.BuildDuration; }
-        }
-
-        public TimeSpan? BuildStartTime_Relative
-        {
-            get
-            {
-                if (m_buildInfo.BuildStartTime.HasValue)
-                    return m_buildInfo.BuildStartTime - m_referenceTime;
-                return null;
-            }
-        }
-        
         public TimeSpan? BuildEndTime_Relative
         {
             get
             {
-                if (m_buildInfo.BuildEndTime.HasValue)
-                {
-                    return m_buildInfo.BuildEndTime - m_referenceTime;
-                }
-                return null;
+                return BuildStartTime.HasValue ? BuildEndTime - ReferenceTime : null;
             }
         }
 
-        public bool? BuildSucceeded
-        {
-            get { return m_buildInfo.BuildSucceeded; }
-        }
-
-        private readonly DateTime m_referenceTime;
-        private readonly ProjectBuildInfo m_buildInfo;
+        public bool? BuildSucceeded { get; set; }
     }
+
 
     public static class BuildInfoUtils
     {
@@ -294,26 +245,7 @@ namespace VSBuildTimer
             return projectList;
         }
 
-        public static List<ProjectPresentationInfo> ExtractPresentationInfo(IEnumerable<ProjectBuildInfo> buildInfo)
-        {
-            if (buildInfo == null)
-                throw new ArgumentNullException("buildInfo");
-
-            if (buildInfo.Count() == 0)
-                return new List<ProjectPresentationInfo>();
-
-            DateTime? minStartTime = buildInfo.Min(projectInfo => projectInfo.BuildStartTime);
-
-            // Projects must have a non-empty BuildStartTime in order to be in the list.
-            System.Diagnostics.Debug.Assert(minStartTime.HasValue);
-
-            // Map projInfo elements to Presentation info. Then convert the collection to list.
-            var presentationInfo = buildInfo.Select(projectInfo => new ProjectPresentationInfo(minStartTime.Value, projectInfo)).ToList();
-
-            return presentationInfo;
-        }
-
-        public static string CreateToolTipText(ProjectPresentationInfo info)
+        public static string CreateToolTipText(ProjectBuildInfo info)
         {
             string TimeSpanToStr(TimeSpan? t)
             {
@@ -325,7 +257,7 @@ namespace VSBuildTimer
                 return
                     "Project: " + info.ProjectName + "\n" +
                     "Config:  " + info.Configuration + "\n" + 
-                    "start time: " + TimeSpanToStr(info.BuildStartTime_Relative)  + " (absolute: " + info.BuildStartTime_Absolute + ")\n" +
+                    "start time: " + TimeSpanToStr(info.BuildStartTime_Relative)  + " (absolute: " + info.BuildStartTime + ")\n" +
                     "duration:   " + TimeSpanToStr(info.BuildDuration) + "\n" +
                     "end time:   " + TimeSpanToStr(info.BuildEndTime_Relative) + "\n";
             }
@@ -340,21 +272,21 @@ namespace VSBuildTimer
             if (w == null)
                 throw new ArgumentNullException("w");
 
-            var presentationInfo = ExtractPresentationInfo(buildInfo);
-            presentationInfo.Sort((i1, i2) =>
+            var sortedInfo = buildInfo.ToList();
+            sortedInfo.Sort((i1, i2) =>
             {
-                if (!i1.BuildStartTime_Absolute.HasValue) return 1;
-                else if (!i2.BuildStartTime_Absolute.HasValue) return -1;
-                else return (i1.BuildStartTime_Absolute.Value.CompareTo(i2.BuildStartTime_Absolute.Value));
+                if (!i1.BuildStartTime.HasValue) return 1;
+                else if (!i2.BuildStartTime.HasValue) return -1;
+                else return (i1.BuildStartTime.Value.CompareTo(i2.BuildStartTime.Value));
             });
 
 
             w.Write("Project,Configuration,\"Start time (abs)\",\"Start time\",Duration,\"End time\",Succeeded\n");
-            foreach (var projInfo in presentationInfo)
+            foreach (var projInfo in sortedInfo)
             {
                 w.Write("\"" + projInfo.ProjectName                 + "\",");
                 w.Write("\"" + projInfo.Configuration               + "\",");
-                w.Write("\"" + projInfo.BuildStartTime_Absolute     + "\",");
+                w.Write("\"" + projInfo.BuildStartTime              + "\",");
                 w.Write("\"" + projInfo.BuildStartTime_Relative     + "\",");
                 w.Write("\"" + projInfo.BuildDuration               + "\",");
                 w.Write("\"" + projInfo.BuildEndTime_Relative       + "\",");
