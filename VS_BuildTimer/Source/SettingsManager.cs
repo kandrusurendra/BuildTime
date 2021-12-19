@@ -32,7 +32,7 @@ namespace VSBuildTimer
     }
 
 
-    public class SettingsManager
+    public class SettingsManager : IDisposable
     {
         public SettingsManager()
         {

@@ -184,8 +184,7 @@ namespace VSBuildTimer
             var assembly = System.Reflection.Assembly.GetExecutingAssembly();
             string gitVersion = String.Empty;
             string resourceName = assembly.GetManifestResourceNames().Single(str => str.EndsWith("version.txt"));
-            using (System.IO.Stream stream = assembly.GetManifestResourceStream(resourceName))
-            using (System.IO.StreamReader reader = new System.IO.StreamReader(stream))
+            using (System.IO.StreamReader reader = new System.IO.StreamReader(assembly.GetManifestResourceStream(resourceName)))
             {
                 gitVersion = reader.ReadToEnd();
             }
