@@ -27,12 +27,12 @@ namespace VSBuildTimer
     {
         public ViewModel()
         {
-            this.MyDataSource = new ObservableCollection<ProjectPresentationInfo>();
+            this.MyDataSource = new ObservableCollection<ProjectBuildInfo>();
             this.ViewSource = new CollectionViewSource();
             this.ViewSource.Source = this.MyDataSource;
         }
 
-        public ObservableCollection<ProjectPresentationInfo> MyDataSource { get; set; }
+        public ObservableCollection<ProjectBuildInfo> MyDataSource { get; set; }
 
         public CollectionViewSource ViewSource { get; set; }
     }
@@ -65,7 +65,7 @@ namespace VSBuildTimer
             this.SettingsManager = settingsManager;
 
             this.WinFormChartCtrl.ZoomLevel = this.SettingsManager.GetSettings().ZoomLevel;
-            this.UpdateData();
+            this.UpdateUI();
         }
         private IBuildInfoExtractionStrategy BuildInfoExtractor
         {
@@ -115,18 +115,6 @@ namespace VSBuildTimer
                 OutputWindow.AppendText(message);
         }
 
-        public void UpdateData()
-        {
-            if (BuildInfoExtractor != null)
-            {
-                var buildInfo = BuildInfoExtractor.GetBuildProgressInfo();
-                this.UpdateUI(buildInfo);
-            }
-        }
-
-        //
-        // Implementation
-        //
         private void RefreshValues(object sender, EventArgs args)
         {
             InvalidateVisual();
@@ -134,7 +122,7 @@ namespace VSBuildTimer
 
         private void OnBuildInfoUpdated(object sender, EventArgs args)
         {
-            this.Dispatcher.BeginInvoke(new Action(this.UpdateData));
+            this.Dispatcher.BeginInvoke(new Action(this.UpdateUI));
         }
 
         private void OnClearOutputWindow(object sender, RoutedEventArgs args)
@@ -164,12 +152,21 @@ namespace VSBuildTimer
             }
         }
 
+        private void UpdateUI()
+        {
+            if (BuildInfoExtractor != null)
+            {
+                var buildInfo = BuildInfoExtractor.GetBuildProgressInfo();
+                this.UpdateUI(buildInfo);
+            }
+        }
+
         private void UpdateUI(List<ProjectBuildInfo> buildInfo)
         {
             //
             // Hide placeholder or chart depending on the state.
             //
-            if (buildInfo.Count == 0)
+            if (buildInfo == null || buildInfo.Count == 0)
             {
                 this.placeHolder.Visibility = Visibility.Visible;
                 this.wfHost.Visibility = Visibility.Hidden;
@@ -196,36 +193,33 @@ namespace VSBuildTimer
             }
             else
             {
-                // update model; grid will update accordingly.
-                var presentationInfo = BuildInfoUtils.ExtractPresentationInfo(buildInfo);
                 m_viewModel.MyDataSource.Clear();
-                foreach (var info in presentationInfo)
+                foreach (var info in buildInfo)
                     m_viewModel.MyDataSource.Add(info);
                 m_viewModel.ViewSource.View.Refresh();
 
                 // update chart.
-                var infoSorted = presentationInfo.ToList();
-                infoSorted.Sort((i1, i2) =>
+                var sortedInfo = buildInfo.ToList();
+                sortedInfo.Sort((i1, i2) =>
                 {
-                    if (!i1.BuildStartTime_Absolute.HasValue) return 1;
-                    else if (!i2.BuildStartTime_Absolute.HasValue) return -1;
-                    else return (i1.BuildStartTime_Absolute.Value.CompareTo(i2.BuildStartTime_Absolute.Value));
+                    if (!i1.BuildStartTime.HasValue) return 1;
+                    else if (!i2.BuildStartTime.HasValue) return -1;
+                    else return (i1.BuildStartTime.Value.CompareTo(i2.BuildStartTime.Value));
                 });
 
                 var ctrlProjInfo = new List<WinFormsControls.ProjectInfo>();
-                foreach (ProjectPresentationInfo projInfo in infoSorted)
+                foreach (var projInfo in sortedInfo)
                 {
-                    DateTime origin = infoSorted[0].BuildStartTime_Absolute.HasValue ? 
-                        infoSorted[0].BuildStartTime_Absolute.Value : new DateTime(2000, 1, 1);
+                    DateTime origin = sortedInfo[0].BuildStartTime.HasValue ?
+                        sortedInfo[0].BuildStartTime.Value : new DateTime(2000, 1, 1);
                     double startTimeSecs = 0, endTimeSecs = 0;
-                    if (projInfo.BuildDuration.HasValue && projInfo.BuildStartTime_Absolute.HasValue)
+                    if (projInfo.BuildDuration.HasValue && projInfo.BuildStartTime.HasValue)
                     {
-                        startTimeSecs = (projInfo.BuildStartTime_Absolute.Value - origin).TotalSeconds;
+                        startTimeSecs = (projInfo.BuildStartTime.Value - origin).TotalSeconds;
                         endTimeSecs = startTimeSecs + projInfo.BuildDuration.Value.TotalSeconds;
                     }
 
-                    ctrlProjInfo.Add(new WinFormsControls.ProjectInfo
-                    {
+                    ctrlProjInfo.Add(new WinFormsControls.ProjectInfo{
                         startTime = startTimeSecs,
                         endTime = endTimeSecs,
                         projectName = projInfo.ProjectName,

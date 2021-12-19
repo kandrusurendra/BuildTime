@@ -117,40 +117,10 @@ namespace ToolWindowTests
         }
 
         [TestMethod]
-        public void ExtractPresentationInfo()
-        {
-            List<ProjectBuildInfo> dummyProjectList = new List<ProjectBuildInfo>{
-            // Project name               , ID, Start time (absolute)          , Duration
-              new ProjectBuildInfo("projA",  0, new DateTime(2018,5,5, 2, 3, 4), new TimeSpan(0, 0,  0, 10))
-            , new ProjectBuildInfo("projB",  1, new DateTime(2018,5,5, 1, 1, 1), new TimeSpan(0, 0,  0, 20))
-            , new ProjectBuildInfo("projC",  2, new DateTime(2018,5,5, 4, 5, 6), null )
-            , new ProjectBuildInfo("projD",  3, new DateTime(2018,5,5, 8, 9,10), new TimeSpan(0, 0,  1, 37))
-            , new ProjectBuildInfo("projE",  4, null, null)
-            };
-
-            List<ProjectPresentationInfo> presentationInfo = BuildInfoUtils.ExtractPresentationInfo(dummyProjectList);
-
-            // check relative start times
-            Assert.AreEqual(new TimeSpan(1, 2, 3), presentationInfo[0].BuildStartTime_Relative);
-            Assert.AreEqual(new TimeSpan(0, 0, 0), presentationInfo[1].BuildStartTime_Relative);
-            Assert.AreEqual(new TimeSpan(3, 4, 5), presentationInfo[2].BuildStartTime_Relative);
-            Assert.AreEqual(new TimeSpan(7, 8, 9), presentationInfo[3].BuildStartTime_Relative);
-            Assert.IsFalse (presentationInfo[4].BuildStartTime_Relative.HasValue);
-
-            // check relative end times; should be relative start time + duration
-            Assert.AreEqual(new TimeSpan(1, 2, 13), presentationInfo[0].BuildEndTime_Relative);
-            Assert.AreEqual(new TimeSpan(0, 0, 20), presentationInfo[1].BuildEndTime_Relative);
-            Assert.AreEqual(new TimeSpan(7, 9, 46), presentationInfo[3].BuildEndTime_Relative);
-            Assert.IsFalse(presentationInfo[2].BuildEndTime_Relative.HasValue);
-            Assert.IsFalse(presentationInfo[4].BuildEndTime_Relative.HasValue);
-        }
-
-        [TestMethod]
         public void CreateToolTipText()
         {
             var buildInfo = new ProjectBuildInfo("projA", 0, new DateTime(2018, 5, 5, 2, 3, 4), new TimeSpan(0, 0, 0, 10));
-            var presentationInfo = new ProjectPresentationInfo(new DateTime(2018, 5, 5, 0, 0, 0), buildInfo);
-            string text = BuildInfoUtils.CreateToolTipText(presentationInfo);
+            string text = BuildInfoUtils.CreateToolTipText(buildInfo);
             Assert.IsTrue(text.Length > 0);
             Assert.IsTrue(text.Contains("2:03:04"));
             Assert.IsTrue(text.Contains("2:03:14"));
