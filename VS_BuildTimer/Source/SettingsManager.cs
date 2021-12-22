@@ -14,20 +14,16 @@ namespace VSBuildTimer
         {
             static public UserSettings CreateDefault()
             {
-                UserSettings settings = new UserSettings();
-                settings.Version = 1;
-                settings.ZoomLevel = 10;
-                settings.SortingColumn = "StartTime";
-                settings.AscendingOrder = true;
+                UserSettings settings = new UserSettings
+                {
+                    Version = 1,
+                    ZoomLevel = 10
+                };
                 return settings;
             }
             public int Version { set;  get; }
 
             public double ZoomLevel { set; get; }
-
-            public string SortingColumn { set; get; }
-
-            public bool AscendingOrder { get; set; }
         }
     }
 
@@ -36,8 +32,9 @@ namespace VSBuildTimer
     {
         public SettingsManager()
         {
-            m_timer = new System.Timers.Timer(500);
+            m_timer = new System.Timers.Timer(5000);
             m_timer.Elapsed += this.OnTimerTick;
+            m_timer.Enabled = true;
             m_dirty = false;
         }
 

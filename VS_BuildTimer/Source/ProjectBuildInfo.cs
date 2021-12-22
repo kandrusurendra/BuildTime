@@ -45,7 +45,8 @@ namespace VSBuildTimer
 
         public DateTime? BuildEndTime
         {
-            get {
+            get
+            {
                 if (BuildStartTime.HasValue && BuildDuration.HasValue)
                 {
                     return (BuildStartTime + BuildDuration);
@@ -57,7 +58,7 @@ namespace VSBuildTimer
         {
             get
             {
-                return BuildStartTime.HasValue ? BuildEndTime - ReferenceTime : null;
+                return BuildEndTime.HasValue ? BuildEndTime - ReferenceTime : null;
             }
         }
 

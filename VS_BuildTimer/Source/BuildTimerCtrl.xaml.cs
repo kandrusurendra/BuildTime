@@ -65,6 +65,7 @@ namespace VSBuildTimer
             this.SettingsManager = settingsManager;
 
             this.WinFormChartCtrl.ZoomLevel = this.SettingsManager.GetSettings().ZoomLevel;
+            this.WinFormChartCtrl.ZoomLevelChanged += this.OnZoomLevelChanged;
             this.UpdateUI();
         }
         private IBuildInfoExtractionStrategy BuildInfoExtractor
@@ -84,13 +85,7 @@ namespace VSBuildTimer
             }
         }
 
-        private IEventRouter EvtRouter
-        {
-            set
-            {
-                m_evtRouter = value;
-            }
-        }
+        private IEventRouter EvtRouter { get; set; }
         
         private SettingsManager SettingsManager { get; set; }
 
@@ -150,6 +145,13 @@ namespace VSBuildTimer
                     package.LogMessage("Failed to export build information: " + e.Message, LogLevel.Error);
                 }
             }
+        }
+
+        private void OnZoomLevelChanged(object sender, EventArgs args)
+        {
+            var settings = this.SettingsManager.GetSettings();
+            settings.ZoomLevel = this.WinFormChartCtrl.ZoomLevel;
+            this.SettingsManager.SetSettings(settings);
         }
 
         private void UpdateUI()
@@ -325,7 +327,6 @@ namespace VSBuildTimer
 
         private BuildTimerWindowPane m_windowPane;
         private readonly ViewModel m_viewModel;
-        private IEventRouter m_evtRouter;
         private IBuildInfoExtractionStrategy m_buildInfoExtractor;
         private WindowStatus currentState = null;
         private int m_count_ = 0;

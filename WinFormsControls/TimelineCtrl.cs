@@ -58,6 +58,8 @@ namespace WinFormsControls
             }
         }
 
+        public event System.EventHandler ZoomLevelChanged = (sender, args) => { };
+
         private static System.Drawing.Color GetBarColor(bool? buildSuccess)
         {
             if (buildSuccess.HasValue)
@@ -113,6 +115,7 @@ namespace WinFormsControls
         private void zoomTrackbar_ValueChanged(object sender, EventArgs e)
         {
             UpdateChart();
+            ZoomLevelChanged(sender, e);
         }
 
         private void chartAreaPanel_Paint(object sender, PaintEventArgs e)
