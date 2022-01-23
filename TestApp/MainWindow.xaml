@@ -1,0 +1,44 @@
+﻿<Window x:Class="TestApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TestApp"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Window.Resources>
+        <CollectionViewSource x:Key="ProjectCollectionViewSource" Source="{Binding MyDataSource}" />
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="10"></RowDefinition>
+            <RowDefinition Height="40"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <DataGrid Grid.Row="0" Grid.Column="0" Name="BuildInfoGrid" AutoGenerateColumns="False"
+                                    ItemsSource="{Binding Source={StaticResource ProjectCollectionViewSource}}" 
+                                    HorizontalAlignment="Stretch" VerticalAlignment="Top"
+                                    Margin="2" IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Project" Binding="{Binding Path=ProjectName}"/>
+                <DataGridTextColumn Header="Start time (absolute)" Binding="{Binding Path=BuildStartTime, TargetNullValue=' ? '}"/>
+                <DataGridTextColumn Header="Succeeded" Binding="{Binding Path=BuildSucceeded, TargetNullValue=' ? '}"/>
+            </DataGrid.Columns>
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Select theme" Click="OnChangeTheme" />
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+        </DataGrid>
+        <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" />
+        <TextBox Grid.Row="2" Grid.Column="0" x:Name="OutputWindow" IsReadOnly="True">
+            <TextBox.ContextMenu>
+                <ContextMenu>
+                </ContextMenu>
+            </TextBox.ContextMenu>
+        </TextBox>
+    </Grid>
+</Window>
